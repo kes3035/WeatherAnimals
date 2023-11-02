@@ -1,0 +1,6 @@
+framework module Pods_WeatherAnimals {
+  umbrella header "Pods-WeatherAnimals-umbrella.h"
+
+  export *
+  module * { export * }
+}
