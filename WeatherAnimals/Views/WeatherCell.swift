@@ -21,11 +21,21 @@ final class WeatherCell: UITableViewCell {
     }
     
     private lazy var tempLabel = UILabel().then {
+        $0.numberOfLines = 0
         $0.text = "20"
+        $0.font = UIFont.neoDeungeul(size: 47)
+
+    }
+    
+    private lazy var celsiusLabel = UILabel().then {
+        $0.text = String(UnicodeScalar(0x00B0))
+        $0.font = UIFont.neoDeungeul(size: 63)
+
     }
     
     private lazy var addressLabel = UILabel().then {
         $0.text = "죽전동, 용인시, 대한민국"
+        $0.font = UIFont.neoDeungeul(size: 14)
         
     }
     
@@ -57,24 +67,33 @@ final class WeatherCell: UITableViewCell {
         baseView.addSubViews(views: 
 //                                weatherLabel,
                              tempLabel,
-                             addressLabel
+                             addressLabel,
+                             celsiusLabel
 //                             , precipitationLabel
         )
+        
         baseView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalToSuperview().inset(20)
             $0.top.equalToSuperview().offset(15)
             $0.bottom.equalToSuperview().inset(15)
         }
+        
         tempLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(30)
-            $0.width.equalTo(50)
         }
         
         addressLabel.snp.makeConstraints {
             $0.leading.equalTo(tempLabel.snp.leading)
-            $0.top.equalTo(tempLabel.snp.bottom).offset(10)
+            $0.bottom.equalToSuperview().offset(-5)
+            
+        }
+        
+        celsiusLabel.snp.makeConstraints {
+            $0.top.equalTo(tempLabel.snp.top).offset(3)
+            $0.leading.equalTo(tempLabel.snp.trailing).inset(3)
+            
         }
         
         

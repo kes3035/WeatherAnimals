@@ -12,11 +12,11 @@ final class MainVC: UIViewController {
         $0.delegate = self
         $0.dataSource = self
         $0.separatorStyle = .none
+        
     }
     
     private lazy var locationTitle = UILabel().then {
         $0.text = "대한민국 용인시"
-        $0.font = UIFont.systemFont(ofSize: 20)
     }
     
     private lazy var currentTemp = UILabel().then {
@@ -44,12 +44,10 @@ final class MainVC: UIViewController {
     private func configureUI() {
 //        let attributes = [ NSAttributedString.Key.foregroundColor: UIColor.black,
 //                           NSAttributedString.Key.font: UIFont.neoDunggeul(size: 20, weight: .medium) ]
-        let attributes = [NSAttributedString.Key.font: UIFont.neoDunggeul(size: 20, weight: .medium)]
-        UINavigationBar.appearance().titleTextAttributes = attributes
-//        
+        
+//
 //        self.navigationController?.navigationBar.prefersLargeTitles = true
 //        self.navigationItem.largeTitleDisplayMode = .always
-        self.navigationController?.navigationBar.titleTextAttributes = attributes
         self.navigationItem.title = "날씨보개"
         
         view.backgroundColor = .white
@@ -88,5 +86,9 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailVC = DetailVC()
+        self.navigationController?.pushViewController(detailVC, animated: true)
+    }
     
 }

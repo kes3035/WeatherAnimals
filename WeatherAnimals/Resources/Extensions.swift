@@ -9,34 +9,21 @@ extension UIView {
     }
 }
 
+
 extension UIFont {
-    static func neoDunggeul(size fontSize: CGFloat, weight: UIFont.Weight) -> UIFont {
-        let familyName = "Pretendard"
+    static func neoDeungeul(size: CGFloat, name: String = "NeoDunggeunmoPro-Regular") -> UIFont? {
+        return UIFont(name: name, size: size)
+    }
+    
+    
+}
 
-        var weightString: String
-        switch weight {
-        case .black:
-            weightString = "Black"
-        case .bold:
-            weightString = "Blod"
-        case .heavy:
-            weightString = "ExtraBold"
-        case .ultraLight:
-            weightString = "ExtraLight"
-        case .light:
-            weightString = "Light"
-        case .medium:
-            weightString = "Medium"
-        case .regular:
-            weightString = "Regular"
-        case .semibold:
-            weightString = "SemiBold"
-        case .thin:
-            weightString = "Thin"
-        default:
-            weightString = "Regular"
-        }
 
-        return UIFont(name: "\(familyName)-\(weightString)", size: fontSize) ?? .systemFont(ofSize: fontSize, weight: weight)
+extension String {
+    static func toCelcius(with: String) -> String {
+        let celcius = "o"
+        
+        
+        return ""
     }
 }
