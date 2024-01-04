@@ -8,9 +8,10 @@ import CoreLocation
 final class MainVC: UIViewController {
 //MARK: - Properties
     private lazy var tableView = UITableView().then {
-        $0.rowHeight = 150
+        $0.rowHeight = 120
         $0.delegate = self
         $0.dataSource = self
+        $0.separatorStyle = .none
     }
     
     private lazy var locationTitle = UILabel().then {
@@ -33,7 +34,7 @@ final class MainVC: UIViewController {
         super.viewDidLoad()
         configureUI()
         settingTableView()
-        self.weatherViewModel.getCurrentWeather(for: weatherViewModel.yongin)
+//        self.weatherViewModel.getCurrentWeather(for: weatherViewModel.yongin)
 
     }
     
@@ -41,6 +42,16 @@ final class MainVC: UIViewController {
     
 //MARK: - Helpers
     private func configureUI() {
+//        let attributes = [ NSAttributedString.Key.foregroundColor: UIColor.black,
+//                           NSAttributedString.Key.font: UIFont.neoDunggeul(size: 20, weight: .medium) ]
+        let attributes = [NSAttributedString.Key.font: UIFont.neoDunggeul(size: 20, weight: .medium)]
+        UINavigationBar.appearance().titleTextAttributes = attributes
+//        
+//        self.navigationController?.navigationBar.prefersLargeTitles = true
+//        self.navigationItem.largeTitleDisplayMode = .always
+        self.navigationController?.navigationBar.titleTextAttributes = attributes
+        self.navigationItem.title = "날씨보개"
+        
         view.backgroundColor = .white
         view.addSubview(tableView)
         tableView.snp.makeConstraints {
@@ -73,6 +84,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.currentWeather = self.weatherViewModel.currentWeather
+        
         return cell
     }
     
