@@ -49,6 +49,12 @@ class DetailVC: UIViewController {
         $0.spacing = 14
     }
     
+    private lazy var currentDayTempView = UICollectionView().then {
+        $0.delegate = self
+        $0.dataSource = self
+    }
+    
+    
 //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,4 +99,17 @@ class DetailVC: UIViewController {
     }
 //MARK: - Actions
 
+}
+
+extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = UICollectionViewCell()
+        return cell
+    }
+    
+    
 }
