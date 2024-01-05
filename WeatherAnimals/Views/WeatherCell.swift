@@ -15,8 +15,8 @@ final class WeatherCell: UITableViewCell {
         $0.layer.borderColor = UIColor.black.cgColor
     }
     
-    private lazy var weatherLabel = UILabel().then {
-        $0.text = "맑음"
+    private lazy var weatherImageView = UIImageView().then {
+        $0.backgroundColor = .gray
         
     }
     
@@ -40,8 +40,8 @@ final class WeatherCell: UITableViewCell {
     }
     
     
-    private lazy var precipitationLabel = UILabel().then {
-        $0.text = ""
+    private lazy var animalImageView = UIImageView().then {
+        $0.backgroundColor = .gray
     }
     
     var currentWeather: CurrentWeather? {
@@ -65,11 +65,11 @@ final class WeatherCell: UITableViewCell {
     private func configureUI() {
         self.contentView.addSubview(baseView)
         baseView.addSubViews(views: 
-//                                weatherLabel,
                              tempLabel,
                              addressLabel,
-                             celsiusLabel
-//                             , precipitationLabel
+                             celsiusLabel,
+                             weatherImageView,
+                             animalImageView
         )
         
         baseView.snp.makeConstraints {
@@ -96,7 +96,17 @@ final class WeatherCell: UITableViewCell {
             
         }
         
+        weatherImageView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(celsiusLabel.snp.trailing).offset(15)
+            $0.width.height.equalTo(45)
+        }
         
+        animalImageView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(30)
+            $0.width.height.equalTo(70)
+        }
     }
     
 //MARK: - Actions

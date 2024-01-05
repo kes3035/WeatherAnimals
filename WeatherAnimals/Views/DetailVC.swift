@@ -79,6 +79,7 @@ class DetailVC: UIViewController {
         
         
         
+        
     }
     
 //MARK: - Actions
