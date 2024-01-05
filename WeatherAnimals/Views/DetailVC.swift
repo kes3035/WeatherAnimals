@@ -53,7 +53,12 @@ class DetailVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-
+        settingNav()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.navigationItem.hidesBackButton = true
     }
 //MARK: - Helpers
     private func configureUI() {
@@ -80,8 +85,12 @@ class DetailVC: UIViewController {
         
         
         
+        
     }
     
+    private func settingNav() {
+//        self.navigationItem.backButtonTitle = "죽전동"
+    }
 //MARK: - Actions
 
 }

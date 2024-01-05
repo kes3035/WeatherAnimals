@@ -22,9 +22,13 @@ final class MainVC: UIViewController {
         $0.font = UIFont.systemFont(ofSize: 14)
     }
     
-    private lazy var plusButton = UIButton().then {
+    private lazy var plusImage = UIImageView().then {
+        let image = UIImage(systemName: "plus.circle.fill")?.withRenderingMode(.alwaysTemplate)
+        $0.image = image
         $0.tintColor = Constants.greenColor
-        $0.addTarget(self, action: #selector(plusButtonTapped(_:)), for: .touchUpInside)
+        $0.isUserInteractionEnabled = true
+        $0.contentMode = .scaleAspectFit
+        $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(plusButtonTapped(_:))))
     }
     
     
@@ -65,10 +69,12 @@ final class MainVC: UIViewController {
         titleLabel.textAlignment = .left
         titleLabel.attributedText = attributedString
         titleLabel.sizeToFit()
-        let titleItem = UIBarButtonItem(customView: titleLabel)
-        
-        
-        navigationItem.leftBarButtonItem = titleItem
+        let leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        plusImage.frame = CGRect(x: 0, y: 0, width: 26, height: 26)
+        let rightBarButtonItem = UIBarButtonItem(customView: plusImage)
+        navigationItem.leftBarButtonItem = leftBarButtonItem
+        navigationItem.rightBarButtonItem = rightBarButtonItem
+//        navigationItem.setHidesBackButton(true, animated: true)
     }
     
     private func settingTableView() {
@@ -97,7 +103,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.currentWeather = self.weatherViewModel.currentWeather
-        
+        cell.selectionStyle = .none
         return cell
     }
     
