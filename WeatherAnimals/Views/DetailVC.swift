@@ -61,6 +61,13 @@ class DetailVC: UIViewController {
         $0.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: "CurrentWeatherCell")
     }
     
+    private lazy var tenDaysTempView = UITableView().then {
+        $0.delegate = self
+        $0.dataSource = self
+        $0.rowHeight = 50
+        $0.backgroundColor = .systemBlue
+        $0.register(TenDaysWeatherCell.self, forCellReuseIdentifier: "TenDaysWeatherCell")
+    }
     
 //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -81,23 +88,15 @@ class DetailVC: UIViewController {
         //Label끼리의 스택뷰에 뷰들 올리기
         self.labelStack.addArrangedSubviews(tempLabel, summaryLabel, highestTempLabel, lowestTempLabel)
         self.topStack.addArrangedSubviews(animalImage, labelStack)
-        self.view.addSubViews(topStack, currentDayTempView)
+        self.view.addSubViews(topStack, currentDayTempView, tenDaysTempView)
         
-        animalImage.snp.makeConstraints {
-            $0.height.width.equalTo(140)
-        }
+        animalImage.snp.makeConstraints { $0.height.width.equalTo(140) }
         
-        tempLabel.snp.makeConstraints {
-            $0.height.equalTo(50)
-        }
+        tempLabel.snp.makeConstraints { $0.height.equalTo(50) }
         
-        summaryLabel.snp.makeConstraints {
-            $0.height.equalTo(20)
-        }
+        summaryLabel.snp.makeConstraints { $0.height.equalTo(20) }
         
-        highestTempLabel.snp.makeConstraints {
-            $0.height.equalTo(20)
-        }
+        highestTempLabel.snp.makeConstraints { $0.height.equalTo(20) }
         
         topStack.snp.makeConstraints {
             $0.top.equalToSuperview().offset(100)
@@ -113,6 +112,13 @@ class DetailVC: UIViewController {
             $0.height.equalTo(100)
         }
         
+        tenDaysTempView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(15)
+            $0.trailing.equalToSuperview().inset(15)
+            $0.top.equalTo(currentDayTempView.snp.bottom).offset(20)
+            $0.height.equalTo(200)
+        }
+        
     }
     
     private func settingNav() {
@@ -125,7 +131,7 @@ class DetailVC: UIViewController {
 //MARK: - Actions
 
 }
-
+//MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 5
@@ -138,8 +144,26 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 }
 
+//MARK: - UICollectionViewDelegateFlowLayout
 extension DetailVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 80, height: 100)
     }
+}
+
+
+//MARK: - UITableViewDelegate, UITableViewDataSource
+extension DetailVC: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TenDaysWeatherCell", for: indexPath) as! TenDaysWeatherCell
+         
+        
+        return cell
+    }
+    
+    
 }
