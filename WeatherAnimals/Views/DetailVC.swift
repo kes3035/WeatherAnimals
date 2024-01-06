@@ -49,9 +49,16 @@ class DetailVC: UIViewController {
         $0.spacing = 14
     }
     
-    private lazy var currentDayTempView = UICollectionView().then {
+    private let flowLayout = UICollectionViewFlowLayout()
+    
+    private lazy var currentDayTempView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
         $0.delegate = self
         $0.dataSource = self
+        $0.backgroundColor = .green
+        $0.layer.cornerRadius = 18
+        $0.clipsToBounds = true
+        $0.showsHorizontalScrollIndicator = false
+        $0.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: "CurrentWeatherCell")
     }
     
     
@@ -59,6 +66,7 @@ class DetailVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        settingCVFlowLayout()
         settingNav()
     }
     
@@ -70,14 +78,26 @@ class DetailVC: UIViewController {
     private func configureUI() {
         self.view.backgroundColor = .white
         
-        labelStack.addArrangedSubview(tempLabel)
-        labelStack.addArrangedSubview(summaryLabel)
-        labelStack.addArrangedSubview(highestTempLabel)
-        labelStack.addArrangedSubview(lowestTempLabel)
+        //Label끼리의 스택뷰에 뷰들 올리기
+        self.labelStack.addArrangedSubviews(tempLabel, summaryLabel, highestTempLabel, lowestTempLabel)
+        self.topStack.addArrangedSubviews(animalImage, labelStack)
+        self.view.addSubViews(topStack, currentDayTempView)
         
-        topStack.addArrangedSubview(animalImage)
-        topStack.addArrangedSubview(labelStack)
-        self.view.addSubview(topStack)
+        animalImage.snp.makeConstraints {
+            $0.height.width.equalTo(140)
+        }
+        
+        tempLabel.snp.makeConstraints {
+            $0.height.equalTo(50)
+        }
+        
+        summaryLabel.snp.makeConstraints {
+            $0.height.equalTo(20)
+        }
+        
+        highestTempLabel.snp.makeConstraints {
+            $0.height.equalTo(20)
+        }
         
         topStack.snp.makeConstraints {
             $0.top.equalToSuperview().offset(100)
@@ -86,16 +106,21 @@ class DetailVC: UIViewController {
             $0.height.equalTo(140)
         }
         
-        
-        
-        
-        
-        
+        currentDayTempView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(15)
+            $0.trailing.equalToSuperview().inset(15)
+            $0.top.equalTo(topStack.snp.bottom).offset(20)
+            $0.height.equalTo(100)
+        }
         
     }
     
     private func settingNav() {
 //        self.navigationItem.backButtonTitle = "죽전동"
+    }
+    
+    private func settingCVFlowLayout() {
+        flowLayout.scrollDirection = .horizontal
     }
 //MARK: - Actions
 
@@ -107,9 +132,14 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = UICollectionViewCell()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CurrentWeatherCell", for: indexPath) as! CurrentWeatherCell
+        
         return cell
     }
-    
-    
+}
+
+extension DetailVC: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 80, height: 100)
+    }
 }

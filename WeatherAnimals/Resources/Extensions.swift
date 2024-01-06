@@ -2,9 +2,19 @@ import UIKit
 
 
 extension UIView {
-    func addSubViews(views: UIView...) {
+    func addSubViews(_ views: UIView...) {
         views.forEach { view in
             self.addSubview(view)
+        }
+    }
+   
+}
+
+extension UIStackView {
+    
+    func addArrangedSubviews(_ views: UIView...) {
+        views.forEach { view in
+            self.addArrangedSubview(view)
         }
     }
 }
