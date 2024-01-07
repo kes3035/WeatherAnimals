@@ -9,7 +9,11 @@ class WeatherViewModel {
     //MARK: - Model
     let yongin = CLLocation(latitude: 37.33229036093, longitude: 127.13131714737)
     let weatherService = WeatherService()
-    var currentWeather: CurrentWeather?
+    var currentWeather: CurrentWeather? {
+        didSet {
+            print(self.currentWeather)
+        }
+    }
     var minuteForecast: Forecast<MinuteWeather>?
     var dailyForecast: Forecast<DayWeather>?
     var weatherAlert: WeatherAlert?

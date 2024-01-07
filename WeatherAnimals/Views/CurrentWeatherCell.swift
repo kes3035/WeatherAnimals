@@ -4,7 +4,7 @@ final class CurrentWeatherCell: UICollectionViewCell {
 //MARK: - Properties
     private lazy var topLabel = UILabel().then {
         $0.text = "탑 레이블"
-        $0.font = UIFont.neoDeungeul(size: 16)
+        $0.font = UIFont.neoDeungeul(size: 12)
     }
     
     private lazy var tempImageView = UIImageView().then {
@@ -14,7 +14,7 @@ final class CurrentWeatherCell: UICollectionViewCell {
     
     private lazy var tempLabel = UILabel().then {
         $0.text = "온도 레이블"
-        $0.font = UIFont.neoDeungeul(size: 16)
+        $0.font = UIFont.neoDeungeul(size: 12)
 
     }
     
@@ -36,15 +36,16 @@ final class CurrentWeatherCell: UICollectionViewCell {
 //MARK: - Helpers
     private func configureUI() {
         self.contentView.addSubViews(topLabel, tempImageView, tempLabel)
-        topLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalToSuperview().offset(5)
-        }
+       
         
         tempImageView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.centerY.equalToSuperview()
             $0.width.height.equalTo(50)
-            $0.top.equalTo(topLabel.snp.bottom).offset(5)
+        }
+        
+        topLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalTo(tempImageView.snp.top).offset(-5)
         }
         
         tempLabel.snp.makeConstraints {

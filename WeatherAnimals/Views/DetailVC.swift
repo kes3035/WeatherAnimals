@@ -9,10 +9,18 @@ import UIKit
 
 class DetailVC: UIViewController {
 //MARK: - Properties
+    
+    private lazy var scrollView = UIScrollView().then {
+        $0.backgroundColor = .white
+    }
+    
+    private lazy var contentView = UIView().then {
+        $0.backgroundColor = .white
+    }
+    
     private lazy var tempLabel = UILabel().then {
         $0.text = "24"
         $0.font = UIFont.neoDeungeul(size: 48)
-        
     }
     
     private lazy var summaryLabel = UILabel().then {
@@ -61,13 +69,12 @@ class DetailVC: UIViewController {
         $0.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: "CurrentWeatherCell")
     }
     
-    private lazy var tenDaysTempView = UITableView().then {
-        $0.delegate = self
-        $0.dataSource = self
-        $0.rowHeight = 50
+    private lazy var tenDaysTempView = UIView().then {
+        $0.layer.cornerRadius = 18
         $0.backgroundColor = .systemBlue
-        $0.register(TenDaysWeatherCell.self, forCellReuseIdentifier: "TenDaysWeatherCell")
     }
+    
+    
     
 //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -88,7 +95,11 @@ class DetailVC: UIViewController {
         //Label끼리의 스택뷰에 뷰들 올리기
         self.labelStack.addArrangedSubviews(tempLabel, summaryLabel, highestTempLabel, lowestTempLabel)
         self.topStack.addArrangedSubviews(animalImage, labelStack)
-        self.view.addSubViews(topStack, currentDayTempView, tenDaysTempView)
+        self.view.addSubViews(scrollView)
+        
+        scrollView.addSubview(contentView)
+        
+        contentView.addSubViews(topStack, currentDayTempView, tenDaysTempView)
         
         animalImage.snp.makeConstraints { $0.height.width.equalTo(140) }
         
@@ -98,8 +109,19 @@ class DetailVC: UIViewController {
         
         highestTempLabel.snp.makeConstraints { $0.height.equalTo(20) }
         
+        scrollView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalTo(scrollView.contentLayoutGuide)
+            $0.width.equalTo(scrollView.frameLayoutGuide)
+            $0.height.equalTo(1200)
+        }
+        
         topStack.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(100)
+            $0.top.equalToSuperview().offset(30)
             $0.centerX.equalToSuperview()
             $0.width.equalTo(290)
             $0.height.equalTo(140)
@@ -116,7 +138,7 @@ class DetailVC: UIViewController {
             $0.leading.equalToSuperview().offset(15)
             $0.trailing.equalToSuperview().inset(15)
             $0.top.equalTo(currentDayTempView.snp.bottom).offset(20)
-            $0.height.equalTo(200)
+            $0.height.equalTo(700)
         }
         
     }
