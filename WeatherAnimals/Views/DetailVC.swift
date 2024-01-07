@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailVC: UIViewController {
+final class DetailVC: UIViewController {
 //MARK: - Properties
     
     private lazy var scrollView = UIScrollView().then {
@@ -74,6 +74,15 @@ class DetailVC: UIViewController {
         $0.backgroundColor = .systemBlue
     }
     
+    private lazy var airQualityView = UIView().then {
+        $0.backgroundColor = .systemGreen
+        $0.layer.cornerRadius = 18
+    }
+    
+    private lazy var rainFallView = UIView().then {
+        $0.backgroundColor = .systemBrown
+        $0.layer.cornerRadius = 18
+    }
     
     
 //MARK: - LifeCycle
@@ -99,7 +108,7 @@ class DetailVC: UIViewController {
         
         scrollView.addSubview(contentView)
         
-        contentView.addSubViews(topStack, currentDayTempView, tenDaysTempView)
+        contentView.addSubViews(topStack, currentDayTempView, tenDaysTempView, airQualityView, rainFallView)
         
         animalImage.snp.makeConstraints { $0.height.width.equalTo(140) }
         
@@ -145,6 +154,18 @@ class DetailVC: UIViewController {
     
     private func settingNav() {
 //        self.navigationItem.backButtonTitle = "죽전동"
+        let rightButton = UIButton().then {
+            $0.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+            
+            $0.imageView?.tintColor = Constants.greenColor
+            $0.imageView?.contentMode = .scaleAspectFit
+            $0.backgroundColor = .systemGray4
+            $0.layer.cornerRadius = 5
+        }
+        rightButton.frame = CGRect(x: 0, y: 0, width: 34, height: 32)
+
+        let rightBarButton = UIBarButtonItem(customView: rightButton)
+        self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
     private func settingCVFlowLayout() {

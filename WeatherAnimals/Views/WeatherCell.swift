@@ -46,8 +46,11 @@ final class WeatherCell: UITableViewCell {
     
     var currentWeather: CurrentWeather? {
         didSet {
-            guard let currentWeather = self.currentWeather else { return }
-            self.tempLabel.text = currentWeather.temperature.description
+            guard let currentWeather = self.currentWeather else {
+                print("디버깅: currentWeather")
+                return
+            }
+            self.tempLabel.text = String(currentWeather.temperature.value)
         }
     }
     

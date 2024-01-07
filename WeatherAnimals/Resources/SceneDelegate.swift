@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         let tabBarController = TabBC()
-      
+        
 //        
 //        
 //        tabBarController.viewControllers = [nav1, nav2]

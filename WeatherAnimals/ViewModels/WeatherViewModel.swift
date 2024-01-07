@@ -11,7 +11,7 @@ class WeatherViewModel {
     let weatherService = WeatherService()
     var currentWeather: CurrentWeather? {
         didSet {
-            print(self.currentWeather)
+            print(self.currentWeather?.temperature.value)
         }
     }
     var minuteForecast: Forecast<MinuteWeather>?

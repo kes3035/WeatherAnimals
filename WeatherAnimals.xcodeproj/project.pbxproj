@@ -20,6 +20,7 @@
 		21AC9C682AEFB0700048CA59 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21AC9C662AEFB0700048CA59 /* LaunchScreen.storyboard */; };
 		21AC9C782AEFB7090048CA59 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AC9C772AEFB7090048CA59 /* Constants.swift */; };
 		21D4C6DA2AF3DF100048CF65 /* LocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D4C6D92AF3DF100048CF65 /* LocationViewModel.swift */; };
+		21DAE34A2B4AAB2900C5EBBC /* WeatherAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DAE3492B4AAB2900C5EBBC /* WeatherAPI.swift */; };
 		21F47D8F2B45463B0066F86E /* SettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F47D8E2B45463B0066F86E /* SettingVC.swift */; };
 		21F47D912B45500E0066F86E /* TabBC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F47D902B45500E0066F86E /* TabBC.swift */; };
 		21F47D942B45B78C0066F86E /* NeoDunggeunmoPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 21F47D932B45B78C0066F86E /* NeoDunggeunmoPro-Regular.ttf */; };
@@ -44,6 +45,7 @@
 		21AC9C6F2AEFB4340048CA59 /* WeatherAnimals.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherAnimals.entitlements; sourceTree = "<group>"; };
 		21AC9C772AEFB7090048CA59 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		21D4C6D92AF3DF100048CF65 /* LocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewModel.swift; sourceTree = "<group>"; };
+		21DAE3492B4AAB2900C5EBBC /* WeatherAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAPI.swift; sourceTree = "<group>"; };
 		21F47D8E2B45463B0066F86E /* SettingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingVC.swift; sourceTree = "<group>"; };
 		21F47D902B45500E0066F86E /* TabBC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBC.swift; sourceTree = "<group>"; };
 		21F47D932B45B78C0066F86E /* NeoDunggeunmoPro-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NeoDunggeunmoPro-Regular.ttf"; path = "../../../../../Downloads/NeoDunggeunmoPro-Regular.ttf"; sourceTree = "<group>"; };
@@ -117,9 +119,9 @@
 				21AC9C732AEFB5410048CA59 /* LaunchScreen */,
 				21F47D902B45500E0066F86E /* TabBC.swift */,
 				21AC9C5F2AEFB06E0048CA59 /* MainVC.swift */,
-				219937CE2AF10ECE00EC8518 /* WeatherCell.swift */,
 				21F47D8E2B45463B0066F86E /* SettingVC.swift */,
 				21F47D952B4678D10066F86E /* DetailVC.swift */,
+				219937CE2AF10ECE00EC8518 /* WeatherCell.swift */,
 				21AA8CD62B4939F2008AABC5 /* CurrentWeatherCell.swift */,
 				21AA8CD82B494B68008AABC5 /* TenDaysWeatherCell.swift */,
 			);
@@ -129,6 +131,7 @@
 		21AC9C722AEFB4EF0048CA59 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				21DAE3492B4AAB2900C5EBBC /* WeatherAPI.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -311,6 +314,7 @@
 				21AA8CD92B494B68008AABC5 /* TenDaysWeatherCell.swift in Sources */,
 				21F47D912B45500E0066F86E /* TabBC.swift in Sources */,
 				21F47D8F2B45463B0066F86E /* SettingVC.swift in Sources */,
+				21DAE34A2B4AAB2900C5EBBC /* WeatherAPI.swift in Sources */,
 				21D4C6DA2AF3DF100048CF65 /* LocationViewModel.swift in Sources */,
 				219937CF2AF10ECE00EC8518 /* WeatherCell.swift in Sources */,
 			);
