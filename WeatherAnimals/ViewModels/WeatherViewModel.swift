@@ -9,11 +9,13 @@ class WeatherViewModel {
     //MARK: - Model
     let yongin = CLLocation(latitude: 37.33229036093, longitude: 127.13131714737)
     let weatherService = WeatherService()
+
     var currentWeather: CurrentWeather? {
         didSet {
-            print(self.currentWeather?.temperature.value)
+            
         }
     }
+    
     var minuteForecast: Forecast<MinuteWeather>?
     var dailyForecast: Forecast<DayWeather>?
     var weatherAlert: WeatherAlert?
@@ -24,19 +26,24 @@ class WeatherViewModel {
     
     //MARK: - Outputs
     
-    
+    func weatherClosure(_ wea: @escaping (CurrentWeather) -> ()) {
+        
+    }
     
     //MARK: - Logics
-    func getWeather(location: CLLocation) {
+    func getWeather(location: CLLocation, completion: @escaping (CurrentWeather)->()) {
         Task {
             do {
-                let weather = try await weatherService.weather(for: location)
-                dump("weather : \(weather.currentWeather)")
+                let weather = try await WeatherService.shared.weather(for: location)
+                completion(weather.currentWeather)
+//                self.currentWeather = weather.currentWeather
             } catch let error {
                 print(String(describing: error))
             }
         }
     }
+    
+    
     func getCurrentWeather(for location: CLLocation) {
         Task {
             do {

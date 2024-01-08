@@ -42,17 +42,13 @@ final class MainVC: UIViewController {
         super.viewDidLoad()
         configureUI()
         settingNav()
-        settingTableView()
-//        self.weatherViewModel.getCurrentWeather(for: weatherViewModel.yongin)
-
+        settingTV()
     }
     
     
     
 //MARK: - Helpers
     private func configureUI() {
-        
-        
         view.backgroundColor = .white
         view.addSubview(tableView)
         tableView.snp.makeConstraints {
@@ -77,7 +73,7 @@ final class MainVC: UIViewController {
 //        navigationItem.setHidesBackButton(true, animated: true)
     }
     
-    private func settingTableView() {
+    private func settingTV() {
         tableView.register(WeatherCell.self, forCellReuseIdentifier: WeatherCell.identifier)
         tableView.rowHeight = self.view.frame.height/7
     }
@@ -97,13 +93,19 @@ final class MainVC: UIViewController {
 //MARK: - Extensions
 extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // 셀 생성 및 기본 설정
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
-        cell.currentWeather = self.weatherViewModel.currentWeather
         cell.selectionStyle = .none
+        
+        // 셀에 데이터 전달
+        self.weatherViewModel.getWeather(location: self.weatherViewModel.yongin) { currentWeather in
+            cell.currentWeather = currentWeather
+        }
+        
         return cell
     }
     

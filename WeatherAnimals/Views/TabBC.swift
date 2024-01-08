@@ -9,6 +9,8 @@ import UIKit
 
 class TabBC: UITabBarController {
     
+//    let weatherViewModel = WeatherViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         settingTB()
@@ -22,8 +24,9 @@ class TabBC: UITabBarController {
         self.tabBar.scrollEdgeAppearance = appearance
         self.tabBar.isTranslucent = false
         self.tabBar.tintColor = .white
-//        self.tabBar.barTintColor = Constants.greenColor
         let homeVC = MainVC()
+//        self.weatherViewModel.getWeather(location: self.weatherViewModel.yongin)
+//        homeVC.weatherViewModel.currentWeather = self.weatherViewModel.currentWeather
         homeVC.tabBarItem = UITabBarItem(title: "홈",
                                          image: UIImage(systemName: "person"),
                                          selectedImage: UIImage(systemName: "person.fill"))

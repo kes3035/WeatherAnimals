@@ -46,11 +46,7 @@ final class WeatherCell: UITableViewCell {
     
     var currentWeather: CurrentWeather? {
         didSet {
-            guard let currentWeather = self.currentWeather else {
-                print("디버깅: currentWeather")
-                return
-            }
-            self.tempLabel.text = String(currentWeather.temperature.value)
+            self.configureUIWithData()
         }
     }
     
@@ -59,6 +55,7 @@ final class WeatherCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         configureUI()
+        
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -110,6 +107,15 @@ final class WeatherCell: UITableViewCell {
             $0.width.height.equalTo(70)
         }
     }
+    
+    private func configureUIWithData() {
+        guard let currentWeather = self.currentWeather else { return }
+        print("---")
+        DispatchQueue.main.async {
+            self.tempLabel.text = String(round(currentWeather.temperature.value))
+        }
+    }
+    
     
 //MARK: - Actions
 }
