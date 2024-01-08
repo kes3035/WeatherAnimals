@@ -34,7 +34,7 @@ final class MainVC: UIViewController {
     
     var weatherViewModel = WeatherViewModel()
     
-    
+    var locationViewModel = LocationViewModel()
     
     
 //MARK: - LifeCycles
@@ -43,6 +43,7 @@ final class MainVC: UIViewController {
         configureUI()
         settingNav()
         settingTV()
+        settingLocation()
     }
     
     
@@ -78,6 +79,13 @@ final class MainVC: UIViewController {
         tableView.rowHeight = self.view.frame.height/7
     }
     
+    private func settingLocation() {
+        locationViewModel.fetchLocation { [weak self] (location, error) in
+            self?.locationViewModel.loc = CLLocation(latitude: location?.latitude ?? 0.0, longitude: location?.longitude ?? 0.0)
+            
+        }
+        
+    }
     
     
     
@@ -102,7 +110,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         cell.selectionStyle = .none
         
         // 셀에 데이터 전달
-        self.weatherViewModel.getWeather(location: self.weatherViewModel.yongin) { currentWeather in
+        self.weatherViewModel.getWeather(location: self.locationViewModel.loc ?? self.weatherViewModel.yongin) { currentWeather in
             cell.currentWeather = currentWeather
         }
         
