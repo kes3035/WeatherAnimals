@@ -100,7 +100,7 @@ final class DetailVC: UIViewController {
 //MARK: - Helpers
     private func configureUI() {
         self.view.backgroundColor = .white
-        
+
         //Label끼리의 스택뷰에 뷰들 올리기
         self.labelStack.addArrangedSubviews(tempLabel, summaryLabel, highestTempLabel, lowestTempLabel)
         self.topStack.addArrangedSubviews(animalImage, labelStack)

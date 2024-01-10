@@ -92,7 +92,9 @@ final class MainVC: UIViewController {
     
 //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
-        print("디버깅: plus 버튼 눌림")
+        let addVC = AddVC()
+        addVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(addVC, animated: true)
     }
 
 
@@ -119,6 +121,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailVC = DetailVC()
+        detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
     
