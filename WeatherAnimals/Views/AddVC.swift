@@ -39,17 +39,21 @@ final class AddVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        settingNav()
         //settingSearchBar()
         settingTableView()
         settingSearchCompleter()
         settingSearchController()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+         super.viewWillAppear(animated)
+         self.navigationItem.hidesBackButton = true
+    }
+    
     //MARK: - Helpers
     private func configureUI() {
         self.view.backgroundColor = .white
-        self.navigationItem.title = "테스트"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
         self.view.addSubview(resultTableView)
         resultTableView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
@@ -63,8 +67,7 @@ final class AddVC: UIViewController {
 //    }
     
     private func settingSearchController() {
-        self.navigationItem.title = "지역 검색/추가"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        
         
         searchController.searchResultsUpdater = self // 검색 결과 업데이트를 담당할 델리게이트를 설정합니다.
         searchController.obscuresBackgroundDuringPresentation = false
@@ -83,6 +86,11 @@ final class AddVC: UIViewController {
         searchCompleter.delegate = self
         searchCompleter.resultTypes = .address
         searchCompleter.region = searchRegion
+    }
+    
+    private func settingNav() {
+        self.navigationItem.title = "지역 검색/추가"
+        self.navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
 

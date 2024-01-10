@@ -31,12 +31,12 @@ class WeatherViewModel {
     }
     
     //MARK: - Logics
-    func getWeather(location: CLLocation, completion: @escaping (CurrentWeather)->()) {
+    func getWeather(location: CLLocation, completion: @escaping (Weather)->()) {
         Task {
             do {
                 let weather = try await WeatherService.shared.weather(for: location)
-                completion(weather.currentWeather)
-//                self.currentWeather = weather.currentWeather
+                completion(weather)
+                
             } catch let error {
                 print(String(describing: error))
             }

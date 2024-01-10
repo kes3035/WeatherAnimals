@@ -30,7 +30,6 @@ final class WeatherCell: UITableViewCell {
     private lazy var celsiusLabel = UILabel().then {
         $0.text = String(UnicodeScalar(0x00B0))
         $0.font = UIFont.neoDeungeul(size: 63)
-
     }
     
     private lazy var addressLabel = UILabel().then {
@@ -44,7 +43,7 @@ final class WeatherCell: UITableViewCell {
         $0.backgroundColor = .gray
     }
     
-    var currentWeather: CurrentWeather? {
+    var weather: Weather? {
         didSet {
             self.configureUIWithData()
         }
@@ -109,10 +108,11 @@ final class WeatherCell: UITableViewCell {
     }
     
     private func configureUIWithData() {
-        guard let currentWeather = self.currentWeather else { return }
-        print("---")
+        guard let weather = self.weather else { return }
+        
         DispatchQueue.main.async {
-            self.tempLabel.text = String(round(currentWeather.temperature.value))
+            self.tempLabel.text = String(round(weather.currentWeather.temperature.value))
+            
         }
     }
     

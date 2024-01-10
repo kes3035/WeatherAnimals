@@ -17,6 +17,11 @@ final class DetailVC: UIViewController {
         $0.font = UIFont.neoDeungeul(size: 48)
     }
     
+    private lazy var celsiusLabel = UILabel().then {
+        $0.text = String(UnicodeScalar(0x00B0))
+        $0.font = UIFont.neoDeungeul(size: 50)
+    }
+    
     private lazy var summaryLabel = UILabel().then {
         $0.text = "대체로 맑개"
         $0.font = UIFont.neoDeungeul(size: 20)
@@ -33,6 +38,10 @@ final class DetailVC: UIViewController {
         $0.text = "최저 : 123"
         $0.font = UIFont.neoDeungeul(size: 20)
 
+    }
+    
+    private lazy var tempView = UIView().then {
+        $0.backgroundColor = .clear
     }
     
     private lazy var labelStack = UIStackView().then {
@@ -63,9 +72,13 @@ final class DetailVC: UIViewController {
         $0.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: "CurrentWeatherCell")
     }
     
-    private lazy var tenDaysTempView = UIView().then {
+    private lazy var tenDaysTempView = UITableView().then {
+        $0.isScrollEnabled = false
+        $0.register(TenDaysWeatherCell.self, forCellReuseIdentifier: "TenDaysWeatherCell")
         $0.layer.cornerRadius = 18
-        $0.backgroundColor = .systemBlue
+        $0.backgroundColor = .white
+        $0.layer.borderColor = UIColor.systemGray4.cgColor
+        $0.layer.borderWidth = 1
     }
     
     private lazy var airQualityView = UIView().then {
@@ -78,10 +91,9 @@ final class DetailVC: UIViewController {
         $0.layer.cornerRadius = 18
     }
     
-    var weather: CurrentWeather? {
+    var weather: Weather? {
         didSet {
-            guard let weather = weather else { return }
-            self.tempLabel.text = String(round(weather.temperature.value))
+            configureUIWithData()
         }
     }
     
@@ -92,6 +104,7 @@ final class DetailVC: UIViewController {
         configureUI()
         settingCVFlowLayout()
         settingNav()
+        settingTV()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -103,17 +116,30 @@ final class DetailVC: UIViewController {
         self.view.backgroundColor = .white
 
         //Label끼리의 스택뷰에 뷰들 올리기
-        self.labelStack.addArrangedSubviews(tempLabel, summaryLabel, highestTempLabel, lowestTempLabel)
+        self.tempView.addSubview(tempLabel)
+        self.labelStack.addArrangedSubviews(tempView, summaryLabel, highestTempLabel, lowestTempLabel)
         self.topStack.addArrangedSubviews(animalImage, labelStack)
         self.view.addSubViews(scrollView)
         
         scrollView.addSubview(contentView)
         
-        contentView.addSubViews(topStack, currentDayTempView, tenDaysTempView, airQualityView, rainFallView)
+        contentView.addSubViews(topStack, currentDayTempView, tenDaysTempView, airQualityView, rainFallView, celsiusLabel)
         
         animalImage.snp.makeConstraints { $0.height.width.equalTo(140) }
         
-        tempLabel.snp.makeConstraints { $0.height.equalTo(50) }
+        tempView.snp.makeConstraints {
+            $0.height.equalTo(50)
+            $0.width.equalTo(50)
+        }
+        
+        tempLabel.snp.makeConstraints {
+            $0.top.bottom.leading.equalToSuperview()
+        }
+        
+        celsiusLabel.snp.makeConstraints {
+            $0.top.equalTo(tempLabel.snp.top).offset(3)
+            $0.leading.equalTo(tempLabel.snp.trailing).inset(5)
+        }
         
         summaryLabel.snp.makeConstraints { $0.height.equalTo(20) }
         
@@ -169,8 +195,23 @@ final class DetailVC: UIViewController {
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
+    private func settingTV() {
+        self.tenDaysTempView.delegate = self
+        self.tenDaysTempView.dataSource = self
+        self.tenDaysTempView.rowHeight = 70
+    }
+    
     private func settingCVFlowLayout() {
         flowLayout.scrollDirection = .horizontal
+    }
+    
+    private func configureUIWithData() {
+        guard let weather = weather else { return }
+        DispatchQueue.main.async {
+            self.tempLabel.text = String(round(weather.currentWeather.temperature.value))
+            self.highestTempLabel.text = "최고 : "+String(round(weather.currentWeather.apparentTemperature.value))
+
+        }
     }
 //MARK: - Actions
 

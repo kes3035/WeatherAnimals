@@ -112,8 +112,8 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         cell.selectionStyle = .none
         
         // 셀에 데이터 전달
-        self.weatherViewModel.getWeather(location: self.locationViewModel.loc ?? self.weatherViewModel.yongin) { currentWeather in
-            cell.currentWeather = currentWeather
+        self.weatherViewModel.getWeather(location: self.locationViewModel.loc ?? self.weatherViewModel.yongin) { weather in
+            cell.currentWeather = weather.currentWeather
         }
         
         return cell
@@ -121,6 +121,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailVC = DetailVC()
+        
         detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
