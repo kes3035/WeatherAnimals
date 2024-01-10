@@ -20,6 +20,8 @@ final class AddVC: UIViewController {
     //서치바
     private var searchBar = UISearchBar()
     
+    private var searchController = UISearchController(searchResultsController: nil)
+    
     //서치바에 검색할 때마다 장소를 가져와서 테이블뷰 업데이트
     private var places: MKMapItem? { didSet { resultTableView.reloadData() } }
     
@@ -37,28 +39,38 @@ final class AddVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        settingSearchBar()
+        //settingSearchBar()
         settingTableView()
         settingSearchCompleter()
-        
+        settingSearchController()
     }
     
     //MARK: - Helpers
-    
     private func configureUI() {
         self.view.backgroundColor = .white
+        self.navigationItem.title = "테스트"
+        self.navigationController?.navigationBar.prefersLargeTitles = true
         self.view.addSubview(resultTableView)
-        
-        resultTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
+        resultTableView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
     
-    private func settingSearchBar() {
-        searchBar.delegate = self
-        searchBar.placeholder = "도시 검색"
-        self.navigationItem.titleView = searchBar
-        self.searchBar.becomeFirstResponder()
+//    private func settingSearchBar() {
+//        searchBar.delegate = self
+//        searchBar.placeholder = "도시 검색"
+//        self.navigationItem.titleView = searchBar
+//
+//        self.searchBar.becomeFirstResponder()
+//    }
+    
+    private func settingSearchController() {
+        self.navigationItem.title = "지역 검색/추가"
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        
+        searchController.searchResultsUpdater = self // 검색 결과 업데이트를 담당할 델리게이트를 설정합니다.
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "도시 검색"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
     }
     
     private func settingTableView() {
@@ -72,7 +84,6 @@ final class AddVC: UIViewController {
         searchCompleter.resultTypes = .address
         searchCompleter.region = searchRegion
     }
-    
 }
 
 //MARK: - UITableViewDelegate
@@ -88,9 +99,6 @@ extension AddVC: UITableViewDelegate {
            
         guard let placemark = response?.mapItems[0].placemark else { return }
 
-           
-        // 여기 메서드를 가지고 날씨 정보를 받아온 뒤에, detailVC로 넘겨서 DetailVC present 하기!!
-           
         self.requestGetWeather(lat: placemark.coordinate.latitude, lon: placemark.coordinate.longitude, location: (placemark.locality ?? placemark.title) ?? "")
        }
    }
@@ -110,26 +118,26 @@ extension AddVC: UITableViewDataSource {
         let searchResult = searchResults[indexPath.row]
         cell.titleLabel.font = UIFont.neoDeungeul(size: 16)
         cell.titleLabel.textColor = .gray
-//        cell.backgroundColor = .clear
-
-        if let highlightText = searchBar.text {
-            cell.titleLabel.setHighlighted(searchResult.title, with: highlightText)
+        if let highlightText = searchController.searchBar.text {
+            DispatchQueue.main.async {
+                cell.titleLabel.setHighlighted(searchResult.title, with: highlightText)
+            }
         }
 
         return cell
     }
 }
 //MARK: - UISearchBarDelegate
-extension AddVC: UISearchBarDelegate {
-    //searchBar의 텍스트가 변경될 때마다 실행되는 메서드
-   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-       if searchText.isEmpty {
-           searchResults.removeAll()
-           resultTableView.reloadData()
-       }
-       searchCompleter.queryFragment = searchText
-   }
-}
+//extension AddVC: UISearchBarDelegate {
+//    //searchBar의 텍스트가 변경될 때마다 실행되는 메서드
+//   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//       if searchText.isEmpty {
+//           searchResults.removeAll()
+//           resultTableView.reloadData()
+//       }
+//       searchCompleter.queryFragment = searchText
+//   }
+//}
 
 //MARK: - MKLocalSearchCompleterDelegate
 extension AddVC: MKLocalSearchCompleterDelegate {
@@ -144,7 +152,6 @@ extension AddVC: MKLocalSearchCompleterDelegate {
             print("MKLocalSearchCompleter encountered an error: \(error.localizedDescription). The query fragment is: \"\(completer.queryFragment)\"")
         }
     }
-
 }
 
 extension AddVC {
@@ -157,5 +164,21 @@ extension AddVC {
                 self.present(detailVC, animated: true, completion: nil)
             }
         }
+    }
+}
+
+extension AddVC: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let searchText = searchController.searchBar.text else { return }
+        // 검색어에 따라 검색을 수행하고 결과를 업데이트하는 로직을 작성합니다.
+        // 이 부분에서 검색 결과를 업데이트하고 테이블 뷰를 다시 로드해야 합니다.
+        // searchCompleter.queryFragment = searchText (위 코드에서 사용된 searchCompleter와 유사한 로직을 작성)
+        // searchResults = ... (검색 결과 업데이트)
+        // resultTableView.reloadData() (테이블 뷰 다시 로드)
+        if searchText.isEmpty {
+            searchResults.removeAll()
+            resultTableView.reloadData()
+        }
+        searchCompleter.queryFragment = searchText
     }
 }
