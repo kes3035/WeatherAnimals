@@ -2,7 +2,7 @@ import UIKit
 
 final class AddCell: UITableViewCell {
 //MARK: - Properties
-    private lazy var titleLabel = UILabel().then {
+    lazy var titleLabel = UILabel().then {
         $0.text = "지역 타이틀"
         $0.font = UIFont.neoDeungeul(size: 15)
         $0.textColor = .black

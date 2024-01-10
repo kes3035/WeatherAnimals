@@ -15,7 +15,7 @@ final class AddVC: UIViewController {
     private var searchResults = [MKLocalSearchCompletion]()
     
     //검색된 결과를 표시할 테이블뷰
-    private var resultTableView = UITableView(frame: .zero)
+    private var resultTableView = UITableView()
     
     //서치바
     private var searchBar = UISearchBar()
@@ -25,11 +25,13 @@ final class AddVC: UIViewController {
     
     private var localSearch: MKLocalSearch? {
         willSet {
-            // Clear the results and cancel the currently running local search before starting a new search.
+            // 검색창에 들어오기 전 검색 결과 초기화
             places = nil
             localSearch?.cancel()
         }
     }
+    
+    private lazy var weatherViewModel = WeatherViewModel()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -46,7 +48,10 @@ final class AddVC: UIViewController {
     private func configureUI() {
         self.view.backgroundColor = .white
         self.view.addSubview(resultTableView)
-        self.tabBarController?.tabBar.isHidden = true
+        
+        resultTableView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
     }
     
     private func settingSearchBar() {
@@ -70,25 +75,27 @@ final class AddVC: UIViewController {
     
 }
 
-//MARK: - UITableViewDataSource, UITableViewDelegate
-
+//MARK: - UITableViewDelegate
 extension AddVC: UITableViewDelegate {
+    //tableView의 셀이 선택되었을 때 실행되는 메서드
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
        let selectedResult = searchResults[indexPath.row]
        let searchRequest = MKLocalSearch.Request(completion: selectedResult)
        let search = MKLocalSearch(request: searchRequest)
 
        search.start { response, error in
-        guard error == nil else {
-            return
-        }
+        guard error == nil else { return }
+           
         guard let placemark = response?.mapItems[0].placemark else { return }
 
+           
+        // 여기 메서드를 가지고 날씨 정보를 받아온 뒤에, detailVC로 넘겨서 DetailVC present 하기!!
+           
         self.requestGetWeather(lat: placemark.coordinate.latitude, lon: placemark.coordinate.longitude, location: (placemark.locality ?? placemark.title) ?? "")
        }
    }
 }
-
+//MARK: - UITableViewDataSource
 extension AddVC: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -99,15 +106,14 @@ extension AddVC: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "AddCell", for: indexPath) as! AddCell
         let searchResult = searchResults[indexPath.row]
-
-        cell.textLabel?.font = .systemFont(ofSize: 16)
-        cell.textLabel?.textColor = .gray
-        cell.backgroundColor = .clear
+        cell.titleLabel.font = UIFont.neoDeungeul(size: 16)
+        cell.titleLabel.textColor = .gray
+//        cell.backgroundColor = .clear
 
         if let highlightText = searchBar.text {
-            cell.textLabel?.setHighlighted(searchResult.title, with: highlightText)
+            cell.titleLabel.setHighlighted(searchResult.title, with: highlightText)
         }
 
         return cell
@@ -115,6 +121,7 @@ extension AddVC: UITableViewDataSource {
 }
 //MARK: - UISearchBarDelegate
 extension AddVC: UISearchBarDelegate {
+    //searchBar의 텍스트가 변경될 때마다 실행되는 메서드
    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
        if searchText.isEmpty {
            searchResults.removeAll()
@@ -124,7 +131,7 @@ extension AddVC: UISearchBarDelegate {
    }
 }
 
-
+//MARK: - MKLocalSearchCompleterDelegate
 extension AddVC: MKLocalSearchCompleterDelegate {
 
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
@@ -142,11 +149,12 @@ extension AddVC: MKLocalSearchCompleterDelegate {
 
 extension AddVC {
     func requestGetWeather(lat: Double, lon: Double, location: String) {
-        WeatherService.shared.requestGetWeather(lat: lat, lon: lon, location: location) { [weak self]  weather in
-            let vc = MainVC()
-            if let weather = weather {
-                vc.setData(weather: weather)
-                self?.present(vc, animated: true, completion: nil)
+        let location = CLLocation(latitude: lat, longitude: lon)
+        self.weatherViewModel.getWeather(location: location) { weather in
+            DispatchQueue.main.async {
+                let detailVC = DetailVC()
+                detailVC.weather = weather
+                self.present(detailVC, animated: true, completion: nil)
             }
         }
     }

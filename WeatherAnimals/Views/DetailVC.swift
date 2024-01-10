@@ -1,11 +1,5 @@
-//
-//  DetailVC.swift
-//  WeatherAnimals
-//
-//  Created by 김은상 on 1/4/24.
-//
-
 import UIKit
+import WeatherKit
 
 final class DetailVC: UIViewController {
 //MARK: - Properties
@@ -82,6 +76,13 @@ final class DetailVC: UIViewController {
     private lazy var rainFallView = UIView().then {
         $0.backgroundColor = .systemBrown
         $0.layer.cornerRadius = 18
+    }
+    
+    var weather: CurrentWeather? {
+        didSet {
+            guard let weather = weather else { return }
+            self.tempLabel.text = String(round(weather.temperature.value))
+        }
     }
     
     
