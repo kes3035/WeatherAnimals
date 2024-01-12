@@ -97,6 +97,12 @@ final class DetailVC: UIViewController {
         }
     }
     
+    var dayWeather: DayWeather? {
+        didSet {
+            configureUIWithData2()
+        }
+    }
+    
     
 //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -209,7 +215,17 @@ final class DetailVC: UIViewController {
         guard let weather = weather else { return }
         DispatchQueue.main.async {
             self.tempLabel.text = String(round(weather.currentWeather.temperature.value))
-            self.highestTempLabel.text = "최고 : "+String(round(weather.currentWeather.apparentTemperature.value))
+            
+        }
+    }
+    
+    private func configureUIWithData2() {
+        guard let dayWeather = dayWeather else { return }
+        print(dayWeather)
+        DispatchQueue.main.async {
+            self.highestTempLabel.text = "최고 : " + "\(dayWeather.highTemperature)"
+            self.lowestTempLabel.text = "최저 : " + "\(dayWeather.lowTemperature)"
+
 
         }
     }

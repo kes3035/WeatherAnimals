@@ -107,20 +107,48 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // 기본 화면에서 보여질 정보들
+        /*
+         1. 현재 기온
+         2. 주소
+         3. 날씨 아이콘
+         4. 동물 아이콘
+         5. 최고, 최저 기온(미정)
+         */
+        
+        
         // 셀 생성 및 기본 설정
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
         
         // 셀에 데이터 전달
-        self.weatherViewModel.getWeather(location: self.locationViewModel.loc ?? self.weatherViewModel.yongin) { weather in
-            cell.currentWeather = weather.currentWeather
+        self.weatherViewModel.getWeather(location: self.weatherViewModel.yongin) { weather in
+            cell.weather = weather
         }
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // 셀이 선택되었을 때 넘어가야 할 정보
+        /*
+         1. 현재 기온
+         2. 최고, 최저 기온
+         3. 10일간의 날씨정보
+         4. 현재 날씨 간단한 코멘트 (ex - 맑음)
+         5. 대기질
+         6. 강수량
+         7. 습도
+         .
+         .
+         .
+         아이폰 기본 날씨앱에서 들어가면 나오는 모든 정보들
+         */
+        
+        
         let detailVC = DetailVC()
+        self.weatherViewModel.getWeather(location: self.weatherViewModel.yongin) { dayWeather in
+            detailVC.dayWeather = dayWeather.forecast[indexPath.row]
+        }
         
         detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(detailVC, animated: true)

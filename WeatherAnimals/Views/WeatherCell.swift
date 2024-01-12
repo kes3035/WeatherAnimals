@@ -49,6 +49,12 @@ final class WeatherCell: UITableViewCell {
         }
     }
     
+    var dailyWeather: DayWeather? {
+        didSet {
+            self.configureUIWithData2()
+        }
+    }
+    
     
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -109,13 +115,19 @@ final class WeatherCell: UITableViewCell {
     
     private func configureUIWithData() {
         guard let weather = self.weather else { return }
-        
         DispatchQueue.main.async {
             self.tempLabel.text = String(round(weather.currentWeather.temperature.value))
             
         }
     }
     
+    private func configureUIWithData2() {
+        guard let dayWeather = self.dailyWeather else { return }
+        DispatchQueue.main.async {
+            
+            
+        }
+    }
     
 //MARK: - Actions
 }
