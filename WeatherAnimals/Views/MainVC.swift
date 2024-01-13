@@ -116,7 +116,6 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
          5. 최고, 최저 기온(미정)
          */
         
-        
         // 셀 생성 및 기본 설정
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none

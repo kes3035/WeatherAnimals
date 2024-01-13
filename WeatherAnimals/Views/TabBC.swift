@@ -7,14 +7,15 @@
 
 import UIKit
 
-class TabBC: UITabBarController {
-    
+final class TabBC: UITabBarController {
 //    let weatherViewModel = WeatherViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         settingTB()
     }
+    
+    
     
     private func settingTB() {
         let appearance = UITabBarAppearance()

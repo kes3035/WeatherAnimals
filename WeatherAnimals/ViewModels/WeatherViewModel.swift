@@ -5,8 +5,15 @@ import WeatherKit
 import CoreLocation
 
 
-class WeatherViewModel {
+final class WeatherViewModel {
     //MARK: - Model
+    
+    typealias WEATHER_DATA = (Weather?, CurrentWeather?,
+                              Forecast<DayWeather>?,
+                              WeatherAlert?,
+                              WeatherAvailability?,
+                              Forecast<HourWeather>?,
+                              Forecast<MinuteWeather>?) -> ()
     
     let yongin = CLLocation(latitude: 37.33229036093, longitude: 127.13131714737)
     
@@ -30,9 +37,6 @@ class WeatherViewModel {
     
     //MARK: - Outputs
     
-    func weatherClosure(_ wea: @escaping (CurrentWeather) -> ()) {
-        
-    }
     
     //MARK: - Logics
     func getWeather(location: CLLocation, completion: @escaping (Weather)->()) {
@@ -59,24 +63,29 @@ class WeatherViewModel {
     }
     
     
-    func getWeather(location: CLLocation, current: Bool? = false, daily: Bool? = false ,completion: @escaping (Weather?, Forecast<DayWeather>?)->()) {
-        //@escaping 부분은 받아올 데이터가 많아질 경우를 대비하여 typealias로 최상단에 정의 할 필요있음
-        // 옵셔널 바인딩을 통해 값이 nil인지 확인 기본값으로 false를 주어 사용하지 않을 데이터 거르기
+    
+    
+    func getWeather(location: CLLocation,
+                    current: Bool? = false,
+                    daily: Bool? = false ,
+                    alert: Bool? = false,
+                    availability: Bool? = false,
+                    hourly: Bool? = false,
+                    minute: Bool? = false,
+                    completion: @escaping WEATHER_DATA) {
+
         guard let current = current,
-              let daily = daily else { return }
-        
+              let daily = daily,
+              let alert = alert,
+              let availability = availability,
+              let hourly = hourly,
+              let minute = minute else { return }
         Task {
             do {
-                //받을 데이터의 T/F여부에 따라 WeatherService의 함수로 날씨정보를 선택적으로 받아오기
-                //ex) weather만 받고 Forecast<DayWeather>는 안받고 싶음
-                //    아래와 같이 사용
-                //
-                //    getWeather(location: myLocation, current: true) { completion in
-                //        guard let weather = completion else { return }
-                //        날씨정보 사용 가능
-                //    }
+                
+                
                 if current {
-                    let weather = try await WeatherService.shared.weather(for: location)
+                    let weather = try await WeatherService.shared.weather(for: location, including: .hourly)
                     completion(weather, nil)
                 } else if current && daily {
                     let weather = try await WeatherService.shared.weather(for: location)
@@ -86,6 +95,9 @@ class WeatherViewModel {
                     let dayWeather = try await WeatherService.shared.weather(for: location, including: .daily)
                     completion(nil, dayWeather)
                 }
+                
+                
+                
             } catch let error {
                 print(String(describing: error))
             }
