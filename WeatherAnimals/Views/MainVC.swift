@@ -31,12 +31,9 @@ final class MainVC: UIViewController {
         $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(plusButtonTapped(_:))))
     }
     
-    
     var weatherViewModel = WeatherViewModel()
     
     var locationViewModel = LocationViewModel()
-    
-    
 //MARK: - LifeCycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,13 +68,14 @@ final class MainVC: UIViewController {
         let rightBarButtonItem = UIBarButtonItem(customView: plusImage)
         navigationItem.leftBarButtonItem = leftBarButtonItem
         navigationItem.rightBarButtonItem = rightBarButtonItem
-//        navigationItem.setHidesBackButton(true, animated: true)
     }
+    
     
     private func settingTV() {
         tableView.register(WeatherCell.self, forCellReuseIdentifier: WeatherCell.identifier)
         tableView.rowHeight = self.view.frame.height/7
     }
+    
     
     private func settingLocation() {
         locationViewModel.fetchLocation { [weak self] (location, error) in
@@ -92,9 +90,14 @@ final class MainVC: UIViewController {
     
 //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
-        let addVC = AddVC()
-        addVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(addVC, animated: true)
+//        let addVC = AddVC()
+//        addVC.hidesBottomBarWhenPushed = true
+//        self.navigationController?.pushViewController(addVC, animated: true)
+        weatherViewModel.getDayWeather(location: weatherViewModel.yongin) { dayWeather in
+            dayWeather.forecast.forEach { forecast in
+                print(forecast.condition.description)
+            }
+        }
     }
 
 
@@ -120,6 +123,8 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
         
+       
+        
         // 셀에 데이터 전달
         self.weatherViewModel.getWeather(location: self.weatherViewModel.yongin) { weather in
             cell.weather = weather
@@ -139,17 +144,21 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
          7. 습도
          .
          .
-         .
          아이폰 기본 날씨앱에서 들어가면 나오는 모든 정보들
          */
         
-        
         let detailVC = DetailVC()
+        
         self.weatherViewModel.getWeather(location: self.weatherViewModel.yongin) { dayWeather in
             detailVC.dayWeather = dayWeather.forecast[indexPath.row]
         }
         
+        self.weatherViewModel.getCurrentWeather(location: self.weatherViewModel.yongin) { weather in
+            detailVC.weather = weather
+        }
+        
         detailVC.hidesBottomBarWhenPushed = true
+        
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
     

@@ -4,7 +4,6 @@ import MapKit
 
 final class AddVC: UIViewController {
     //MARK: - Properties
-    
     //사용자가 제공한 부분 검색 문자열을 기반으로 완료 문자열 목록을 생성하기 위한 객체
     private var searchCompleter = MKLocalSearchCompleter()
     
@@ -165,7 +164,7 @@ extension AddVC: MKLocalSearchCompleterDelegate {
 extension AddVC {
     func requestGetWeather(lat: Double, lon: Double, location: String) {
         let location = CLLocation(latitude: lat, longitude: lon)
-        self.weatherViewModel.getWeather(location: location) { weather in
+        self.weatherViewModel.getCurrentWeather(location: location) { weather in
             DispatchQueue.main.async {
                 let detailVC = DetailVC()
                 detailVC.weather = weather

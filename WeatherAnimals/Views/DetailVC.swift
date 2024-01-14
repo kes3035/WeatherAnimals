@@ -91,7 +91,7 @@ final class DetailVC: UIViewController {
         $0.layer.cornerRadius = 18
     }
     
-    var weather: Weather? {
+    var weather: CurrentWeather? {
         didSet {
             configureUIWithData()
         }
@@ -214,7 +214,7 @@ final class DetailVC: UIViewController {
     private func configureUIWithData() {
         guard let weather = weather else { return }
         DispatchQueue.main.async {
-            self.tempLabel.text = String(round(weather.currentWeather.temperature.value))
+            self.tempLabel.text = String(round(weather.temperature.value))
             
         }
     }
@@ -222,6 +222,7 @@ final class DetailVC: UIViewController {
     private func configureUIWithData2() {
         guard let dayWeather = dayWeather else { return }
         print(dayWeather)
+        
         DispatchQueue.main.async {
             self.highestTempLabel.text = "최고 : " + "\(dayWeather.highTemperature)"
             self.lowestTempLabel.text = "최저 : " + "\(dayWeather.lowTemperature)"
