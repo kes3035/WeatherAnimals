@@ -66,6 +66,25 @@ final class WeatherViewModel {
     
     //MARK: - Logics
     //현재 날씨 정보를 가져오는 메서드
+    func getMainVCWeather(location: CLLocation, completion: @escaping (CurrentWeather) -> ()) {
+        Task {
+            do {
+                let weather = try await WeatherService.shared.weather(for: location, including: .current)
+                completion(weather)
+            } catch let error { print(String(describing: error)) }
+        }
+    }
+    
+    func getDetailVCWeather(location: CLLocation, completion: @escaping (CurrentWeather, [DayWeather], [HourWeather]) -> ()) {
+        Task {
+            do {
+                let weather = try await WeatherService.shared.weather(for: location, including: .current, .daily, .hourly)
+                completion(weather.0, weather.1.forecast, weather.2.forecast)
+            } catch let error { print(String(describing: error)) }
+        }
+    }
+    
+    
     func getCurrentWeather(location: CLLocation, completion: @escaping (CurrentWeather) -> ()) {
         Task {
             do {
@@ -127,20 +146,81 @@ final class WeatherViewModel {
     }
     
     func convertWeatherCondition(condition: WeatherCondition) -> String {
-        
-        
-        return ""
+        switch condition {
+        case .blizzard:
+            return "눈보라다 멍"
+        case .blowingDust:
+            return "모래바람이다 멍"
+        case .blowingSnow:
+            return "눈바람이다 멍"
+        case .breezy:
+            return "산들바람이다 멍"
+        case .clear:
+            return "맑다 멍"
+        case .cloudy:
+            return "구름있다 멍"
+        case .drizzle:
+            return ""
+        case .flurries:
+            return ""
+        case .foggy:
+            return ""
+        case .freezingDrizzle:
+            return ""
+        case .freezingRain:
+            return ""
+        case .frigid:
+            return ""
+        case .hail:
+            return ""
+        case .haze:
+            return ""
+        case .heavyRain:
+            return ""
+        case .heavySnow:
+            return ""
+        case .hot:
+            return ""
+        case .hurricane:
+            return ""
+        case .isolatedThunderstorms:
+            return ""
+        case .mostlyClear:
+            return ""
+        case .mostlyCloudy:
+            return ""
+        case .partlyCloudy:
+            return ""
+        case .rain:
+            return ""
+        case .scatteredThunderstorms:
+            return ""
+        case .sleet:
+            return ""
+        case .smoky:
+            return ""
+        case .snow:
+            return ""
+        case .strongStorms:
+            return ""
+        case .sunFlurries:
+            return ""
+        case .sunShowers:
+            return ""
+        case .thunderstorms:
+            return ""
+        case .tropicalStorm:
+            return ""
+        case .windy:
+            return ""
+        case .wintryMix:
+            return ""
+        @unknown default:
+            return ""
+        }
     }
-    
-//    func getDayOfWeek(date: Date = Date()) -> [String] {
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "EEEEEE"
-//        formatter.locale = Locale(identifier:"ko_KR")
-//        let convertStr = formatter.string(from: date)
-//        var dayOfWeek: [String] = []
-//        
-//        return [""]
-//    }
+
+    //오늘로부터 10일뒤까지의 요일 반환하는 메서드
     func getDayOfWeeks(from startDate: Date = Date(), to endDate: Date? = nil) -> [String] {
         let calendar = Calendar.current
         var currentDate = startDate
@@ -157,5 +237,6 @@ final class WeatherViewModel {
         
         return dayOfWeeks
     }
+   
     
 }

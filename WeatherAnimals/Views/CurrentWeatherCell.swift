@@ -67,7 +67,7 @@ final class CurrentWeatherCell: UICollectionViewCell {
         let dateString = dateFormatter.string(from: hourWeather.date)
         DispatchQueue.main.async {
             self.topLabel.text = dateString
-            self.tempLabel.text = round(hourWeather.temperature.value).description
+            self.tempLabel.text = round(hourWeather.temperature.value).description + String(UnicodeScalar(0x00B0))
         }
     }
     

@@ -43,13 +43,12 @@ final class TenDaysWeatherCell: UITableViewCell {
         didSet {
             guard let dayWeather = dayWeather else { return }
             DispatchQueue.main.async {
-                self.highTempLabel.text = String(round(dayWeather.highTemperature.value))
-                self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value))
+                self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
+                self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
                 
             }
         }
     }
-    
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)

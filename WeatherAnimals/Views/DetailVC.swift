@@ -190,7 +190,7 @@ final class DetailVC: UIViewController {
             $0.leading.equalToSuperview().offset(15)
             $0.trailing.equalToSuperview().inset(15)
             $0.top.equalTo(currentDayTempView.snp.bottom).offset(20)
-            $0.height.equalTo(700)
+            $0.height.equalTo(600)
         }
         
     }
@@ -214,7 +214,7 @@ final class DetailVC: UIViewController {
     private func settingTV() {
         self.tenDaysTempView.delegate = self
         self.tenDaysTempView.dataSource = self
-        self.tenDaysTempView.rowHeight = 70
+        self.tenDaysTempView.rowHeight = 60
     }
     
     private func settingCVFlowLayout() {
