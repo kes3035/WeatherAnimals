@@ -1,4 +1,5 @@
 import UIKit
+import WeatherKit
 
 final class CurrentWeatherCell: UICollectionViewCell {
 //MARK: - Properties
@@ -18,7 +19,11 @@ final class CurrentWeatherCell: UICollectionViewCell {
 
     }
     
-    
+    var hourWeather: HourWeather? {
+        didSet {
+            configureUIWithData()
+        }
+    }
     
     
    
@@ -51,6 +56,18 @@ final class CurrentWeatherCell: UICollectionViewCell {
         tempLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(tempImageView.snp.bottom).offset(5)
+        }
+    }
+    
+    private func configureUIWithData() {
+        guard let hourWeather = self.hourWeather else { return }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "a h:mm"
+        dateFormatter.locale = Locale(identifier:"ko_KR")
+        let dateString = dateFormatter.string(from: hourWeather.date)
+        DispatchQueue.main.async {
+            self.topLabel.text = dateString
+            self.tempLabel.text = round(hourWeather.temperature.value).description
         }
     }
     

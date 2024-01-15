@@ -146,16 +146,18 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         
         let detailVC = DetailVC()
         
-        self.weatherViewModel.getDayWeather(location: self.weatherViewModel.yongin) { dayWeather in
-            detailVC.dayWeather = dayWeather.forecast
-        }
+        
         
         self.weatherViewModel.getCurrentWeather(location: self.weatherViewModel.yongin) { weather in
             detailVC.weather = weather
         }
         
+        self.weatherViewModel.getDayWeather(location: self.weatherViewModel.yongin) { dayWeather in
+            detailVC.dayWeather = dayWeather.forecast
+        }
+        
         self.weatherViewModel.getHourlyWeather(location: self.weatherViewModel.yongin) { hourWeather in
-            
+            detailVC.hourWeather = hourWeather.forecast
         }
         
         detailVC.hidesBottomBarWhenPushed = true

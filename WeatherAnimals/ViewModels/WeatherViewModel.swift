@@ -33,9 +33,9 @@ import CoreLocation
 
 func test() {
     let weatherViewModel = WeatherViewModel()
-    weatherViewModel.getDayWeather(location: weatherViewModel.yongin) { weather in
+    weatherViewModel.getHourlyWeather(location: weatherViewModel.yongin) { weather in
         weather.forEach { weather in
-            
+            print(weather.temperature.value)
         }
     }
 }

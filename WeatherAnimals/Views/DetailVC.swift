@@ -65,9 +65,11 @@ final class DetailVC: UIViewController {
     private lazy var currentDayTempView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
         $0.delegate = self
         $0.dataSource = self
-        $0.backgroundColor = .green
+        $0.backgroundColor = .white
         $0.layer.cornerRadius = 18
         $0.clipsToBounds = true
+        $0.layer.borderColor = UIColor.systemGray4.cgColor
+        $0.layer.borderWidth = 1
         $0.showsHorizontalScrollIndicator = false
         $0.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: "CurrentWeatherCell")
     }
@@ -103,9 +105,9 @@ final class DetailVC: UIViewController {
         }
     }
     
-    var hourWeather: HourWeather? {
+    var hourWeather: [HourWeather]? {
         didSet {
-            configureUIWithData3()
+        
         }
     }
     
@@ -237,23 +239,22 @@ final class DetailVC: UIViewController {
         }
     }
     
-    private func configureUIWithData3() {
-        guard let hourWeather = hourWeather else { return }
-        DispatchQueue.main.async {
-            
-        }
-    }
+    
 //MARK: - Actions
 
 }
 //MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        guard let hourWeather = self.hourWeather else { return 0 }
+
+        return hourWeather.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CurrentWeatherCell", for: indexPath) as! CurrentWeatherCell
+        guard let hourWeather = self.hourWeather else { return cell }
+        cell.hourWeather = hourWeather[indexPath.row]
         
         return cell
     }
