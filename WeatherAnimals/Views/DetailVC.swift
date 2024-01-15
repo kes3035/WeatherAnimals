@@ -97,11 +97,19 @@ final class DetailVC: UIViewController {
         }
     }
     
-    var dayWeather: DayWeather? {
+    var dayWeather: [DayWeather]? {
         didSet {
             configureUIWithData2()
         }
     }
+    
+    var hourWeather: HourWeather? {
+        didSet {
+            configureUIWithData3()
+        }
+    }
+    
+    private lazy var weatherViewModel = WeatherViewModel()
     
     
 //MARK: - LifeCycle
@@ -221,13 +229,18 @@ final class DetailVC: UIViewController {
     
     private func configureUIWithData2() {
         guard let dayWeather = dayWeather else { return }
-        print(dayWeather)
-        
         DispatchQueue.main.async {
-            self.highestTempLabel.text = "최고 : " + "\(dayWeather.highTemperature)"
-            self.lowestTempLabel.text = "최저 : " + "\(dayWeather.lowTemperature)"
+            self.highestTempLabel.text = "최고 : " + "\(dayWeather[0].highTemperature)"
+            self.lowestTempLabel.text = "최저 : " + "\(dayWeather[0].lowTemperature)"
+            self.summaryLabel.text = dayWeather[0].condition.description
 
-
+        }
+    }
+    
+    private func configureUIWithData3() {
+        guard let hourWeather = hourWeather else { return }
+        DispatchQueue.main.async {
+            
         }
     }
 //MARK: - Actions
@@ -262,8 +275,13 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TenDaysWeatherCell", for: indexPath) as! TenDaysWeatherCell
-         
-        
+        guard let dayWeather = self.dayWeather else { return cell }
+        cell.dayWeather = dayWeather[indexPath.row]
+        if indexPath.row == 0 {
+            cell.weekdaysTitleLabel.text = "오늘"
+        } else {
+            cell.weekdaysTitleLabel.text = self.weatherViewModel.getDayOfWeeks(from: Date())[indexPath.row]
+        }
         return cell
     }
     

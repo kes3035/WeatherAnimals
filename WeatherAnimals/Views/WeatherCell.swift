@@ -43,13 +43,13 @@ final class WeatherCell: UITableViewCell {
         $0.backgroundColor = .gray
     }
     
-    var weather: Weather? {
+    var weather: CurrentWeather? {
         didSet {
             self.configureUIWithData()
         }
     }
     
-    var dailyWeather: DayWeather? {
+    var dayWeather: DayWeather? {
         didSet {
             self.configureUIWithData2()
         }
@@ -116,13 +116,13 @@ final class WeatherCell: UITableViewCell {
     private func configureUIWithData() {
         guard let weather = self.weather else { return }
         DispatchQueue.main.async {
-            self.tempLabel.text = String(round(weather.currentWeather.temperature.value))
+            self.tempLabel.text = String(round(weather.temperature.value))
             
         }
     }
     
     private func configureUIWithData2() {
-        guard let dayWeather = self.dailyWeather else { return }
+        guard let dayWeather = self.dayWeather else { return }
         DispatchQueue.main.async {
             
             

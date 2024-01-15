@@ -90,14 +90,9 @@ final class MainVC: UIViewController {
     
 //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
-//        let addVC = AddVC()
-//        addVC.hidesBottomBarWhenPushed = true
-//        self.navigationController?.pushViewController(addVC, animated: true)
-        weatherViewModel.getDayWeather(location: weatherViewModel.yongin) { dayWeather in
-            dayWeather.forecast.forEach { forecast in
-                print(forecast.condition.description)
-            }
-        }
+        let addVC = AddVC()
+        addVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(addVC, animated: true)
     }
 
 
@@ -124,9 +119,11 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         cell.selectionStyle = .none
         
        
-        
+//        self.weatherViewModel.getDayWeather(location: self.weatherViewModel.yongin) { forecasts in
+//            cell.dayWeather = forecasts[indexPath.row]
+//        }
         // 셀에 데이터 전달
-        self.weatherViewModel.getWeather(location: self.weatherViewModel.yongin) { weather in
+        self.weatherViewModel.getCurrentWeather(location: self.weatherViewModel.yongin) { weather in
             cell.weather = weather
         }
         return cell
@@ -149,12 +146,16 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         
         let detailVC = DetailVC()
         
-        self.weatherViewModel.getWeather(location: self.weatherViewModel.yongin) { dayWeather in
-            detailVC.dayWeather = dayWeather.forecast[indexPath.row]
+        self.weatherViewModel.getDayWeather(location: self.weatherViewModel.yongin) { dayWeather in
+            detailVC.dayWeather = dayWeather.forecast
         }
         
         self.weatherViewModel.getCurrentWeather(location: self.weatherViewModel.yongin) { weather in
             detailVC.weather = weather
+        }
+        
+        self.weatherViewModel.getHourlyWeather(location: self.weatherViewModel.yongin) { hourWeather in
+            
         }
         
         detailVC.hidesBottomBarWhenPushed = true

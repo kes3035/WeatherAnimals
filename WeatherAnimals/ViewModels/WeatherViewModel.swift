@@ -26,17 +26,16 @@ import CoreLocation
         }
     }
  }
- 
- 
+
  
  */
 
 
 func test() {
-    let vm = WeatherViewModel()
-    vm.getDayWeather(location: vm.yongin) { dayWeather in
-        dayWeather.forecast.forEach { forecast in
-            print()
+    let weatherViewModel = WeatherViewModel()
+    weatherViewModel.getDayWeather(location: weatherViewModel.yongin) { weather in
+        weather.forEach { weather in
+            
         }
     }
 }
@@ -57,17 +56,7 @@ final class WeatherViewModel {
     
     let weatherService = WeatherService()
 
-    var currentWeather: CurrentWeather? {
-        didSet {
-            
-        }
-    }
     
-    var minuteForecast: Forecast<MinuteWeather>?
-    
-    var dailyForecast: Forecast<DayWeather>?
-    
-    var weatherAlert: WeatherAlert?
     
     //MARK: - Inputs
     
@@ -76,15 +65,7 @@ final class WeatherViewModel {
     
     
     //MARK: - Logics
-    func getWeather(location: CLLocation, completion: @escaping (Weather)->()) {
-        Task {
-            do {
-                let weather = try await WeatherService.shared.weather(for: location)
-                completion(weather)
-            } catch let error { print(String(describing: error)) }
-        }
-    }
-    
+    //현재 날씨 정보를 가져오는 메서드
     func getCurrentWeather(location: CLLocation, completion: @escaping (CurrentWeather) -> ()) {
         Task {
             do {
@@ -93,7 +74,7 @@ final class WeatherViewModel {
             } catch let error { print(String(describing: error)) }
         }
     }
-    
+    //일일 날씨 정보를 가져오는 메서드 (10일간의 데이터)
     func getDayWeather(location: CLLocation, completion: @escaping (Forecast<DayWeather>) -> ()) {
         Task {
             do {
@@ -103,6 +84,7 @@ final class WeatherViewModel {
         }
     }
     
+    //날씨 경보 정보를 가져오는 메서드 (10일간의 데이터)
     func getWeatherAlert(location: CLLocation, completion: @escaping ([WeatherAlert])->()) {
         Task {
             do {
@@ -113,6 +95,7 @@ final class WeatherViewModel {
         }
     }
     
+    //날씨 가용성 정보를 가져오는 메서드
     func getWeatherAvailability(location: CLLocation, completion: @escaping (WeatherAvailability)->()) {
         Task {
             do {
@@ -122,6 +105,7 @@ final class WeatherViewModel {
         }
     }
     
+    //시간별 날씨 정보를 가져오는 메서드
     func getHourlyWeather(location: CLLocation, completion: @escaping (Forecast<HourWeather>)->()) {
         Task {
             do {
@@ -131,6 +115,7 @@ final class WeatherViewModel {
         }
     }
     
+    //분단위 날씨 정보를 가져오는 메서드
     func getMinuteWeather(location: CLLocation, completion: @escaping (Forecast<MinuteWeather>)->()) {
         Task {
             do {
@@ -141,62 +126,36 @@ final class WeatherViewModel {
         }
     }
     
-    
-  
-    
-    func getWeather(location: CLLocation, completion: @escaping (Forecast<DayWeather>) -> ()) {
-        Task {
-            do {
-                // 현재 날짜 얻기
-                let currentDate = Date()
-                
-                // 10일 후의 날짜 계산
-                if let endDate = Calendar.current.date(byAdding: .day, value: 10, to: currentDate) {
-                    let weather = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate, endDate: endDate))
-                    completion(weather)
-                } else {
-                    print("날짜 계산 실패")
-                }
-            } catch let error {
-                print(String(describing: error))
-            }
-        }
+    func convertWeatherCondition(condition: WeatherCondition) -> String {
+        
+        
+        return ""
     }
     
-    func getCurrentWeather(for location: CLLocation) {
-        Task {
-            do {
-                let weather = try await weatherService.weather(for: location)
-                let currentWeather = weather.currentWeather
-                self.currentWeather = currentWeather
-                
-            } catch let error {
-                print(String(describing: error))
-            }
+//    func getDayOfWeek(date: Date = Date()) -> [String] {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "EEEEEE"
+//        formatter.locale = Locale(identifier:"ko_KR")
+//        let convertStr = formatter.string(from: date)
+//        var dayOfWeek: [String] = []
+//        
+//        return [""]
+//    }
+    func getDayOfWeeks(from startDate: Date = Date(), to endDate: Date? = nil) -> [String] {
+        let calendar = Calendar.current
+        var currentDate = startDate
+        var dayOfWeeks: [String] = []
+        
+        while currentDate <= (endDate ?? calendar.date(byAdding: .day, value: 9, to: startDate)!) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEEEEE"
+            formatter.locale = Locale(identifier: "ko_KR")
+            let dayOfWeek = formatter.string(from: currentDate)
+            dayOfWeeks.append(dayOfWeek)
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
         }
+        
+        return dayOfWeeks
     }
-    func getMinuteForecast(for location: CLLocation) {
-        Task {
-            do {
-                let weather = try await weatherService.weather(for: location)
-                let minuteForecast = weather.minuteForecast
-                self.minuteForecast = minuteForecast
-                
-            } catch let error {
-                print(String(describing: error))
-            }
-        }
-    }
-    func getDailyForecast(for location: CLLocation) {
-        Task {
-            do {
-                let weather = try await weatherService.weather(for: location)
-                let dailyForecast = weather.dailyForecast
-                self.dailyForecast = dailyForecast
-                
-            } catch let error {
-                print(String(describing: error))
-            }
-        }
-    }
+    
 }

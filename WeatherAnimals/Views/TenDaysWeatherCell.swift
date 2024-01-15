@@ -6,19 +6,48 @@
 //
 
 import UIKit
+import WeatherKit
+
 
 final class TenDaysWeatherCell: UITableViewCell {
 //MARK: - Properties
-    private lazy var weekdaysTitleLabel = UILabel().then {
+    lazy var weekdaysTitleLabel = UILabel().then {
         $0.text = "오늘"
+        $0.textAlignment = .center
+        $0.font = UIFont.neoDeungeul(size: 14)
     }
     
     private lazy var weatherImageView = UIImageView().then {
         $0.backgroundColor = .gray
     }
+   
     
-    private lazy var tempLabel = UILabel().then {
-        $0.text = "20도"
+    private lazy var highTempLabel = UILabel().then {
+        $0.text = "20"
+        $0.textAlignment = .center
+        $0.font = UIFont.neoDeungeul(size: 14)
+    }
+    
+    private lazy var lowTempLabel = UILabel().then {
+        $0.text = "-20"
+        $0.textAlignment = .center
+        $0.font = UIFont.neoDeungeul(size: 14)
+    }
+    
+    private lazy var tempColorView = UIView().then {
+        $0.backgroundColor = Constants.greenColor
+    }
+    
+    
+    var dayWeather: DayWeather? {
+        didSet {
+            guard let dayWeather = dayWeather else { return }
+            DispatchQueue.main.async {
+                self.highTempLabel.text = String(round(dayWeather.highTemperature.value))
+                self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value))
+                
+            }
+        }
     }
     
 //MARK: - LifeCycle
@@ -32,12 +61,12 @@ final class TenDaysWeatherCell: UITableViewCell {
     
 //MARK: - Helpers
     private func configureUI() {
-        self.contentView.addSubViews(weekdaysTitleLabel, weatherImageView, tempLabel)
+        self.contentView.addSubViews(weekdaysTitleLabel, weatherImageView, highTempLabel, lowTempLabel, tempColorView)
         
         weekdaysTitleLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().offset(5)
-            $0.width.equalTo(50)
+            $0.leading.equalToSuperview().offset(30)
+            $0.width.equalTo(30)
         }
         
         weatherImageView.snp.makeConstraints {
@@ -46,11 +75,24 @@ final class TenDaysWeatherCell: UITableViewCell {
             $0.height.width.equalTo(30)
         }
         
-        tempLabel.snp.makeConstraints {
+        lowTempLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(10)
+            $0.leading.equalTo(contentView.snp.centerX)
+            $0.width.height.equalTo(40)
         }
         
+        highTempLabel.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalTo(contentView.snp.trailing).inset(10)
+            $0.width.height.equalTo(40)
+        }
+        
+        tempColorView.snp.makeConstraints {
+            $0.height.equalTo(1)
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(lowTempLabel.snp.trailing).offset(5)
+            $0.trailing.equalTo(highTempLabel.snp.leading).offset(-5)
+        }
         
     }
     
