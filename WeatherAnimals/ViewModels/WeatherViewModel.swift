@@ -56,7 +56,11 @@ final class WeatherViewModel {
     
     let weatherService = WeatherService()
 
+    var currentWeather: CurrentWeather?
     
+    var dayWeather: [DayWeather]?
+    
+    var hourWeather: [HourWeather]?
     
     //MARK: - Inputs
     

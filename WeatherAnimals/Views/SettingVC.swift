@@ -1,29 +1,71 @@
-//
-//  SettingVC.swift
-//  WeatherAnimals
-//
-//  Created by 김은상 on 1/3/24.
-//
-
 import UIKit
 
-class SettingVC: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view.backgroundColor = .white
-        // Do any additional setup after loading the view.
+final class SettingVC: UIViewController {
+//MARK: - Properties
+    private lazy var settingTableView = UITableView().then {
+        $0.delegate = self
+        $0.dataSource = self
+        $0.rowHeight = 80
+        $0.isScrollEnabled = false
+        $0.register(SettingCell.self, forCellReuseIdentifier: "SettingCell")
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    
+    
+    
+    
+//MARK: - LifeCycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureUI()
+        settingNav()
+        
     }
-    */
+    
+//MARK: - Helpers
+    private func configureUI() {
+        self.view.backgroundColor = .white
+        self.view.addSubview(settingTableView)
+        
+        settingTableView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+    }
+    
+    private func settingNav() {
+        let attributes = [
+            NSAttributedString.Key.font: UIFont(name: "NeoDunggeunmoPro-Regular", size: 34.0)!]
+        let attributedString = NSAttributedString(string: "설정", attributes: attributes)
+        let titleLabel = UILabel()
+        titleLabel.textAlignment = .left
+        titleLabel.attributedText = attributedString
+        titleLabel.sizeToFit()
+        let leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        navigationItem.leftBarButtonItem = leftBarButtonItem
+    }
+    
+//MARK: - Actions
+    
 
 }
+
+
+//MARK: - UITableViewDelegate, UITableViewDataSource
+extension SettingVC: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SettingCell", for: indexPath) as! SettingCell
+        
+        
+        return cell
+    }
+    
+    
+    
+}
+

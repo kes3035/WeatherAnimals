@@ -18,7 +18,9 @@ final class TenDaysWeatherCell: UITableViewCell {
     }
     
     private lazy var weatherImageView = UIImageView().then {
-        $0.backgroundColor = .gray
+        $0.backgroundColor = .white
+        $0.tintColor = .black
+        $0.contentMode = .scaleAspectFit
     }
    
     
@@ -45,7 +47,7 @@ final class TenDaysWeatherCell: UITableViewCell {
             DispatchQueue.main.async {
                 self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
                 self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
-                
+                self.weatherImageView.image = UIImage(systemName: dayWeather.symbolName)
             }
         }
     }

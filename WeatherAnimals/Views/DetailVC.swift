@@ -93,6 +93,8 @@ final class DetailVC: UIViewController {
         $0.layer.cornerRadius = 18
     }
     
+    var weatherViewModel = WeatherViewModel()
+    
     var weather: CurrentWeather? {
         didSet {
             configureUIWithData()
@@ -110,9 +112,7 @@ final class DetailVC: UIViewController {
         
         }
     }
-    
-    private lazy var weatherViewModel = WeatherViewModel()
-    
+
     
 //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -123,10 +123,10 @@ final class DetailVC: UIViewController {
         settingTV()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.tabBarController?.navigationItem.hidesBackButton = true
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        self.tabBarController?.navigationItem.hidesBackButton = true
+//    }
 //MARK: - Helpers
     private func configureUI() {
         self.view.backgroundColor = .white
@@ -148,9 +148,7 @@ final class DetailVC: UIViewController {
             $0.width.equalTo(50)
         }
         
-        tempLabel.snp.makeConstraints {
-            $0.top.bottom.leading.equalToSuperview()
-        }
+        tempLabel.snp.makeConstraints { $0.top.bottom.leading.equalToSuperview() }
         
         celsiusLabel.snp.makeConstraints {
             $0.top.equalTo(tempLabel.snp.top).offset(3)
@@ -161,9 +159,7 @@ final class DetailVC: UIViewController {
         
         highestTempLabel.snp.makeConstraints { $0.height.equalTo(20) }
         
-        scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
+        scrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
         
         
         contentView.snp.makeConstraints {
@@ -196,17 +192,15 @@ final class DetailVC: UIViewController {
     }
     
     private func settingNav() {
-//        self.navigationItem.backButtonTitle = "죽전동"
         let rightButton = UIButton().then {
             $0.setImage(UIImage(systemName: "ellipsis"), for: .normal)
-            
             $0.imageView?.tintColor = Constants.greenColor
             $0.imageView?.contentMode = .scaleAspectFit
             $0.backgroundColor = .systemGray4
             $0.layer.cornerRadius = 5
         }
+        
         rightButton.frame = CGRect(x: 0, y: 0, width: 34, height: 32)
-
         let rightBarButton = UIBarButtonItem(customView: rightButton)
         self.navigationItem.rightBarButtonItem = rightBarButton
     }

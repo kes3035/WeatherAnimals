@@ -15,10 +15,7 @@ final class AddVC: UIViewController {
     
     //검색된 결과를 표시할 테이블뷰
     private var resultTableView = UITableView()
-    
-    //서치바
-    private var searchBar = UISearchBar()
-    
+        
     private var searchController = UISearchController(searchResultsController: nil)
     
     //서치바에 검색할 때마다 장소를 가져와서 테이블뷰 업데이트
@@ -39,38 +36,35 @@ final class AddVC: UIViewController {
         super.viewDidLoad()
         configureUI()
         settingNav()
-        //settingSearchBar()
         settingTableView()
         settingSearchCompleter()
         settingSearchController()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-         super.viewWillAppear(animated)
-         self.navigationItem.hidesBackButton = true
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//         super.viewWillAppear(animated)
+//         self.navigationItem.hidesBackButton = true
+//    }
     
     //MARK: - Helpers
     private func configureUI() {
         self.view.backgroundColor = .white
         self.view.addSubview(resultTableView)
-        resultTableView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        resultTableView.snp.makeConstraints {
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
     }
     
-//    private func settingSearchBar() {
-//        searchBar.delegate = self
-//        searchBar.placeholder = "도시 검색"
-//        self.navigationItem.titleView = searchBar
-//
-//        self.searchBar.becomeFirstResponder()
-//    }
-    
     private func settingSearchController() {
-        
-        
-        searchController.searchResultsUpdater = self // 검색 결과 업데이트를 담당할 델리게이트를 설정합니다.
+        searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "도시 검색"
+        
+        searchController.searchBar.searchTextField.font = UIFont.neoDeungeul(size: 15)
+        
+        
+
         navigationItem.searchController = searchController
         definesPresentationContext = true
     }
@@ -89,6 +83,9 @@ final class AddVC: UIViewController {
     
     private func settingNav() {
         self.navigationItem.title = "지역 검색/추가"
+        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.black, NSAttributedString.Key.font: UIFont.neoDeungeul(size: 32)]
+        self.navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
+        self.navigationController?.navigationBar.largeTitleTextAttributes = attributes as [NSAttributedString.Key : Any]
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
@@ -134,17 +131,6 @@ extension AddVC: UITableViewDataSource {
         return cell
     }
 }
-//MARK: - UISearchBarDelegate
-//extension AddVC: UISearchBarDelegate {
-//    //searchBar의 텍스트가 변경될 때마다 실행되는 메서드
-//   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//       if searchText.isEmpty {
-//           searchResults.removeAll()
-//           resultTableView.reloadData()
-//       }
-//       searchCompleter.queryFragment = searchText
-//   }
-//}
 
 //MARK: - MKLocalSearchCompleterDelegate
 extension AddVC: MKLocalSearchCompleterDelegate {
@@ -168,6 +154,7 @@ extension AddVC {
             DispatchQueue.main.async {
                 let detailVC = DetailVC()
                 detailVC.weather = weather
+//                self.navigationController?.pushViewController(detailVC, animated: true)
                 self.present(detailVC, animated: true, completion: nil)
             }
         }

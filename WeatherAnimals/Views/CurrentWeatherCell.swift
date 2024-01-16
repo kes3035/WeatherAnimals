@@ -9,7 +9,9 @@ final class CurrentWeatherCell: UICollectionViewCell {
     }
     
     private lazy var tempImageView = UIImageView().then {
-        $0.backgroundColor = .gray
+        $0.backgroundColor = .white
+        $0.tintColor = .black
+        $0.contentMode = .scaleAspectFit
         
     }
     
@@ -68,6 +70,7 @@ final class CurrentWeatherCell: UICollectionViewCell {
         DispatchQueue.main.async {
             self.topLabel.text = dateString
             self.tempLabel.text = round(hourWeather.temperature.value).description + String(UnicodeScalar(0x00B0))
+            self.tempImageView.image = UIImage(systemName: hourWeather.symbolName)
         }
     }
     
