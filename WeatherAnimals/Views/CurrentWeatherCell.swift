@@ -70,7 +70,7 @@ final class CurrentWeatherCell: UICollectionViewCell {
         DispatchQueue.main.async {
             self.topLabel.text = dateString
             self.tempLabel.text = round(hourWeather.temperature.value).description + String(UnicodeScalar(0x00B0))
-            self.tempImageView.image = UIImage(systemName: hourWeather.symbolName)
+            self.tempImageView.image = UIImage(named: hourWeather.symbolName)
         }
     }
     

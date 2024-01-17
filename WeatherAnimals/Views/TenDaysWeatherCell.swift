@@ -47,7 +47,7 @@ final class TenDaysWeatherCell: UITableViewCell {
             DispatchQueue.main.async {
                 self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
                 self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
-                self.weatherImageView.image = UIImage(systemName: dayWeather.symbolName)
+                self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
             }
         }
     }
