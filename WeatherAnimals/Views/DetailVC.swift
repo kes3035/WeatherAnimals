@@ -5,7 +5,7 @@ final class DetailVC: UIViewController {
 //MARK: - Properties
     
     private lazy var scrollView = UIScrollView().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = .clear
     }
     
     private lazy var contentView = UIView().then {
@@ -88,9 +88,36 @@ final class DetailVC: UIViewController {
         $0.layer.cornerRadius = 18
     }
     
+    private lazy var airQualityLabel = UILabel().then {
+        $0.text = "55"
+        $0.font = UIFont.neoDeungeul(size: 30)
+        $0.textColor = .white
+    }
+    
+    private lazy var airQualityLineView = UIView().then {
+        $0.backgroundColor = Constants.greenColor
+        
+    }
+    
     private lazy var rainFallView = UIView().then {
         $0.backgroundColor = .systemBrown
         $0.layer.cornerRadius = 18
+    }
+    
+    private lazy var addButton = UIButton().then {
+        $0.backgroundColor = .clear
+        $0.setTitle("추가", for: .normal)
+        $0.setTitleColor(Constants.greenColor, for: .normal)
+        $0.titleLabel?.font = UIFont.neoDeungeul(size: 16)
+        $0.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+    }
+
+    private lazy var cancelButton = UIButton().then {
+        $0.backgroundColor = .clear
+        $0.setTitle("취소", for: .normal)
+        $0.setTitleColor(Constants.greenColor, for: .normal)
+        $0.titleLabel?.font = UIFont.neoDeungeul(size: 16)
+        $0.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
     }
     
     var weatherViewModel = WeatherViewModel()
@@ -135,11 +162,24 @@ final class DetailVC: UIViewController {
         self.tempView.addSubview(tempLabel)
         self.labelStack.addArrangedSubviews(tempView, summaryLabel, highestTempLabel, lowestTempLabel)
         self.topStack.addArrangedSubviews(animalImage, labelStack)
-        self.view.addSubViews(scrollView)
+        self.airQualityView.addSubViews(airQualityLabel, airQualityLineView)
+        self.view.addSubViews(scrollView, addButton, cancelButton)
         
         scrollView.addSubview(contentView)
         
-        contentView.addSubViews(topStack, currentDayTempView, tenDaysTempView, airQualityView, rainFallView, celsiusLabel)
+        contentView.addSubViews(topStack, currentDayTempView, 
+                                tenDaysTempView, airQualityView,
+                                rainFallView, celsiusLabel)
+        
+//        cancelButton.snp.makeConstraints {
+//            $0.top.equalToSuperview().offset(10)
+//            $0.leading.equalToSuperview().offset(15)
+//        }
+//
+//        addButton.snp.makeConstraints {
+//            $0.top.equalToSuperview().offset(10)
+//            $0.trailing.equalToSuperview().offset(-15)
+//        }
         
         animalImage.snp.makeConstraints { $0.height.width.equalTo(140) }
         
@@ -189,9 +229,36 @@ final class DetailVC: UIViewController {
             $0.height.equalTo(600)
         }
         
+        airQualityView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(15)
+            $0.trailing.equalToSuperview().inset(15)
+            $0.top.equalTo(tenDaysTempView.snp.bottom).offset(20)
+            $0.height.equalTo(80)
+        }
+        
+        airQualityLabel.snp.makeConstraints {
+            $0.leading.top.equalToSuperview().offset(10)
+            $0.height.equalTo(30)
+        }
+        
+        airQualityLineView.snp.makeConstraints {
+            $0.top.equalTo(airQualityLabel.snp.bottom).offset(10)
+            $0.leading.equalToSuperview().offset(10)
+            $0.trailing.equalToSuperview().inset(10)
+            $0.height.equalTo(1)
+        }
     }
     
     private func settingNav() {
+//        let attributes = [
+//            NSAttributedString.Key.font: UIFont(name: "NeoDunggeunmoPro-Regular", size: 20.0)!]
+//        let attributedString = NSAttributedString(string: "지역타이틀", attributes: attributes)
+//        let titleLabel = UILabel()
+//        titleLabel.textAlignment = .center
+//        titleLabel.attributedText = attributedString
+//        titleLabel.sizeToFit()
+//        let leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        
         let rightButton = UIButton().then {
             $0.setImage(UIImage(systemName: "ellipsis"), for: .normal)
             $0.imageView?.tintColor = Constants.greenColor
@@ -203,6 +270,8 @@ final class DetailVC: UIViewController {
         rightButton.frame = CGRect(x: 0, y: 0, width: 34, height: 32)
         let rightBarButton = UIBarButtonItem(customView: rightButton)
         self.navigationItem.rightBarButtonItem = rightBarButton
+//        self.navigationItem.leftBarButtonItem = leftBarButtonItem
+
     }
     
     private func settingTV() {
@@ -235,7 +304,17 @@ final class DetailVC: UIViewController {
     
     
 //MARK: - Actions
-
+    @objc func buttonTapped(_ sender: UIButton) {
+        switch sender.currentTitle {
+        case "추가":
+            print("디버깅: 추가버튼 눌림")
+        case "취소":
+            print("디버깅: 취소버튼 눌림")
+        default:
+            break
+        }
+    }
+    
 }
 //MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {

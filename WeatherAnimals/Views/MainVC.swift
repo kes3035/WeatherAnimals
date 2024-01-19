@@ -80,9 +80,7 @@ final class MainVC: UIViewController {
     private func settingLocation() {
         locationViewModel.fetchLocation { [weak self] (location, error) in
             self?.locationViewModel.loc = CLLocation(latitude: location?.latitude ?? 0.0, longitude: location?.longitude ?? 0.0)
-            
         }
-        
     }
     
     

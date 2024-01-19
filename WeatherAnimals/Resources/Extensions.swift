@@ -30,7 +30,7 @@ extension UILabel {
        let range = NSString(string: text).range(of: search, options: .caseInsensitive)
        let highlightFont = UIFont.neoDeungeul(size: 16)
        let highlightColor = Constants.greenColor
-       let highlightedAttributes: [NSAttributedString.Key: Any] = [ NSAttributedString.Key.font: highlightFont, NSAttributedString.Key.foregroundColor: highlightColor]
+       let highlightedAttributes: [NSAttributedString.Key: Any] = [ NSAttributedString.Key.font: highlightFont as Any, NSAttributedString.Key.foregroundColor: highlightColor]
        
        attributedText.addAttributes(highlightedAttributes, range: range)
        self.attributedText = attributedText
