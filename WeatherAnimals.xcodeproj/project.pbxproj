@@ -112,12 +112,12 @@
 		212E388D2B5BA4A300F487B2 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				212E388F2B5BA5BC00F487B2 /* DetailCell.swift */,
 				219937CE2AF10ECE00EC8518 /* WeatherCell.swift */,
-				21BCAD9C2B5664B8009B82F7 /* SettingCell.swift */,
 				21AA8CD62B4939F2008AABC5 /* CurrentWeatherCell.swift */,
 				21AA8CD82B494B68008AABC5 /* TenDaysWeatherCell.swift */,
 				2152D3FD2B4E7D5000FF8811 /* AddCell.swift */,
-				212E388F2B5BA5BC00F487B2 /* DetailCell.swift */,
+				21BCAD9C2B5664B8009B82F7 /* SettingCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
