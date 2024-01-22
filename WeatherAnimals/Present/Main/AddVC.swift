@@ -153,7 +153,7 @@ extension AddVC {
         self.weatherViewModel.getCurrentWeather(location: location) { weather in
             DispatchQueue.main.async {
                 let detailVC = DetailVC()
-                detailVC.weather = weather
+//                detailVC.weather = weather
 //                self.navigationController?.pushViewController(detailVC, animated: true)
                 self.present(detailVC, animated: true, completion: nil)
             }

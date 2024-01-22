@@ -19,6 +19,7 @@ final class DetailCell: UICollectionViewCell {
     
     //MARK: - Helpers
     private func configureUI() {
+        self.backgroundColor = .white
         self.contentView.addSubview(baseView)
         self.baseView.snp.makeConstraints {
             $0.edges.equalToSuperview()

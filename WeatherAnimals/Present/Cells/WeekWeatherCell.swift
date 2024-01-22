@@ -9,7 +9,8 @@ import UIKit
 import WeatherKit
 
 
-final class TenDaysWeatherCell: UITableViewCell {
+final class WeekWeatherCell: UITableViewCell {
+    static let identifier = "WeekWeatherCell"
 //MARK: - Properties
     lazy var weekdaysTitleLabel = UILabel().then {
         $0.text = "오늘"

@@ -113,12 +113,12 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailVC = DetailVC()
         self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin) { currentWeather, dayWeathers, hourWeathers in
-            detailVC.weather = currentWeather
-            detailVC.dayWeather = dayWeathers
-            detailVC.hourWeather = hourWeathers
-            detailVC.weatherViewModel.currentWeather = currentWeather
-            detailVC.weatherViewModel.dayWeather = dayWeathers
-            detailVC.weatherViewModel.hourWeather = hourWeathers
+//            detailVC.weather = currentWeather
+//            detailVC.dayWeather = dayWeathers
+//            detailVC.hourWeather = hourWeathers
+//            detailVC.weatherViewModel.currentWeather = currentWeather
+//            detailVC.weatherViewModel.dayWeather = dayWeathers
+//            detailVC.weatherViewModel.hourWeather = hourWeathers
         }
         detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(detailVC, animated: true)
