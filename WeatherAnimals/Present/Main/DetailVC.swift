@@ -5,6 +5,8 @@ final class DetailVC: UIViewController {
 //MARK: - Properties
     private let flowLayout = UICollectionViewFlowLayout()
 
+    private let topView = DetailView()
+    
     private lazy var detailCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
         $0.delegate = self
         $0.dataSource = self
@@ -29,8 +31,18 @@ final class DetailVC: UIViewController {
     
     func configureUI() {
         self.view.backgroundColor = .white
-        self.view.addSubview(detailCollectionView)
-        self.detailCollectionView.snp.makeConstraints{$0.edges.equalToSuperview()}
+        self.view.addSubViews(detailCollectionView, topView)
+        
+        self.topView.snp.makeConstraints {
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(140)
+        }
+        
+        self.detailCollectionView.snp.makeConstraints{
+            $0.top.equalTo(topView.snp.bottom).offset(10)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
 
     }
     
@@ -69,7 +81,7 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
          3 : 대기질 지수를 나타내는 섹션 == AirQualityCell
          4 : 자외선, 체감온도
          */
-        return 5
+        return 4
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -77,9 +89,9 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         //0, 1, 2 섹션은 1개씩
         //3, 4    섹션은 2개씩
         switch section {
-        case 0, 1, 2, 3:
+        case 0, 1:
             return 1
-        case 4:
+        case 2, 3:
             return 2
         default:
             return 1
@@ -94,10 +106,10 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
          */
         
         switch indexPath.section {
-        case 1:
+        case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CurrentCell.identifier, for: indexPath) as! CurrentCell
             return cell
-        case 2:
+        case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
             return cell
             
@@ -117,14 +129,12 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
          */
         switch indexPath.section {
         case 0:
-            return CGSize(width: self.view.frame.width, height: 140)
-        case 1:
             return CGSize(width: self.view.frame.width, height: 100)
-        case 2:
+        case 1:
             return CGSize(width: self.view.frame.width, height: 600)
-        case 3:
+        case 2:
             return CGSize(width: self.view.frame.width/2 - 20, height: 200)
-        case 4:
+        case 3:
             return CGSize(width: self.view.frame.width/2 - 20, height: 200)
         default:
             return CGSize(width: 100, height: 100)
@@ -135,14 +145,16 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         /*
          섹션별 헤더의 크기를 정하는 메서드
          */
-        switch section {
-        case 0:
-            return CGSize(width: self.view.frame.width, height: 140)
-        case 1,2,3,4:
-            return CGSize(width: 100, height: 100)
-        default:
-            return CGSize(width: 100, height: 100)
-        }
+//        switch section {
+//        case 0:
+//            return CGSize(width: self.view.frame.width, height: 10)
+//        case 1,2,3,4:
+//            return CGSize(width: 100, height: 100)
+//        default:
+//            return CGSize(width: 100, height: 100)
+//        }
+        return CGSize(width: self.view.frame.width, height: 20)
+
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
