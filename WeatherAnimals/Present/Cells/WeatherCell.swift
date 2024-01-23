@@ -69,7 +69,7 @@ final class WeatherCell: UITableViewCell {
 //MARK: - Helpers
     private func configureUI() {
         self.contentView.addSubview(baseView)
-        baseView.addSubViews(tempLabel,
+        baseView.addSubviews(tempLabel,
                              addressLabel,
                              celsiusLabel,
                              weatherImageView,

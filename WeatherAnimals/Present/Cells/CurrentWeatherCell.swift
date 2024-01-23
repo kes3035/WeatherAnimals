@@ -40,7 +40,7 @@ final class CurrentWeatherCell: UICollectionViewCell {
     
 //MARK: - Helpers
     private func configureUI() {
-        self.contentView.addSubViews(topLabel, tempImageView, tempLabel)
+        self.contentView.addSubviews(topLabel, tempImageView, tempLabel)
        
         
         tempImageView.snp.makeConstraints {

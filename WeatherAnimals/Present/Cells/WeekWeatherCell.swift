@@ -63,7 +63,7 @@ final class WeekWeatherCell: UITableViewCell {
     
 //MARK: - Helpers
     private func configureUI() {
-        self.contentView.addSubViews(weekdaysTitleLabel, weatherImageView, highTempLabel, lowTempLabel, tempColorView)
+        self.contentView.addSubviews(weekdaysTitleLabel, weatherImageView, highTempLabel, lowTempLabel, tempColorView)
         
         weekdaysTitleLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()

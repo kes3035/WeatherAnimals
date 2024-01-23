@@ -12,9 +12,10 @@ final class DetailVC: UIViewController {
         $0.dataSource = self
         $0.backgroundColor = .white
         $0.showsVerticalScrollIndicator = false
-        
-        $0.register(CurrentCell.self, forCellWithReuseIdentifier: CurrentCell.identifier) //DetailCell 등록
+        $0.register(CurrentCell.self, forCellWithReuseIdentifier: CurrentCell.identifier) //CurrentCell 등록
         $0.register(WeekCell.self, forCellWithReuseIdentifier: WeekCell.identifier) //WeekCell 등록
+        $0.register(AirQualityCell.self, forCellWithReuseIdentifier: AirQualityCell.identifier) //AirQualityCell 등록
+        
         
         $0.register(CollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionReusableView.identifier) //Header 등록
     }
@@ -31,7 +32,7 @@ final class DetailVC: UIViewController {
     
     func configureUI() {
         self.view.backgroundColor = .white
-        self.view.addSubViews(detailCollectionView, topView)
+        self.view.addSubviews(detailCollectionView, topView)
         
         self.topView.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
@@ -81,7 +82,7 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
          3 : 대기질 지수를 나타내는 섹션 == AirQualityCell
          4 : 자외선, 체감온도
          */
-        return 4
+        return 5
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -89,9 +90,9 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         //0, 1, 2 섹션은 1개씩
         //3, 4    섹션은 2개씩
         switch section {
-        case 0, 1:
+        case 0, 1, 2:
             return 1
-        case 2, 3:
+        case 3, 4:
             return 2
         default:
             return 1
@@ -112,7 +113,10 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
             return cell
-            
+        case 2:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
+            return cell
+        
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CurrentCell.identifier, for: indexPath) as! CurrentCell
             return cell
@@ -123,6 +127,9 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
 
 //MARK: - UICollectionViewDelegateFlowLayout
 extension DetailVC: UICollectionViewDelegateFlowLayout {
+    
+    
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         /*
          섹션별 크기를 정하는 메서드
@@ -133,9 +140,9 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         case 1:
             return CGSize(width: self.view.frame.width, height: 600)
         case 2:
-            return CGSize(width: self.view.frame.width/2 - 20, height: 200)
-        case 3:
-            return CGSize(width: self.view.frame.width/2 - 20, height: 200)
+            return CGSize(width: self.view.frame.width, height: 170)
+        case 3, 4:
+            return CGSize(width: self.view.frame.width/2 - 10, height: 200)
         default:
             return CGSize(width: 100, height: 100)
         }
@@ -145,16 +152,7 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         /*
          섹션별 헤더의 크기를 정하는 메서드
          */
-//        switch section {
-//        case 0:
-//            return CGSize(width: self.view.frame.width, height: 10)
-//        case 1,2,3,4:
-//            return CGSize(width: 100, height: 100)
-//        default:
-//            return CGSize(width: 100, height: 100)
-//        }
         return CGSize(width: self.view.frame.width, height: 20)
-
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -162,12 +160,13 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
          헤더 등록하는 메서드
          */
         guard kind == UICollectionView.elementKindSectionHeader,
-              let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CollectionReusableView.identifier, for: indexPath)  as? CollectionReusableView else { return UICollectionReusableView()}
-//        return header
+              let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, 
+                                                                           withReuseIdentifier: CollectionReusableView.identifier,
+                                                                           for: indexPath)  as? CollectionReusableView
+        else { return UICollectionReusableView()}
 
         switch indexPath.section {
         case 0:
-//            header.type = indexPath.section
             return header
         case 1,2,3,4:
             return header

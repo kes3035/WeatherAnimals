@@ -73,7 +73,7 @@ final class DetailView: UIView {
         self.backgroundColor = .white
         self.addSubview(baseView)
         self.addSubview(celsiusLabel)
-        self.baseView.addSubViews(topStack)
+        self.baseView.addSubviews(topStack)
         self.tempView.addSubview(tempLabel)
         self.labelStack.addArrangedSubviews(tempView, summaryLabel, highestTempLabel, lowestTempLabel)
         self.topStack.addArrangedSubviews(animalImage, labelStack)
