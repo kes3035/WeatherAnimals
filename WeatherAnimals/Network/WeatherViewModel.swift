@@ -31,14 +31,6 @@ import CoreLocation
  */
 
 
-func test() {
-    let weatherViewModel = WeatherViewModel()
-    weatherViewModel.getHourlyWeather(location: weatherViewModel.yongin) { weather in
-        weather.forEach { weather in
-            print(weather.temperature.value)
-        }
-    }
-}
 
 final class WeatherViewModel {
     //MARK: - Model
@@ -61,11 +53,24 @@ final class WeatherViewModel {
     var dayWeather: [DayWeather]?
     
     var hourWeather: [HourWeather]?
+    var countOfHourWeathers: Int?
     
     //MARK: - Inputs
     
    
     //MARK: - Outputs
+    
+    func hourCount() -> Int {
+        guard let countOfHourWeathers = self.countOfHourWeathers else { return 0 }
+        return countOfHourWeathers
+    }
+    
+    func headerImage(name: String) -> UIImage? {
+        
+        
+        
+        return UIImage(named: name)
+    }
     
     
     //MARK: - Logics
@@ -129,11 +134,12 @@ final class WeatherViewModel {
     }
     
     //시간별 날씨 정보를 가져오는 메서드
-    func getHourlyWeather(location: CLLocation, completion: @escaping (Forecast<HourWeather>)->()) {
+    func getHourlyWeather(location: CLLocation) {
         Task {
             do {
                 let weather = try await WeatherService.shared.weather(for: location, including: .hourly)
-                completion(weather)
+                self.hourWeather = weather.forecast
+                self.countOfHourWeathers = weather.forecast.count
             } catch let error { print(String(describing: error)) }
         }
     }

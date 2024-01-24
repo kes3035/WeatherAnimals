@@ -9,7 +9,8 @@ import UIKit
 import WeatherKit
 
 
-final class TenDaysWeatherCell: UITableViewCell {
+final class WeekWeatherCell: UITableViewCell {
+    static let identifier = "WeekWeatherCell"
 //MARK: - Properties
     lazy var weekdaysTitleLabel = UILabel().then {
         $0.text = "오늘"
@@ -62,7 +63,7 @@ final class TenDaysWeatherCell: UITableViewCell {
     
 //MARK: - Helpers
     private func configureUI() {
-        self.contentView.addSubViews(weekdaysTitleLabel, weatherImageView, highTempLabel, lowTempLabel, tempColorView)
+        self.contentView.addSubviews(weekdaysTitleLabel, weatherImageView, highTempLabel, lowTempLabel, tempColorView)
         
         weekdaysTitleLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
