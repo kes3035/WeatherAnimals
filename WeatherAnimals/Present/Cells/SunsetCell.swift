@@ -1,14 +1,14 @@
 //
-//  AirQualityCell.swift
+//  SunsetCell.swift
 //  WeatherAnimals
 //
-//  Created by 김은상 on 1/22/24.
+//  Created by 김은상 on 1/24/24.
 //
 
 import UIKit
 
-final class AirQualityCell: UICollectionViewCell {
-    static let identifier = "AirQualityCell"
+class SunsetCell: UICollectionViewCell {
+    static let identifier = "SunsetCell"
     //MARK: - Properties
     
     private lazy var baseView = UIView().then {
@@ -90,6 +90,4 @@ final class AirQualityCell: UICollectionViewCell {
         
         
     }
-    
-    
 }

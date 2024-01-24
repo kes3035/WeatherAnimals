@@ -14,7 +14,8 @@ final class CurrentCell: UICollectionViewCell {
         $0.delegate = self
         $0.dataSource = self
         $0.backgroundColor = .white
-        $0.layer.cornerRadius = 18
+        $0.layer.cornerRadius = 16
+        $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         $0.clipsToBounds = true
         $0.layer.borderColor = UIColor.systemGray4.cgColor
         $0.layer.borderWidth = 1
@@ -39,7 +40,7 @@ final class CurrentCell: UICollectionViewCell {
         self.contentView.backgroundColor = .clear
         self.contentView.addSubview(currentCollectionView)
         self.currentCollectionView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(5)
+            $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().inset(5)
             $0.leading.equalToSuperview().offset(10)
             $0.trailing.equalToSuperview().inset(10)

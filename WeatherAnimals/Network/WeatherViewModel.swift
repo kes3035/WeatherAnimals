@@ -65,6 +65,13 @@ final class WeatherViewModel {
         return countOfHourWeathers
     }
     
+    func headerImage(name: String) -> UIImage? {
+        
+        
+        
+        return UIImage(named: name)
+    }
+    
     
     //MARK: - Logics
     //현재 날씨 정보를 가져오는 메서드

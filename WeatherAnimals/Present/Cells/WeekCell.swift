@@ -13,7 +13,9 @@ final class WeekCell: UICollectionViewCell {
         $0.dataSource = self
         $0.isScrollEnabled = false
         $0.register(WeekWeatherCell.self, forCellReuseIdentifier: WeekWeatherCell.identifier)
-        $0.layer.cornerRadius = 18
+        $0.layer.cornerRadius = 16
+        $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+
         $0.backgroundColor = .white
         $0.layer.borderColor = UIColor.systemGray4.cgColor
         $0.layer.borderWidth = 1
@@ -35,7 +37,11 @@ final class WeekCell: UICollectionViewCell {
     private func configureUI() {
         self.backgroundColor = .white
         self.contentView.addSubview(tenDaysTempView)
-        self.tenDaysTempView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        self.tenDaysTempView.snp.makeConstraints { 
+            $0.leading.equalToSuperview().offset(10)
+            $0.trailing.bottom.equalToSuperview().inset(10)
+            $0.top.equalToSuperview()
+        }
     }
     
     //MARK: - Actions
