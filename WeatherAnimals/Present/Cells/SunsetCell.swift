@@ -38,7 +38,7 @@ class SunsetCell: UICollectionViewCell {
     private lazy var airQualityDescriptionLabel = UILabel().then {
         $0.font = UIFont.neoDeungeul(size: 16)
         $0.numberOfLines = 0
-        $0.text = "현재의 대기질 지수는 55수준으로, 어제 이 시간과 비슷합니다."
+        $0.text = "일몰: 오후 5:47."
     }
     
     

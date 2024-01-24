@@ -38,7 +38,7 @@ final class UltravioletCell: UICollectionViewCell {
     private lazy var airQualityDescriptionLabel = UILabel().then {
         $0.font = UIFont.neoDeungeul(size: 16)
         $0.numberOfLines = 0
-        $0.text = "현재의 대기질 지수는 55수준으로, 어제 이 시간과 비슷합니다."
+        $0.text = "남은 하루 동안 자외선 지수가 낮겠습니다."
     }
     
     

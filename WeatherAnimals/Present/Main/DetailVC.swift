@@ -181,3 +181,5 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
 //    }
 //}
 //
+
+

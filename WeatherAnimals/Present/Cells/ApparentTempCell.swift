@@ -20,7 +20,7 @@ class ApparentTempCell: UICollectionViewCell {
     }
     
     private lazy var airQualityValueLabel = UILabel().then {
-        $0.text = "55"
+        $0.text = "-13"
         $0.font = UIFont.neoDeungeul(size: 40)
         $0.textColor = .black
     }
@@ -30,15 +30,12 @@ class ApparentTempCell: UICollectionViewCell {
         $0.font = UIFont.neoDeungeul(size: 25)
         $0.textColor = .black
     }
-    
-    private lazy var airQualityView = UIView().then {
-        $0.backgroundColor = Constants.greenColor
-    }
+   
     
     private lazy var airQualityDescriptionLabel = UILabel().then {
         $0.font = UIFont.neoDeungeul(size: 16)
         $0.numberOfLines = 0
-        $0.text = "현재의 대기질 지수는 55수준으로, 어제 이 시간과 비슷합니다."
+        $0.text = "바람으로 인해 체감 온도가 실제 온도보다 더 낮게 느껴집니다."
     }
     
     
@@ -57,7 +54,7 @@ class ApparentTempCell: UICollectionViewCell {
     private func configureUI() {
         self.backgroundColor = .white
         self.addSubview(baseView)
-        self.baseView.addSubviews(airQualityValueLabel, airQualityLabel, airQualityDescriptionLabel, airQualityView)
+        self.baseView.addSubviews(airQualityValueLabel, airQualityLabel, airQualityDescriptionLabel)
         self.baseView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.equalToSuperview().offset(10)
@@ -75,17 +72,12 @@ class ApparentTempCell: UICollectionViewCell {
             $0.top.equalTo(airQualityValueLabel.snp.bottom).offset(5)
         }
         
-        self.airQualityView.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.equalToSuperview().inset(10)
-            $0.height.equalTo(1)
-            $0.top.equalTo(airQualityLabel.snp.bottom).offset(15)
-        }
+     
         
         self.airQualityDescriptionLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(10)
             $0.trailing.equalToSuperview().inset(10)
-            $0.top.equalTo(airQualityView.snp.bottom).offset(15)
+            $0.top.equalTo(airQualityValueLabel.snp.bottom).offset(40)
         }
         
         
