@@ -155,8 +155,6 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: self.view.frame.width, height: 30)
-        
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -169,26 +167,25 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         header.section = indexPath.section
         return header
     }
-    
 }
 
 
-//extension DetailVC: UIScrollViewDelegate {
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        guard scrollView == self.detailCollectionView else { return }
-//        let offsetY = scrollView.contentOffset.y
-//
-//        // HeaderView의 높이만큼 스크롤 되었을 때 (HeaderView가 화면 밖에 있는 상태)
-//        if offsetY >= 20 {
-//            // 이전 헤더뷰를 투명하게 만들기
-//
-//        } else {
-//            // 스크롤이 헤더뷰의 높이 미만일 때, 투명도를 조절하여 페이드아웃 효과 생성
-////            let alpha = 1.0 - (offsetY / headerViewHeight)
-////            previousHeaderView.alpha = alpha
-//        }
-//    }
-//}
-//
+extension DetailVC: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView == self.detailCollectionView else { return }
+        let offsetY = scrollView.contentOffset.y
+        
+        // HeaderView의 높이만큼 스크롤 되었을 때 (HeaderView가 화면 밖에 있는 상태)
+        if offsetY >= 30 {
+            // 이전 헤더뷰를 투명하게 만들기
+//            self.detailCollectionView.
+        } else {
+            // 스크롤이 헤더뷰의 높이 미만일 때, 투명도를 조절하여 페이드아웃 효과 생성
+//            let alpha = 1.0 - (offsetY / headerViewHeight)
+//            previousHeaderView.alpha = alpha
+        }
+    }
+}
+
 
 

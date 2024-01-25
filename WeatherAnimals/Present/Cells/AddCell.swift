@@ -31,7 +31,7 @@ final class AddCell: UITableViewCell {
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        configureUI()
+        self.configureUI()
         
     }
     
