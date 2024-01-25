@@ -31,14 +31,6 @@ import CoreLocation
  */
 
 
-func test() {
-    let weatherViewModel = WeatherViewModel()
-    weatherViewModel.getHourlyWeather(location: weatherViewModel.yongin) { weather in
-        weather.forEach { weather in
-            print(weather.temperature.value)
-        }
-    }
-}
 
 final class WeatherViewModel {
     //MARK: - Model
@@ -56,16 +48,41 @@ final class WeatherViewModel {
     
     let weatherService = WeatherService()
 
-    var currentWeather: CurrentWeather?
+    var currentWeather: CurrentWeather? {
+        didSet {
+//            print("디버깅: currentWeather 받아옴")
+        }
+    }
     
-    var dayWeather: [DayWeather]?
+    var dayWeather: [DayWeather]? {
+        didSet {
+//            print("디버깅: dayWeathers 받아옴 count = \(self.dayWeather!.count)")
+        }
+    }
     
-    var hourWeather: [HourWeather]?
+    var hourWeather: [HourWeather]? {
+        didSet {
+//            print("디버깅: hourWeathers 받아옴 count = \(self.hourWeather!.count)")
+        }
+    }
+    var countOfHourWeathers: Int?
     
     //MARK: - Inputs
     
    
     //MARK: - Outputs
+    
+    func hourCount() -> Int {
+        guard let countOfHourWeathers = self.countOfHourWeathers else { return 0 }
+        return countOfHourWeathers
+    }
+    
+    func headerImage(name: String) -> UIImage? {
+        
+        
+        
+        return UIImage(named: name)
+    }
     
     
     //MARK: - Logics
@@ -84,6 +101,18 @@ final class WeatherViewModel {
             do {
                 let weather = try await WeatherService.shared.weather(for: location, including: .current, .daily, .hourly)
                 completion(weather.0, weather.1.forecast, weather.2.forecast)
+            } catch let error { print(String(describing: error)) }
+        }
+    }
+    
+    func getDetailVCWeather(location: CLLocation) {
+        Task {
+            do {
+                let weather = try await WeatherService.shared.weather(for: location, including: .current, .daily, .hourly)
+                self.currentWeather = weather.0
+                self.dayWeather = weather.1.forecast
+                self.hourWeather = weather.2.forecast
+                print("디버깅: getDetailVCWeather실행, 데이터 받기 완료")
             } catch let error { print(String(describing: error)) }
         }
     }
@@ -129,11 +158,12 @@ final class WeatherViewModel {
     }
     
     //시간별 날씨 정보를 가져오는 메서드
-    func getHourlyWeather(location: CLLocation, completion: @escaping (Forecast<HourWeather>)->()) {
+    func getHourlyWeather(location: CLLocation) {
         Task {
             do {
                 let weather = try await WeatherService.shared.weather(for: location, including: .hourly)
-                completion(weather)
+                self.hourWeather = weather.forecast
+                self.countOfHourWeathers = weather.forecast.count
             } catch let error { print(String(describing: error)) }
         }
     }

@@ -2,7 +2,8 @@ import UIKit
 import WeatherKit
 
 final class CurrentWeatherCell: UICollectionViewCell {
-//MARK: - Properties
+    static let identifier = "CurrentWeatherCell"
+    //MARK: - Properties
     private lazy var topLabel = UILabel().then {
         $0.text = "탑 레이블"
         $0.font = UIFont.neoDeungeul(size: 12)
@@ -22,17 +23,12 @@ final class CurrentWeatherCell: UICollectionViewCell {
     }
     
     var hourWeather: HourWeather? {
-        didSet {
-            configureUIWithData()
-        }
+        didSet { configureUIWithData() }
     }
     
     
    
 //MARK: - LifeCycle
-    
-    
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
@@ -42,7 +38,7 @@ final class CurrentWeatherCell: UICollectionViewCell {
     
 //MARK: - Helpers
     private func configureUI() {
-        self.contentView.addSubViews(topLabel, tempImageView, tempLabel)
+        self.contentView.addSubviews(topLabel, tempImageView, tempLabel)
        
         
         tempImageView.snp.makeConstraints {

@@ -112,15 +112,10 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     //셀이 선택되었을 때 실행되는 메서드
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailVC = DetailVC()
-        self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin) { currentWeather, dayWeathers, hourWeathers in
-            detailVC.weather = currentWeather
-            detailVC.dayWeather = dayWeathers
-            detailVC.hourWeather = hourWeathers
-            detailVC.weatherViewModel.currentWeather = currentWeather
-            detailVC.weatherViewModel.dayWeather = dayWeathers
-            detailVC.weatherViewModel.hourWeather = hourWeathers
-        }
+        self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin)
+        detailVC.weatherViewModel = self.weatherViewModel
         detailVC.hidesBottomBarWhenPushed = true
+        print("디버깅: DetailVC push할 예정")
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
     
