@@ -118,5 +118,4 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         print("디버깅: DetailVC push할 예정")
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
-    
 }

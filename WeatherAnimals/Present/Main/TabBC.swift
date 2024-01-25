@@ -42,7 +42,5 @@ final class TabBC: UITabBarController {
         
         self.viewControllers = [nav1, nav2]
         
-        
     }
-    
 }

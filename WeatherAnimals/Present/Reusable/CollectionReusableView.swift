@@ -23,6 +23,12 @@ class CollectionReusableView: UICollectionReusableView {
         $0.contentMode = .scaleAspectFit
     }
     
+    var section: Int? {
+        didSet {
+            guard let section = section else { return }
+            self.configureTitle(section)
+        }
+    }
     
     
     //MARK: - LifeCycle
@@ -60,6 +66,32 @@ class CollectionReusableView: UICollectionReusableView {
         }
     }
     
+    private func configureTitle(_ section: Int) {
+        switch section {
+        case 0:
+            DispatchQueue.main.async {
+                self.titleLabel.text = "시간별 일기예보"
+                self.titleImageView.image = UIImage(systemName: "clock")
+            }
+        case 1:
+            DispatchQueue.main.async {
+                self.titleLabel.text = "10일간의 일기예보"
+                self.titleImageView.image = UIImage(systemName: "calendar")
+            }
+        case 2:
+            DispatchQueue.main.async {
+                self.titleLabel.text = "대기질"
+                self.titleImageView.image = UIImage(named: "aqi.low")
+            }
+        case 3:
+            print("")
+        case 4:
+            print("")
+        default:
+            return
+        }
+        
+    }
     
     //MARK: - Actions
     

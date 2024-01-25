@@ -19,13 +19,12 @@ final class DetailVC: UIViewController {
         $0.register(SunsetCell.self, forCellWithReuseIdentifier: SunsetCell.identifier) //AirQualityCell 등록
         $0.register(ApparentTempCell.self, forCellWithReuseIdentifier: ApparentTempCell.identifier) //AirQualityCell 등록
         $0.register(RainFallCell.self, forCellWithReuseIdentifier: RainFallCell.identifier) //AirQualityCell 등록
-
-        
-        
         $0.register(CollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionReusableView.identifier) //Header 등록
     }
     
-    var weatherViewModel = WeatherViewModel()
+    var weatherViewModel = WeatherViewModel() {
+        didSet { self.configureTopView() }
+    }
     
     
     
@@ -41,7 +40,6 @@ final class DetailVC: UIViewController {
     func configureUI() {
         self.view.backgroundColor = .white
         self.view.addSubviews(detailCollectionView, topView)
-        
         self.topView.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(10)
             $0.leading.trailing.equalToSuperview()
@@ -52,7 +50,16 @@ final class DetailVC: UIViewController {
             $0.top.equalTo(topView.snp.bottom).offset(10)
             $0.leading.trailing.bottom.equalToSuperview()
         }
-        
+    }
+    
+    private func configureTopView() {
+        guard let dayWeather = weatherViewModel.dayWeather,
+              let current = weatherViewModel.currentWeather else { return }
+        DispatchQueue.main.async {
+            self.topView.tempLabel.text = String(round(current.temperature.value))
+            self.topView.highestTempLabel.text = "최고 : " + String(round(dayWeather[0].highTemperature.value))
+            self.topView.lowestTempLabel.text = "최저 : " + String(round(dayWeather[0].lowTemperature.value))
+        }
     }
     
     private func settingNav() {
@@ -75,10 +82,6 @@ final class DetailVC: UIViewController {
         flowLayout.sectionHeadersPinToVisibleBounds = true
         
     }
-    
-    
-    //MARK: - Actions
-    
 }
 //MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -163,6 +166,7 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
                                                                            withReuseIdentifier: CollectionReusableView.identifier,
                                                                            for: indexPath)  as? CollectionReusableView
         else { return UICollectionReusableView()}
+        header.section = indexPath.section
         return header
     }
     

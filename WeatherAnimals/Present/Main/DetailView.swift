@@ -12,7 +12,7 @@ final class DetailView: UIView {
     private lazy var baseView = UIView().then {
         $0.backgroundColor = .clear
     }
-    private lazy var tempLabel = UILabel().then {
+    lazy var tempLabel = UILabel().then {
         $0.text = "24"
         $0.font = UIFont.neoDeungeul(size: 48)
     }
@@ -22,19 +22,19 @@ final class DetailView: UIView {
         $0.font = UIFont.neoDeungeul(size: 50)
     }
     
-    private lazy var summaryLabel = UILabel().then {
+    lazy var summaryLabel = UILabel().then {
         $0.text = "대체로 맑개"
         $0.font = UIFont.neoDeungeul(size: 20)
         
     }
     
-    private lazy var highestTempLabel = UILabel().then {
+    lazy var highestTempLabel = UILabel().then {
         $0.text = "최고 : 123"
         $0.font = UIFont.neoDeungeul(size: 20)
         
     }
     
-    private lazy var lowestTempLabel = UILabel().then {
+    lazy var lowestTempLabel = UILabel().then {
         $0.text = "최저 : 123"
         $0.font = UIFont.neoDeungeul(size: 20)
         
@@ -110,6 +110,4 @@ final class DetailView: UIView {
             $0.leading.equalTo(tempLabel.snp.trailing).inset(5)
         }
     }
-    
-    
 }
