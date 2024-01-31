@@ -1,10 +1,3 @@
-//
-//  TabBC.swift
-//  WeatherAnimals
-//
-//  Created by 김은상 on 1/3/24.
-//
-
 import UIKit
 
 final class TabBC: UITabBarController {
@@ -12,13 +5,14 @@ final class TabBC: UITabBarController {
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        settingTB()
+        self.settingTB()
     }
     
     
     //MARK: - Helpers
     private func settingTB() {
         
+        // Tabbar Appearance Setting
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = Constants.greenColor
@@ -28,6 +22,8 @@ final class TabBC: UITabBarController {
         self.tabBar.isTranslucent = false
         self.tabBar.tintColor = .white
         
+        
+        // ViewControllers Initialize
         let homeVC = MainVC()
         homeVC.tabBarItem = UITabBarItem(title: "홈",
                                          image: UIImage(systemName: "person"),
@@ -37,6 +33,7 @@ final class TabBC: UITabBarController {
                                             image: UIImage(systemName: "gearshape"),
                                             selectedImage: UIImage(systemName: "gearshape.fill"))
         
+        // NavController Initialize
         let nav1 = UINavigationController(rootViewController: homeVC)
         let nav2 = UINavigationController(rootViewController: settingVC)
         

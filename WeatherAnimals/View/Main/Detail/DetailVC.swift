@@ -109,16 +109,20 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
             cell.weatherViewModel.dayWeather = self.weatherViewModel.dayWeather
+            
             return cell
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
+            cell.weather = self.weatherViewModel.currentWeather
             return cell
         case 3:
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
+                cell.weather = self.weatherViewModel.currentWeather
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
+                
                 return cell
             }
         case 4:
@@ -170,6 +174,7 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
 }
 
 
+
 extension DetailVC: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard scrollView == self.detailCollectionView else { return }
@@ -179,6 +184,7 @@ extension DetailVC: UIScrollViewDelegate {
         if offsetY >= 30 {
             // 이전 헤더뷰를 투명하게 만들기
 //            self.detailCollectionView.
+            
         } else {
             // 스크롤이 헤더뷰의 높이 미만일 때, 투명도를 조절하여 페이드아웃 효과 생성
 //            let alpha = 1.0 - (offsetY / headerViewHeight)

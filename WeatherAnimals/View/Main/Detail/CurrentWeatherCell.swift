@@ -59,6 +59,7 @@ final class CurrentWeatherCell: UICollectionViewCell {
     
     private func configureUIWithData() {
         guard let hourWeather = self.hourWeather else { return }
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "a h:mm"
         dateFormatter.locale = Locale(identifier:"ko_KR")

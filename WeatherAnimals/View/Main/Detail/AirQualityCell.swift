@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import WeatherKit
 
 final class AirQualityCell: UICollectionViewCell {
     static let identifier = "AirQualityCell"
@@ -41,7 +42,12 @@ final class AirQualityCell: UICollectionViewCell {
         $0.text = "현재의 대기질 지수는 55수준으로, 어제 이 시간과 비슷합니다."
     }
     
-    
+    var weather: CurrentWeather? {
+        didSet {
+            guard let weather = self.weather else { return }
+            self.configureUIWithData(weather)
+        }
+    }
     
     
     //MARK: - LifeCycle
@@ -91,5 +97,10 @@ final class AirQualityCell: UICollectionViewCell {
         
     }
     
+    private func configureUIWithData(_ weather: CurrentWeather) {
+        DispatchQueue.main.async {
+//            self.airQualityValueLabel.text = weather.
+        }
+    }
     
 }

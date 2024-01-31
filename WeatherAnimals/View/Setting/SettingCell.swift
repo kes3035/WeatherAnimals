@@ -12,11 +12,13 @@ final class SettingCell: UITableViewCell {
     
     private lazy var baseView = UIView().then {
         $0.backgroundColor = .white
+        $0.layer.cornerRadius = 16
+        
     }
     
-    private lazy var titleLabel = UILabel().then {
+    lazy var titleLabel = UILabel().then {
         $0.text = "타이틀"
-        $0.font = .neoDeungeul(size: 20)
+        $0.font = .neoDeungeul(size: 16)
         $0.textColor = .black
     }
     
@@ -30,16 +32,27 @@ final class SettingCell: UITableViewCell {
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    
+    
+    
     //MARK: - Helpers
     
     private func configureUI() {
-        self.contentView.backgroundColor = .clear
+        self.backgroundColor = .systemGray5.withAlphaComponent(0.8)
+        self.contentView.backgroundColor = .systemGray5.withAlphaComponent(0.8)
         self.baseView.addSubviews(titleLabel)
         self.contentView.addSubview(baseView)
         
-        self.baseView.snp.makeConstraints {
-            $0.top.leading.equalToSuperview().offset(10)
+        self.contentView.snp.makeConstraints {
+            $0.leading.top.equalToSuperview().offset(10)
             $0.bottom.trailing.equalToSuperview().inset(10)
+
+        }
+        
+        self.baseView.snp.makeConstraints {
+//            $0.top.leading.equalToSuperview().offset(10)
+//            $0.bottom.trailing.equalToSuperview().inset(10)
+            $0.edges.equalToSuperview()
         }
         
         self.titleLabel.snp.makeConstraints {

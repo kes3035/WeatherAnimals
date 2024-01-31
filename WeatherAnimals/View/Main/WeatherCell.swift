@@ -16,7 +16,8 @@ final class WeatherCell: UITableViewCell {
     }
     
     private lazy var weatherImageView = UIImageView().then {
-        $0.backgroundColor = .gray
+        $0.backgroundColor = .clear
+        $0.contentMode = .scaleAspectFill
         
     }
     
@@ -35,23 +36,23 @@ final class WeatherCell: UITableViewCell {
     private lazy var addressLabel = UILabel().then {
         $0.text = "죽전동, 용인시, 대한민국"
         $0.font = UIFont.neoDeungeul(size: 14)
-        
     }
     
     
-    private lazy var animalImageView = UIImageView().then {
-        $0.backgroundColor = .gray
-    }
+    private lazy var animalImageView = UIImageView().then { $0.backgroundColor = .gray }
     
-    var weather: CurrentWeather? {
+
+    var weatherViewModel: WeatherViewModel? {
         didSet {
-            self.configureUIWithData()
-        }
-    }
-    
-    var dayWeather: DayWeather? {
-        didSet {
-            self.configureUIWithData2()
+            guard let weatherViewModel = self.weatherViewModel else {
+                print("디버깅: Failed to unwrap WeatherViewModel")
+                return
+            }
+            guard let currentWeather = weatherViewModel.currentWeather else {
+                print("디버깅: Failed to unwrap CurrentWeather")
+                return
+            }
+            self.configureUIWithData(currentWeather)
         }
     }
     
@@ -113,21 +114,14 @@ final class WeatherCell: UITableViewCell {
         }
     }
     
-    private func configureUIWithData() {
-        guard let weather = self.weather else { return }
+    private func configureUIWithData(_ weather: CurrentWeather) {
         DispatchQueue.main.async {
             self.tempLabel.text = String(round(weather.temperature.value))
-            
+            self.weatherImageView.image = UIImage(named: weather.symbolName)
         }
     }
     
-    private func configureUIWithData2() {
-        guard let dayWeather = self.dayWeather else { return }
-        DispatchQueue.main.async {
-            
-            
-        }
-    }
+
     
 //MARK: - Actions
 }

@@ -12,7 +12,6 @@ import UIKit
  2. 기타
   2.0 개발자에게 커피사주기
   2.1 버그 리포트
- 
  */
 
 
@@ -22,14 +21,12 @@ final class SettingVC: UIViewController {
         $0.delegate = self
         $0.dataSource = self
         $0.rowHeight = 80
-//        $0.isScrollEnabled = false
+        $0.separatorStyle = .none
         $0.register(SettingCell.self, forCellReuseIdentifier: "SettingCell")
     }
     
-    private lazy var headerView = UIView().then {
-        $0.backgroundColor = .darkGray
-    }
-    
+    private lazy var options: [String] = ["동물 바꾸기", "알림 설정", "앱에 대하여", "써드파티 라이브러리",
+                                          "개발자 정보", "개발자에게 커피사주기", "버그 리포트"]
     
     
     
@@ -38,7 +35,6 @@ final class SettingVC: UIViewController {
         super.viewDidLoad()
         self.configureUI()
         self.settingNav()
-        
     }
     
 //MARK: - Helpers
@@ -47,7 +43,6 @@ final class SettingVC: UIViewController {
         self.view.addSubview(settingTableView)
         
         self.settingTableView.snp.makeConstraints { $0.edges.equalToSuperview() }
-        self.settingTableView.tableHeaderView = self.headerView
     }
     
     private func settingNav() {
@@ -86,12 +81,30 @@ extension SettingVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingCell", for: indexPath) as! SettingCell
-        
-        
+        cell.selectionStyle = .none
+        cell.titleLabel.text = self.options[indexPath.row]
+
         return cell
     }
     
+   
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = TableHeaderView()
+        switch section {
+        case 0:
+            header.titleLabel.text = "앱 설정"
+        case 1:
+            header.titleLabel.text = "앱 정보"
+        case 2:
+            header.titleLabel.text = "기타"
+        default:
+            header.titleLabel.text = "기타"
+        }
+        return header
+    }
     
-    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        40
+    }
 }
 

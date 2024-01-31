@@ -55,7 +55,7 @@ final class CurrentCell: UICollectionViewCell {
 
 extension CurrentCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let count = self.weatherViewModel.hourWeather?.count else { return 0 }
+        guard let count = self.weatherViewModel.hourWeather?.count else { return 1 }
         return count
     }
     
