@@ -42,12 +42,8 @@ final class WeatherCell: UITableViewCell {
     private lazy var animalImageView = UIImageView().then { $0.backgroundColor = .gray }
     
 
-    var weatherViewModel: WeatherViewModel? {
+    var weatherViewModel: WeatherViewModel! {
         didSet {
-            guard let weatherViewModel = self.weatherViewModel else {
-                print("디버깅: Failed to unwrap WeatherViewModel")
-                return
-            }
             guard let currentWeather = weatherViewModel.currentWeather else {
                 print("디버깅: Failed to unwrap CurrentWeather")
                 return
@@ -60,6 +56,7 @@ final class WeatherCell: UITableViewCell {
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        self.weatherViewModel = WeatherViewModel()
         configureUI()
         
     }

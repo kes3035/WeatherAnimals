@@ -1,7 +1,6 @@
 import UIKit
 
 final class TabBC: UITabBarController {
-
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +35,8 @@ final class TabBC: UITabBarController {
         // NavController Initialize
         let nav1 = UINavigationController(rootViewController: homeVC)
         let nav2 = UINavigationController(rootViewController: settingVC)
+        
+
         
         self.viewControllers = [nav1, nav2]
         

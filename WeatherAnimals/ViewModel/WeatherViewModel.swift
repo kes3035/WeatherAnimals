@@ -67,6 +67,11 @@ final class WeatherViewModel {
         }
     }
     
+    func getMainVCWeather(location: CLLocation) async throws -> CurrentWeather {
+        let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
+        return currentWeather
+    }
+    
     func getDetailVCWeather(location: CLLocation, completion: @escaping (CurrentWeather, [DayWeather], [HourWeather]) -> ()) {
         Task {
             do {

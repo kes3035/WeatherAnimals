@@ -18,7 +18,13 @@ final class MainVC: UIViewController {
         $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(plusButtonTapped(_:))))
     }
     
-    private var weatherViewModel: WeatherViewModel!
+    var weatherViewModel: WeatherViewModel! {
+        didSet {
+            DispatchQueue.main.async {
+                self.mainTableView.reloadData()
+            }
+        }
+    }
     
     private var locationViewModel: LocationViewModel!
     
@@ -26,6 +32,7 @@ final class MainVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.weatherViewModel = WeatherViewModel()
+        self.weatherViewModel.getMainVCWeather(location: self.weatherViewModel.yongin)
         self.configureUI()
         self.settingNav()
         self.settingTV()
@@ -75,6 +82,12 @@ final class MainVC: UIViewController {
         }
     }
     
+    private func weatherBinding() {
+        self.weatherViewModel.didChangeCurrentWeather = { [weak self] weatherViewModel in
+            self?.weatherViewModel = weatherViewModel
+        }
+    }
+    
     //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
         // When Plus Button Tapped, AddVC will be pushed
@@ -96,9 +109,9 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
         
-        self.weatherViewModel.didChangeCurrentWeather = { weatherViewModel in
+        self.weatherViewModel.didChangeCurrentWeather = { [weak self] weatherViewModel in
             cell.weatherViewModel = weatherViewModel
-            tableView.reloadData()
+            self?.weatherViewModel = weatherViewModel
         }
         return cell
     }
