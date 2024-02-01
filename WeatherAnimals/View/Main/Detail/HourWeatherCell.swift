@@ -1,11 +1,11 @@
 import UIKit
 import WeatherKit
 
-final class CurrentWeatherCell: UICollectionViewCell {
-    static let identifier = "CurrentWeatherCell"
+final class HourWeatherCell: UICollectionViewCell {
+    static let identifier = "HourWeatherCell"
     //MARK: - Properties
     private lazy var topLabel = UILabel().then {
-        $0.text = "탑 레이블"
+        $0.text = "로딩중"
         $0.font = UIFont.neoDeungeul(size: 12)
     }
     
@@ -17,20 +17,31 @@ final class CurrentWeatherCell: UICollectionViewCell {
     }
     
     private lazy var tempLabel = UILabel().then {
-        $0.text = "온도 레이블"
+        $0.text = "로딩중"
         $0.font = UIFont.neoDeungeul(size: 12)
 
     }
     
     var hourWeather: HourWeather? {
-        didSet { configureUIWithData() }
+        didSet {
+            print("cell's hourWeather Changed")
+            guard let hourWeather = self.hourWeather else { return }
+            configureUIWithData(hourWeather)
+        }
     }
     
+//    var weatherViewModel: WeatherViewModel! {
+//        didSet {
+//            guard let hourWeathers = self.weatherViewModel.hourWeathers else { return }
+//            self.configureUIWithData(hourWeathers)
+//        }
+//    }
     
    
 //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
+//        self.weatherViewModel = WeatherViewModel()
         configureUI()
         
     }
@@ -57,9 +68,7 @@ final class CurrentWeatherCell: UICollectionViewCell {
         }
     }
     
-    private func configureUIWithData() {
-        guard let hourWeather = self.hourWeather else { return }
-        
+    private func configureUIWithData(_ hourWeather: HourWeather) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "a h:mm"
         dateFormatter.locale = Locale(identifier:"ko_KR")

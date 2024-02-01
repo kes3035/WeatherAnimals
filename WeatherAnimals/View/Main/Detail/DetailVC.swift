@@ -12,7 +12,7 @@ final class DetailVC: UIViewController {
         $0.dataSource = self
         $0.backgroundColor = .white
         $0.showsVerticalScrollIndicator = false
-        $0.register(CurrentCell.self, forCellWithReuseIdentifier: CurrentCell.identifier) //CurrentCell 등록
+        $0.register(HourCell.self, forCellWithReuseIdentifier: HourCell.identifier) //CurrentCell 등록
         $0.register(WeekCell.self, forCellWithReuseIdentifier: WeekCell.identifier) //WeekCell 등록
         $0.register(AirQualityCell.self, forCellWithReuseIdentifier: AirQualityCell.identifier) //AirQualityCell 등록
         $0.register(UltravioletCell.self, forCellWithReuseIdentifier: UltravioletCell.identifier) //AirQualityCell 등록
@@ -22,8 +22,13 @@ final class DetailVC: UIViewController {
         $0.register(CollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionReusableView.identifier) //Header 등록
     }
     
-    var weatherViewModel = WeatherViewModel() {
-        didSet { self.configureTopView() }
+    var weatherViewModel: WeatherViewModel! {
+        didSet {
+            DispatchQueue.main.async {
+                self.detailCollectionView.reloadData()
+                self.configureTopView()
+            }
+        }
     }
     
     
@@ -31,12 +36,14 @@ final class DetailVC: UIViewController {
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.weatherViewModel = WeatherViewModel()
+        self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin)
         self.configureUI()
         self.settingNav()
         self.settingFlowLayout()
     }
-    //MARK: - Helpers
     
+    //MARK: - Helpers
     func configureUI() {
         self.view.backgroundColor = .white
         self.view.addSubviews(detailCollectionView, topView)
@@ -53,7 +60,7 @@ final class DetailVC: UIViewController {
     }
     
     private func configureTopView() {
-        guard let dayWeather = weatherViewModel.dayWeather,
+        guard let dayWeather = weatherViewModel.dayWeathers,
               let current = weatherViewModel.currentWeather else { return }
         DispatchQueue.main.async {
             self.topView.tempLabel.text = String(round(current.temperature.value))
@@ -103,22 +110,37 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         
         switch indexPath.section {
         case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CurrentCell.identifier, for: indexPath) as! CurrentCell
-            cell.weatherViewModel.hourWeather = self.weatherViewModel.hourWeather
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
+            guard let hourWeathers = self.weatherViewModel.hourWeathers else { 
+                print("디버깅: Failed to Unwrap ViewModel's HourWeathers")
+                return cell }
+            cell.hourWeathers = hourWeathers
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
-            cell.weatherViewModel.dayWeather = self.weatherViewModel.dayWeather
+            
+            guard let dayWeathers = self.weatherViewModel.dayWeathers else {
+                print("디버깅: Failed to Unwrap ViewModel's DayWeathers")
+                return cell }
+            cell.dayWeathers = dayWeathers
+            
             
             return cell
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
-            cell.weather = self.weatherViewModel.currentWeather
+            
+            
+            //            self.weatherViewModel.didChangeWeather = { [weak self] weatherViewModel in
+            //                cell.weatherViewModel.currentWeather = weatherViewModel.currentWeather
+            //                self?.weatherViewModel = weatherViewModel
+            //            }
+            
+            
             return cell
         case 3:
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
-                cell.weather = self.weatherViewModel.currentWeather
+                //                cell.weather = self.weatherViewModel.currentWeather
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
@@ -134,7 +156,7 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
                 return cell
             }
         default:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CurrentCell.identifier, for: indexPath) as! CurrentCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
             return cell
         }
     }
@@ -156,7 +178,7 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
             return CGSize(width: 100, height: 100)
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: self.view.frame.width, height: 30)
     }
@@ -183,12 +205,12 @@ extension DetailVC: UIScrollViewDelegate {
         // HeaderView의 높이만큼 스크롤 되었을 때 (HeaderView가 화면 밖에 있는 상태)
         if offsetY >= 30 {
             // 이전 헤더뷰를 투명하게 만들기
-//            self.detailCollectionView.
+            //            self.detailCollectionView.
             
         } else {
             // 스크롤이 헤더뷰의 높이 미만일 때, 투명도를 조절하여 페이드아웃 효과 생성
-//            let alpha = 1.0 - (offsetY / headerViewHeight)
-//            previousHeaderView.alpha = alpha
+            //            let alpha = 1.0 - (offsetY / headerViewHeight)
+            //            previousHeaderView.alpha = alpha
         }
     }
 }

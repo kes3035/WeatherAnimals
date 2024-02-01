@@ -22,11 +22,26 @@ final class WeekCell: UICollectionViewCell {
         $0.rowHeight = 60
     }
     
-    lazy var weatherViewModel = WeatherViewModel()
+    var weatherViewModel: WeatherViewModel! {
+        didSet {
+//            DispatchQueue.main.async {
+//                self.tenDaysTempView.reloadData()
+//            }
+        }
+    }
+    
+    var dayWeathers: [DayWeather]? {
+        didSet {
+            DispatchQueue.main.async {
+                self.tenDaysTempView.reloadData()
+            }
+        }
+    }
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.weatherViewModel = WeatherViewModel()
         self.configureUI()
     }
     
@@ -56,7 +71,7 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeekWeatherCell.identifier, for: indexPath) as! WeekWeatherCell
-        guard let dayWeathers = self.weatherViewModel.dayWeather else { return cell }
+        guard let dayWeathers = self.dayWeathers else { return cell }
         cell.dayWeather = dayWeathers[indexPath.row]
         if indexPath.row == 0 {
             cell.weekdaysTitleLabel.text = "오늘"

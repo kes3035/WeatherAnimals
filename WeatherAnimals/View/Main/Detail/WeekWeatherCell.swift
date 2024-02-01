@@ -13,7 +13,7 @@ final class WeekWeatherCell: UITableViewCell {
     static let identifier = "WeekWeatherCell"
 //MARK: - Properties
     lazy var weekdaysTitleLabel = UILabel().then {
-        $0.text = "오늘"
+        $0.text = "로딩중"
         $0.textAlignment = .center
         $0.font = UIFont.neoDeungeul(size: 14)
     }

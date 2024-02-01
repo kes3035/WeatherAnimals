@@ -55,13 +55,11 @@ class CollectionReusableView: UICollectionReusableView {
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        configureUI()
+        self.configureUI()
         
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     
     //MARK: - Helpers

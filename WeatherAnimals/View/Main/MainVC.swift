@@ -82,12 +82,6 @@ final class MainVC: UIViewController {
         }
     }
     
-    private func weatherBinding() {
-        self.weatherViewModel.didChangeCurrentWeather = { [weak self] weatherViewModel in
-            self?.weatherViewModel = weatherViewModel
-        }
-    }
-    
     //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
         // When Plus Button Tapped, AddVC will be pushed
@@ -109,19 +103,24 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
         
-        self.weatherViewModel.didChangeCurrentWeather = { [weak self] weatherViewModel in
+        self.weatherViewModel.didChangeWeather = { [weak self] weatherViewModel in
             cell.weatherViewModel = weatherViewModel
             self?.weatherViewModel = weatherViewModel
         }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // When selected, DetailVC will be pushed
         let detailVC = DetailVC()
-        self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin)
         detailVC.weatherViewModel = self.weatherViewModel
         detailVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(detailVC, animated: true)
+        self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin)
+        self.weatherViewModel.didFetchedWeathers = {
+            DispatchQueue.main.async {
+                self.navigationController?.pushViewController(detailVC, animated: true)
+            }
+        }
     }
 }

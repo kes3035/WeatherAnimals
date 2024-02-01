@@ -1,12 +1,12 @@
 import UIKit
 import WeatherKit
 
-final class CurrentCell: UICollectionViewCell {
-    static let identifier = "CurrentCell"
+final class HourCell: UICollectionViewCell {
+    static let identifier = "HourCell"
     //MARK: - Properties
     private let flowLayout = UICollectionViewFlowLayout()
 
-    private lazy var currentCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
+    private lazy var hourCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
         $0.delegate = self
         $0.dataSource = self
         $0.backgroundColor = .white
@@ -16,14 +16,30 @@ final class CurrentCell: UICollectionViewCell {
         $0.layer.borderColor = UIColor.systemGray4.cgColor
         $0.layer.borderWidth = 1
         $0.showsHorizontalScrollIndicator = false
-        $0.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: CurrentWeatherCell.identifier)
+        $0.register(HourWeatherCell.self, forCellWithReuseIdentifier: HourWeatherCell.identifier)
     }
     
-    lazy var weatherViewModel = WeatherViewModel()
+    var weatherViewModel: WeatherViewModel! {
+        didSet {
+            DispatchQueue.main.async {
+                self.hourCollectionView.reloadData()
+            }
+        }
+    }
     
+    var hourWeathers: [HourWeather]? {
+        didSet {
+            DispatchQueue.main.async {
+                self.hourCollectionView.reloadData()
+            }
+        }
+    }
+ 
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.weatherViewModel = WeatherViewModel()
+        self.weatherViewModel.getHourWeather(location: self.weatherViewModel.yongin)
         self.configureUI()
         self.settingFlowLayout()
     }
@@ -34,8 +50,8 @@ final class CurrentCell: UICollectionViewCell {
     
     private func configureUI() {
         self.contentView.backgroundColor = .clear
-        self.contentView.addSubview(currentCollectionView)
-        self.currentCollectionView.snp.makeConstraints {
+        self.contentView.addSubview(hourCollectionView)
+        self.hourCollectionView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().inset(5)
             $0.leading.equalToSuperview().offset(10)
@@ -47,16 +63,12 @@ final class CurrentCell: UICollectionViewCell {
         self.flowLayout.scrollDirection = .horizontal
         self.flowLayout.sectionHeadersPinToVisibleBounds = true
     }
-    
-    //MARK: - Actions
-    
-    
 }
 
-extension CurrentCell: UICollectionViewDelegate, UICollectionViewDataSource {
+extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let count = self.weatherViewModel.hourWeather?.count else { return 1 }
-        return count
+
+        return 10
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -64,16 +76,22 @@ extension CurrentCell: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CurrentWeatherCell.identifier, for: indexPath) as! CurrentWeatherCell
-        guard let hourWeathers = self.weatherViewModel.hourWeather else { return cell }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourWeatherCell.identifier, for: indexPath) as! HourWeatherCell
+        print("디버깅: 72 line")
+        guard let hourWeathers = self.hourWeathers else { 
+            print("디버깅: Failed to Unwrap hourWeathers,,")
+            return cell }
         cell.hourWeather = hourWeathers[indexPath.row]
+        
+        
         return cell
     }
     
     
+    
 }
 
-extension CurrentCell: UICollectionViewDelegateFlowLayout {
+extension HourCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 80, height: 100)
     }
