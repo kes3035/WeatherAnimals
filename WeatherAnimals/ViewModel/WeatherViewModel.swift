@@ -25,10 +25,7 @@ final class WeatherViewModel {
     var dayWeathers: [DayWeather]? {
         didSet {
             print("디버깅: WeatherViewModel's DayWeather Changed")
-            guard let dayWeathers = dayWeathers else {
-                print("디버깅: WeatherViewModel Failed to Unwrap DayWeathers")
-                return
-            }
+//            guard let dayWeathers = dayWeathers else { return }
 //            didChangeDayWeathers?(dayWeathers)
             didChangeWeather?(self)
 

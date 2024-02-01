@@ -111,18 +111,15 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         switch indexPath.section {
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
-            guard let hourWeathers = self.weatherViewModel.hourWeathers else { 
-                print("디버깅: Failed to Unwrap ViewModel's HourWeathers")
-                return cell }
-            cell.hourWeathers = hourWeathers
+            
+            cell.weatherViewModel = self.weatherViewModel
+
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
             
-            guard let dayWeathers = self.weatherViewModel.dayWeathers else {
-                print("디버깅: Failed to Unwrap ViewModel's DayWeathers")
-                return cell }
-            cell.dayWeathers = dayWeathers
+            cell.weatherViewModel = self.weatherViewModel
+
             
             
             return cell

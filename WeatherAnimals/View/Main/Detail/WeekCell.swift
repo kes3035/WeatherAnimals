@@ -24,19 +24,19 @@ final class WeekCell: UICollectionViewCell {
     
     var weatherViewModel: WeatherViewModel! {
         didSet {
-//            DispatchQueue.main.async {
-//                self.tenDaysTempView.reloadData()
-//            }
-        }
-    }
-    
-    var dayWeathers: [DayWeather]? {
-        didSet {
             DispatchQueue.main.async {
                 self.tenDaysTempView.reloadData()
             }
         }
     }
+//    
+//    var dayWeathers: [DayWeather]? {
+//        didSet {
+//            DispatchQueue.main.async {
+//                self.tenDaysTempView.reloadData()
+//            }
+//        }
+//    }
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -71,13 +71,20 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeekWeatherCell.identifier, for: indexPath) as! WeekWeatherCell
-        guard let dayWeathers = self.dayWeathers else { return cell }
-        cell.dayWeather = dayWeathers[indexPath.row]
+        guard let dayWeathers = self.weatherViewModel.dayWeathers else { return cell }
+//        cell.dayWeather = dayWeathers[indexPath.row]
+        let dayWeather = dayWeathers[indexPath.row]
+
         if indexPath.row == 0 {
             cell.weekdaysTitleLabel.text = "오늘"
         } else {
             cell.weekdaysTitleLabel.text = self.weatherViewModel.getDayOfWeeks(from: Date())[indexPath.row]
         }
+        
+        cell.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
+        cell.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
+        cell.weatherImageView.image = UIImage(named: dayWeather.symbolName)
+        
         return cell
     }
 }

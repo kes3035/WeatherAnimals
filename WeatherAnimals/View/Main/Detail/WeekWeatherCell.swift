@@ -18,40 +18,40 @@ final class WeekWeatherCell: UITableViewCell {
         $0.font = UIFont.neoDeungeul(size: 14)
     }
     
-    private lazy var weatherImageView = UIImageView().then {
+    lazy var weatherImageView = UIImageView().then {
         $0.backgroundColor = .white
         $0.tintColor = .black
         $0.contentMode = .scaleAspectFit
     }
    
     
-    private lazy var highTempLabel = UILabel().then {
+    lazy var highTempLabel = UILabel().then {
         $0.text = "20"
         $0.textAlignment = .center
         $0.font = UIFont.neoDeungeul(size: 14)
     }
     
-    private lazy var lowTempLabel = UILabel().then {
+    lazy var lowTempLabel = UILabel().then {
         $0.text = "-20"
         $0.textAlignment = .center
         $0.font = UIFont.neoDeungeul(size: 14)
     }
     
-    private lazy var tempColorView = UIView().then {
+    lazy var tempColorView = UIView().then {
         $0.backgroundColor = Constants.greenColor
     }
     
-    
-    var dayWeather: DayWeather? {
-        didSet {
-            guard let dayWeather = dayWeather else { return }
-            DispatchQueue.main.async {
-                self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
-                self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
-                self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
-            }
-        }
-    }
+//    
+//    var dayWeather: DayWeather? {
+//        didSet {
+//            guard let dayWeather = dayWeather else { return }
+//            DispatchQueue.main.async {
+//                self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
+//                self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
+//                self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
+//            }
+//        }
+//    }
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)

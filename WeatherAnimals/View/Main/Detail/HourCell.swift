@@ -27,13 +27,13 @@ final class HourCell: UICollectionViewCell {
         }
     }
     
-    var hourWeathers: [HourWeather]? {
-        didSet {
-            DispatchQueue.main.async {
-                self.hourCollectionView.reloadData()
-            }
-        }
-    }
+//    var hourWeathers: [HourWeather]? {
+//        didSet {
+//            DispatchQueue.main.async {
+//                self.hourCollectionView.reloadData()
+//            }
+//        }
+//    }
  
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -77,17 +77,21 @@ extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourWeatherCell.identifier, for: indexPath) as! HourWeatherCell
-        print("디버깅: 72 line")
-        guard let hourWeathers = self.hourWeathers else { 
-            print("디버깅: Failed to Unwrap hourWeathers,,")
-            return cell }
-        cell.hourWeather = hourWeathers[indexPath.row]
         
+        guard let hourWeathers = self.weatherViewModel.hourWeathers else { return cell }
+        
+        let hourWeather = hourWeathers[indexPath.row]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "a h:mm"
+        dateFormatter.locale = Locale(identifier:"ko_KR")
+        let dateString = dateFormatter.string(from: hourWeather.date)
+        
+        cell.topLabel.text = dateString
+        cell.tempLabel.text = round(hourWeather.temperature.value).description + String(UnicodeScalar(0x00B0))
+        cell.tempImageView.image = UIImage(named: hourWeather.symbolName)
         
         return cell
     }
-    
-    
     
 }
 
