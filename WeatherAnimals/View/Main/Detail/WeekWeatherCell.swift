@@ -41,21 +41,11 @@ final class WeekWeatherCell: UITableViewCell {
         $0.backgroundColor = Constants.greenColor
     }
     
-//    
-//    var dayWeather: DayWeather? {
-//        didSet {
-//            guard let dayWeather = dayWeather else { return }
-//            DispatchQueue.main.async {
-//                self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
-//                self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
-//                self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
-//            }
-//        }
-//    }
+
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        configureUI()
+        self.configureUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -99,4 +89,4 @@ final class WeekWeatherCell: UITableViewCell {
 }
 
 
-//MARK: - 
+

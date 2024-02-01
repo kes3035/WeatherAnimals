@@ -22,7 +22,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        
 //        tabBarController.viewControllers = [nav1, nav2]
         
-        window.rootViewController = tabBarController
+//        window.rootViewController = tabBarController
+        
+        let detail = DetailVC()
+        window.rootViewController = detail
+
         window.makeKeyAndVisible()
         self.window = window
     }

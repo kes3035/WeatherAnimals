@@ -3,7 +3,10 @@ import WeatherKit
 
 final class DetailVC: UIViewController {
     //MARK: - Properties
-    private let flowLayout = UICollectionViewFlowLayout()
+//    private let flowLayout = UICollectionViewFlowLayout()
+    
+    private let flowLayout = CustomFlowLayout()
+
     
     private let topView = DetailView()
     
@@ -26,7 +29,7 @@ final class DetailVC: UIViewController {
         didSet {
             DispatchQueue.main.async {
                 self.detailCollectionView.reloadData()
-                self.configureTopView()
+//                self.configureTopView()
             }
         }
     }
@@ -46,15 +49,17 @@ final class DetailVC: UIViewController {
     //MARK: - Helpers
     func configureUI() {
         self.view.backgroundColor = .white
-        self.view.addSubviews(detailCollectionView, topView)
-        self.topView.snp.makeConstraints {
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(10)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(140)
-        }
+//        self.view.addSubviews(detailCollectionView, topView)
+//        self.topView.snp.makeConstraints {
+//            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(10)
+//            $0.leading.trailing.equalToSuperview()
+//            $0.height.equalTo(140)
+//        }
+        self.view.addSubviews(detailCollectionView)
+
         
         self.detailCollectionView.snp.makeConstraints{
-            $0.top.equalTo(topView.snp.bottom).offset(10)
+            $0.top.equalToSuperview().offset(10)
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
@@ -125,13 +130,7 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
             return cell
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
-            
-            
-            //            self.weatherViewModel.didChangeWeather = { [weak self] weatherViewModel in
-            //                cell.weatherViewModel.currentWeather = weatherViewModel.currentWeather
-            //                self?.weatherViewModel = weatherViewModel
-            //            }
-            
+        
             
             return cell
         case 3:
@@ -147,6 +146,7 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         case 4:
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
+                cell.weatherViewModel = self.weatherViewModel
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RainFallCell.identifier, for: indexPath) as! RainFallCell
@@ -197,18 +197,6 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
 extension DetailVC: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard scrollView == self.detailCollectionView else { return }
-        let offsetY = scrollView.contentOffset.y
-        
-        // HeaderView의 높이만큼 스크롤 되었을 때 (HeaderView가 화면 밖에 있는 상태)
-        if offsetY >= 30 {
-            // 이전 헤더뷰를 투명하게 만들기
-            //            self.detailCollectionView.
-            
-        } else {
-            // 스크롤이 헤더뷰의 높이 미만일 때, 투명도를 조절하여 페이드아웃 효과 생성
-            //            let alpha = 1.0 - (offsetY / headerViewHeight)
-            //            previousHeaderView.alpha = alpha
-        }
     }
 }
 

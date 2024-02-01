@@ -22,39 +22,16 @@ final class WeatherViewModel {
         }
     }
     
-    var dayWeathers: [DayWeather]? {
-        didSet {
-            print("디버깅: WeatherViewModel's DayWeather Changed")
-//            guard let dayWeathers = dayWeathers else { return }
-//            didChangeDayWeathers?(dayWeathers)
-            didChangeWeather?(self)
-
-        }
-    }
+    var dayWeathers: [DayWeather]?
     
-    var hourWeathers: [HourWeather]? {
-        didSet {
-            print("디버깅: WeatherViewModel's HourWeather Changed")
-            guard let hourWeathers = hourWeathers else {
-                print("디버깅: WeatherViewModel Failed to Unwrap HourWeathers")
-                return
-            }
-            didChangeHourWeathers?(hourWeathers)
-//            didChangeWeather?(self)
-        }
-    }
+    var hourWeathers: [HourWeather]?
     
-    var countOfHourWeathers: Int?
     //MARK: - Inputs
     
    
     //MARK: - Outputs
     
     var didChangeWeather: ((WeatherViewModel) -> Void)?
-    
-    var didChangeDayWeathers: (([DayWeather]) -> Void)?
-    
-    var didChangeHourWeathers: (([HourWeather]) -> Void)?
 
     var didFetchedWeathers: (() -> Void)?
     
@@ -107,36 +84,9 @@ final class WeatherViewModel {
         }
     }
     
-    func getDetailVCWeather(location: CLLocation, completion: @escaping (CurrentWeather, [DayWeather], [HourWeather]) -> ()) {
-        Task {
-            do {
-                let weather = try await WeatherService.shared.weather(for: location, including: .current, .daily, .hourly)
-                completion(weather.0, weather.1.forecast, weather.2.forecast)
-            } catch let error { print(String(describing: error)) }
-        }
-    }
+
     
-    
-    func getCurrentWeather(location: CLLocation, completion: @escaping (CurrentWeather) -> ()) {
-        Task {
-            do {
-                let weather = try await WeatherService.shared.weather(for: location, including: .current)
-                completion(weather)
-            } catch let error { print(String(describing: error)) }
-        }
-    }
-    //일일 날씨 정보를 가져오는 메서드 (10일간의 데이터)
-    func getDayWeather(location: CLLocation, completion: @escaping (Forecast<DayWeather>) -> ()) {
-        Task {
-            do {
-                let weather = try await WeatherService.shared.weather(for: location, including: .daily)
-                completion(weather)
-            } catch let error { print(String(describing: error)) }
-        }
-    }
-    
-    
-    
+ 
    
     
     func convertWeatherCondition(condition: WeatherCondition) -> String {

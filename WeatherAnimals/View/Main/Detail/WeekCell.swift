@@ -29,14 +29,7 @@ final class WeekCell: UICollectionViewCell {
             }
         }
     }
-//    
-//    var dayWeathers: [DayWeather]? {
-//        didSet {
-//            DispatchQueue.main.async {
-//                self.tenDaysTempView.reloadData()
-//            }
-//        }
-//    }
+
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {

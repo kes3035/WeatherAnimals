@@ -9,23 +9,20 @@ final class WeatherCell: UITableViewCell {
     
     private lazy var baseView = UIView().then {
         $0.backgroundColor = .white
-        $0.layer.cornerRadius = 13
         $0.clipsToBounds = true
-        $0.layer.borderWidth = 1
+        $0.layer.borderWidth = 3
         $0.layer.borderColor = UIColor.black.cgColor
     }
     
     private lazy var weatherImageView = UIImageView().then {
         $0.backgroundColor = .clear
         $0.contentMode = .scaleAspectFill
-        
     }
     
     private lazy var tempLabel = UILabel().then {
         $0.numberOfLines = 0
         $0.text = "20"
         $0.font = UIFont.neoDeungeul(size: 47)
-
     }
     
     private lazy var celsiusLabel = UILabel().then {
@@ -44,10 +41,7 @@ final class WeatherCell: UITableViewCell {
 
     var weatherViewModel: WeatherViewModel! {
         didSet {
-            guard let currentWeather = weatherViewModel.currentWeather else {
-                print("디버깅: Failed to unwrap CurrentWeather")
-                return
-            }
+            guard let currentWeather = weatherViewModel.currentWeather else { return }
             self.configureUIWithData(currentWeather)
         }
     }
@@ -57,7 +51,7 @@ final class WeatherCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         self.weatherViewModel = WeatherViewModel()
-        configureUI()
+        self.configureUI()
         
     }
     
@@ -71,8 +65,7 @@ final class WeatherCell: UITableViewCell {
                              addressLabel,
                              celsiusLabel,
                              weatherImageView,
-                             animalImageView
-        )
+                             animalImageView)
         
         baseView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
@@ -117,8 +110,4 @@ final class WeatherCell: UITableViewCell {
             self.weatherImageView.image = UIImage(named: weather.symbolName)
         }
     }
-    
-
-    
-//MARK: - Actions
 }

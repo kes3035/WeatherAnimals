@@ -157,3 +157,9 @@ class CollectionReusableView: UICollectionReusableView {
     //MARK: - Actions
     
 }
+
+extension CollectionReusableView {
+    func setAlpha(_ alpha: CGFloat) {
+        self.alpha = alpha
+    }
+}

@@ -103,7 +103,7 @@ extension AddVC: UITableViewDelegate {
            
         guard let placemark = response?.mapItems[0].placemark else { return }
 
-        self.requestGetWeather(lat: placemark.coordinate.latitude, lon: placemark.coordinate.longitude, location: (placemark.locality ?? placemark.title) ?? "")
+        
        }
    }
 }
@@ -143,20 +143,6 @@ extension AddVC: MKLocalSearchCompleterDelegate {
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
         if let error = error as NSError? {
             print("MKLocalSearchCompleter encountered an error: \(error.localizedDescription). The query fragment is: \"\(completer.queryFragment)\"")
-        }
-    }
-}
-
-extension AddVC {
-    func requestGetWeather(lat: Double, lon: Double, location: String) {
-        let location = CLLocation(latitude: lat, longitude: lon)
-        self.weatherViewModel.getCurrentWeather(location: location) { weather in
-            DispatchQueue.main.async {
-                let detailVC = DetailVC()
-//                detailVC.weather = weather
-//                self.navigationController?.pushViewController(detailVC, animated: true)
-                self.present(detailVC, animated: true, completion: nil)
-            }
         }
     }
 }

@@ -38,12 +38,18 @@ class ApparentTempCell: UICollectionViewCell {
         $0.text = "바람으로 인해 체감 온도가 실제 온도보다 더 낮게 느껴집니다."
     }
     
+    var weatherViewModel: WeatherViewModel! {
+        didSet {
+            self.configureUIWithData(self.weatherViewModel)
+        }
+    }
     
     
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.weatherViewModel = WeatherViewModel()
         self.configureUI()
     }
     
@@ -72,14 +78,20 @@ class ApparentTempCell: UICollectionViewCell {
             $0.top.equalTo(airQualityValueLabel.snp.bottom).offset(5)
         }
         
-     
-        
         self.airQualityDescriptionLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(10)
             $0.trailing.equalToSuperview().inset(10)
             $0.top.equalTo(airQualityValueLabel.snp.bottom).offset(40)
         }
-        
-        
+    }
+    
+    private func configureUIWithData(_ weatherViewModel: WeatherViewModel) {
+        DispatchQueue.main.async {
+            guard let currentWeather = weatherViewModel.currentWeather else { return }
+            self.airQualityValueLabel.text = String(round(currentWeather.apparentTemperature.value)) + currentWeather.apparentTemperature.unit.symbol
+//            self.airQualityDescriptionLabel.text = currentWeather.apparentTemperature.description
+//            self.airQualityValueLabel.text = String(round(currentWeather.apparentTemperature.value))
+        }
     }
 }
+
