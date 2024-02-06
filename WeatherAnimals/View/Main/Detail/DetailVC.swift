@@ -22,8 +22,8 @@ final class DetailVC: UIViewController {
         $0.register(SunsetCell.self, forCellWithReuseIdentifier: SunsetCell.identifier) //AirQualityCell 등록
         $0.register(ApparentTempCell.self, forCellWithReuseIdentifier: ApparentTempCell.identifier) //AirQualityCell 등록
         $0.register(RainFallCell.self, forCellWithReuseIdentifier: RainFallCell.identifier) //AirQualityCell 등록
+        $0.register(HumidityCell.self, forCellWithReuseIdentifier: HumidityCell.identifier) //HumidityCell 등록
         $0.register(CollectionFirstHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionFirstHeader.identifier) //Header 등록
-        $0.register(CollectionSecondHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionSecondHeader.identifier) //Header 등록
     }
     
     var weatherViewModel: WeatherViewModel! {
@@ -100,9 +100,9 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
-        case 0, 1, 2:
+        case 0, 1:
             return 1
-        case 3, 4:
+        case 2, 3, 4:
             return 2
         default:
             return 1
@@ -128,47 +128,53 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
             
             return cell
         case 2:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
-        
-            
-            return cell
-        case 3:
             if indexPath.row == 0 {
+                
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
                 //                cell.weather = self.weatherViewModel.currentWeather
                 return cell
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
+                
+                
+                return cell
+            }
+        case 3:
+            if indexPath.row == 0 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HumidityCell.identifier, for: indexPath) as! HumidityCell
+                //                cell.weather = self.weatherViewModel.currentWeather
+                return cell
+            } else {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
                 
                 return cell
             }
         case 4:
             if indexPath.row == 0 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
-                cell.weatherViewModel = self.weatherViewModel
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RainFallCell.identifier, for: indexPath) as! RainFallCell
+//                cell.weatherViewModel = self.weatherViewModel
                 return cell
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RainFallCell.identifier, for: indexPath) as! RainFallCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
                 return cell
             }
         default:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
-            return cell
+            return UICollectionViewCell()
         }
     }
 }
 
 //MARK: - UICollectionViewDelegateFlowLayout
 extension DetailVC: UICollectionViewDelegateFlowLayout {
+    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch indexPath.section {
         case 0:
             return CGSize(width: self.view.frame.width, height: 100)
         case 1:
             return CGSize(width: self.view.frame.width, height: 600)
-        case 2:
-            return CGSize(width: self.view.frame.width, height: 170)
-        case 3, 4:
+        case 2, 3, 4:
             return CGSize(width: self.view.frame.width/2 - 5, height: self.view.frame.width/2 - 5)
         default:
             return CGSize(width: 100, height: 100)
@@ -184,22 +190,22 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         guard kind == UICollectionView.elementKindSectionHeader,
               let firstHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
                                                                            withReuseIdentifier: CollectionFirstHeader.identifier,
-                                                                           for: indexPath)  as? CollectionFirstHeader,
-              let secondHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                                 withReuseIdentifier: CollectionSecondHeader.identifier,
-                                                                                 for: indexPath)  as? CollectionSecondHeader
+                                                                           for: indexPath)  as? CollectionFirstHeader
+//              let secondHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+//                                                                                 withReuseIdentifier: CollectionSecondHeader.identifier,
+//                                                                                 for: indexPath)  as? CollectionSecondHeader
         else { return UICollectionReusableView()}
         firstHeader.section = indexPath.section
-        secondHeader.section = indexPath.section
-        switch indexPath.section {
-        case 0, 1, 2:
-            return firstHeader
-        case 3,4:
-            return secondHeader
-        default:
-            return firstHeader
-        }
-//        return firstHeader
+////        secondHeader.section = indexPath.section
+//        switch indexPath.section {
+//        case 0, 1, 2:
+//            return firstHeader
+//        case 3,4:
+//            return secondHeader
+//        default:
+//            return firstHeader
+//        }
+        return firstHeader
     }
 }
 
