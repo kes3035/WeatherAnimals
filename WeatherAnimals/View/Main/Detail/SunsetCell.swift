@@ -12,11 +12,7 @@ class SunsetCell: UICollectionViewCell {
     //MARK: - Properties
     
     private lazy var baseView = UIView().then {
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.systemGray4.cgColor
-        $0.layer.cornerRadius = 16
-        $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-        $0.backgroundColor = .clear
+        $0.backgroundColor = UIColor(named: "background")
     }
     
     private lazy var airQualityValueLabel = UILabel().then {
@@ -41,7 +37,11 @@ class SunsetCell: UICollectionViewCell {
         $0.text = "일몰: 오후 5:47."
     }
     
-    
+    var weatherViewModel: WeatherViewModel! {
+        didSet {
+            self.configureUIWithData(self.weatherViewModel)
+        }
+    }
     
     
     //MARK: - LifeCycle
@@ -89,5 +89,11 @@ class SunsetCell: UICollectionViewCell {
         }
         
         
+    }
+    
+    private func configureUIWithData(_ weatherViewModel: WeatherViewModel) {
+        guard let dayWeathers = weatherViewModel.dayWeathers else { return }
+        let sunrise = dayWeathers[0].sun.sunrise
+        let sunset = dayWeathers[0].sun.sunset
     }
 }

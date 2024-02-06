@@ -17,15 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         let tabBarController = TabBC()
+                
+        window.rootViewController = tabBarController
         
-//        
-//        
-//        tabBarController.viewControllers = [nav1, nav2]
-        
-//        window.rootViewController = tabBarController
-        
-        let detail = DetailVC()
-        window.rootViewController = detail
+//        let detail = DetailVC()
+//        window.rootViewController = detail
 
         window.makeKeyAndVisible()
         self.window = window

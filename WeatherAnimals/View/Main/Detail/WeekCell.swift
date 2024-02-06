@@ -13,12 +13,7 @@ final class WeekCell: UICollectionViewCell {
         $0.dataSource = self
         $0.isScrollEnabled = false
         $0.register(WeekWeatherCell.self, forCellReuseIdentifier: WeekWeatherCell.identifier)
-        $0.layer.cornerRadius = 16
-        $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-
-        $0.backgroundColor = .white
-        $0.layer.borderColor = UIColor.systemGray4.cgColor
-        $0.layer.borderWidth = 1
+        $0.backgroundColor = UIColor(named: "background")
         $0.rowHeight = 60
     }
     

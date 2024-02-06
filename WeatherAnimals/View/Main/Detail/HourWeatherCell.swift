@@ -10,7 +10,7 @@ final class HourWeatherCell: UICollectionViewCell {
     }
     
     lazy var tempImageView = UIImageView().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = .clear
         $0.tintColor = .black
         $0.contentMode = .scaleAspectFit
     }

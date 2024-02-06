@@ -32,17 +32,17 @@ class CustomFlowLayout: UICollectionViewFlowLayout {
         
         // 현재 화면에 보이는 헤더가 다음 섹션 헤더의 아래에 있는지 확인하고, 애니메이션으로 숨김 처리
         if let nextHeaderAttributes = nextHeaderAttributes,
-           let currentHeader = collectionView.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader).first(where: { $0 is CollectionReusableView }) as? CollectionReusableView {
+           let currentHeader = collectionView.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader).first(where: { $0 is CollectionFirstHeader }) as? CollectionFirstHeader {
       
             
             let yOffset = collectionView.contentOffset.y
             if yOffset >= nextHeaderAttributes.frame.minY {
                 let diff = nextHeaderAttributes.frame.minY - firstVisibleHeaderAttributes.frame.maxY
                 let alpha = max(0, min(1, 1 - abs(diff) / firstVisibleHeaderAttributes.frame.height))
-                print(alpha)
-                currentHeader.setAlpha(alpha)
+//                print(alpha)
+//                currentHeader.setAlpha(alpha)
             } else {
-                currentHeader.setAlpha(1)
+//                currentHeader.setAlpha(1)
             }
         }
 

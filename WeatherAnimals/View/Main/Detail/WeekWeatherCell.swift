@@ -19,12 +19,11 @@ final class WeekWeatherCell: UITableViewCell {
     }
     
     lazy var weatherImageView = UIImageView().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = .clear
         $0.tintColor = .black
         $0.contentMode = .scaleAspectFit
     }
    
-    
     lazy var highTempLabel = UILabel().then {
         $0.text = "20"
         $0.textAlignment = .center
@@ -53,6 +52,9 @@ final class WeekWeatherCell: UITableViewCell {
     
 //MARK: - Helpers
     private func configureUI() {
+        
+        self.contentView.backgroundColor = UIColor(named: "background")
+        
         self.contentView.addSubviews(weekdaysTitleLabel, weatherImageView, highTempLabel, lowTempLabel, tempColorView)
         
         weekdaysTitleLabel.snp.makeConstraints {

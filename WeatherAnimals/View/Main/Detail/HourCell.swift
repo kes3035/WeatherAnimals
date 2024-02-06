@@ -9,12 +9,8 @@ final class HourCell: UICollectionViewCell {
     private lazy var hourCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
         $0.delegate = self
         $0.dataSource = self
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 16
-        $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+        $0.backgroundColor = UIColor(named: "background")
         $0.clipsToBounds = true
-        $0.layer.borderColor = UIColor.systemGray4.cgColor
-        $0.layer.borderWidth = 1
         $0.showsHorizontalScrollIndicator = false
         $0.register(HourWeatherCell.self, forCellWithReuseIdentifier: HourWeatherCell.identifier)
     }

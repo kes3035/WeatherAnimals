@@ -22,14 +22,15 @@ final class DetailVC: UIViewController {
         $0.register(SunsetCell.self, forCellWithReuseIdentifier: SunsetCell.identifier) //AirQualityCell 등록
         $0.register(ApparentTempCell.self, forCellWithReuseIdentifier: ApparentTempCell.identifier) //AirQualityCell 등록
         $0.register(RainFallCell.self, forCellWithReuseIdentifier: RainFallCell.identifier) //AirQualityCell 등록
-        $0.register(CollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionReusableView.identifier) //Header 등록
+        $0.register(CollectionFirstHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionFirstHeader.identifier) //Header 등록
+        $0.register(CollectionSecondHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionSecondHeader.identifier) //Header 등록
     }
     
     var weatherViewModel: WeatherViewModel! {
         didSet {
             DispatchQueue.main.async {
                 self.detailCollectionView.reloadData()
-//                self.configureTopView()
+                self.configureTopView()
             }
         }
     }
@@ -49,17 +50,15 @@ final class DetailVC: UIViewController {
     //MARK: - Helpers
     func configureUI() {
         self.view.backgroundColor = .white
-//        self.view.addSubviews(detailCollectionView, topView)
-//        self.topView.snp.makeConstraints {
-//            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(10)
-//            $0.leading.trailing.equalToSuperview()
-//            $0.height.equalTo(140)
-//        }
-        self.view.addSubviews(detailCollectionView)
-
+        self.view.addSubviews(detailCollectionView, topView)
+        self.topView.snp.makeConstraints {
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(10)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(140)
+        }
         
         self.detailCollectionView.snp.makeConstraints{
-            $0.top.equalToSuperview().offset(10)
+            $0.top.equalTo(self.topView.snp.bottom).offset(10)
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
@@ -68,9 +67,9 @@ final class DetailVC: UIViewController {
         guard let dayWeather = weatherViewModel.dayWeathers,
               let current = weatherViewModel.currentWeather else { return }
         DispatchQueue.main.async {
-            self.topView.tempLabel.text = String(round(current.temperature.value))
-            self.topView.highestTempLabel.text = "최고 : " + String(round(dayWeather[0].highTemperature.value))
-            self.topView.lowestTempLabel.text = "최저 : " + String(round(dayWeather[0].lowTemperature.value))
+            self.topView.tempLabel.text = String(round(current.temperature.value)) +  "°"
+            self.topView.highestTempLabel.text = "최고 : " + String(round(dayWeather[0].highTemperature.value)) +  "°"
+            self.topView.lowestTempLabel.text = "최저 : " + String(round(dayWeather[0].lowTemperature.value)) +  "°"
         }
     }
     
@@ -183,12 +182,24 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         guard kind == UICollectionView.elementKindSectionHeader,
-              let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                           withReuseIdentifier: CollectionReusableView.identifier,
-                                                                           for: indexPath)  as? CollectionReusableView
+              let firstHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                           withReuseIdentifier: CollectionFirstHeader.identifier,
+                                                                           for: indexPath)  as? CollectionFirstHeader,
+              let secondHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                                 withReuseIdentifier: CollectionSecondHeader.identifier,
+                                                                                 for: indexPath)  as? CollectionSecondHeader
         else { return UICollectionReusableView()}
-        header.section = indexPath.section
-        return header
+        firstHeader.section = indexPath.section
+        secondHeader.section = indexPath.section
+        switch indexPath.section {
+        case 0, 1, 2:
+            return firstHeader
+        case 3,4:
+            return secondHeader
+        default:
+            return firstHeader
+        }
+//        return firstHeader
     }
 }
 

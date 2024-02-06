@@ -72,7 +72,7 @@ final class DetailView: UIView {
     private func configureUI() {
         self.backgroundColor = .white
         self.addSubview(baseView)
-        self.addSubview(celsiusLabel)
+//        self.addSubview(celsiusLabel)
         self.baseView.addSubviews(topStack)
         self.tempView.addSubview(tempLabel)
         self.labelStack.addArrangedSubviews(tempView, summaryLabel, highestTempLabel, lowestTempLabel)
@@ -105,9 +105,9 @@ final class DetailView: UIView {
             $0.bottom.equalTo(tempView.snp.bottom)
         }
         
-        celsiusLabel.snp.makeConstraints {
-            $0.top.equalTo(tempLabel.snp.top).offset(3)
-            $0.leading.equalTo(tempLabel.snp.trailing).inset(5)
-        }
+//        celsiusLabel.snp.makeConstraints {
+//            $0.top.equalTo(tempLabel.snp.top).offset(3)
+//            $0.leading.equalTo(tempLabel.snp.trailing).inset(5)
+//        }
     }
 }
