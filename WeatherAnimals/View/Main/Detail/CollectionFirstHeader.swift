@@ -81,6 +81,63 @@ class CollectionFirstHeader: UICollectionReusableView {
         
         self.baseViews.forEach { $0.backgroundColor = UIColor(named: "background") }
         
+        self.baseView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(10)
+            $0.trailing.equalToSuperview().inset(10)
+            $0.top.bottom.equalToSuperview()
+        }
+        
+        self.titleImageView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(20)
+            $0.width.height.equalTo(15)
+        }
+        
+        self.titleLabel.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(self.titleImageView.snp.trailing).offset(10)
+        }
+        
+        self.leftBaseView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(10)
+            $0.trailing.equalTo(self.snp.centerX).offset(-15)
+            $0.top.bottom.equalToSuperview()
+        }
+        
+        self.leftTitleImageView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(20)
+            $0.width.height.equalTo(15)
+        }
+        
+        self.leftTitleLabel.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(self.leftTitleImageView.snp.trailing).offset(10)
+        }
+        
+        self.rightBaseView.snp.makeConstraints {
+            $0.leading.equalTo(self.snp.centerX).offset(15)
+            $0.trailing.equalToSuperview().inset(10)
+            $0.top.bottom.equalToSuperview()
+        }
+        
+        self.rightTitleImageView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(20)
+            $0.width.height.equalTo(15)
+        }
+        
+        self.rightTitleLabel.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(self.rightTitleImageView.snp.trailing).offset(10)
+        }
+        
+    }
+    
+    private func configureLongTitle() {
+        [self.leftBaseView, self.rightBaseView].forEach { $0.removeFromSuperview() }
+        self.addSubview(self.baseView)
+        DispatchQueue.main.async {
             self.baseView.snp.makeConstraints {
                 $0.leading.equalToSuperview().offset(10)
                 $0.trailing.equalToSuperview().inset(10)
@@ -97,7 +154,13 @@ class CollectionFirstHeader: UICollectionReusableView {
                 $0.centerY.equalToSuperview()
                 $0.leading.equalTo(self.titleImageView.snp.trailing).offset(10)
             }
-            
+        }
+    }
+    
+    private func configureShortTitle() {
+        self.baseView.removeFromSuperview()
+        self.addSubviews(self.leftBaseView, self.rightBaseView)
+        DispatchQueue.main.async {
             self.leftBaseView.snp.makeConstraints {
                 $0.leading.equalToSuperview().offset(10)
                 $0.trailing.equalTo(self.snp.centerX).offset(-15)
@@ -131,6 +194,8 @@ class CollectionFirstHeader: UICollectionReusableView {
                 $0.centerY.equalToSuperview()
                 $0.leading.equalTo(self.rightTitleImageView.snp.trailing).offset(10)
             }
+            
+        }
         
     }
     
@@ -139,7 +204,8 @@ class CollectionFirstHeader: UICollectionReusableView {
         
         guard section == 0 || section == 1 else {
             // 0, 1 섹션이 아니면
-            [self.baseView, self.titleLabel, self.titleImageView].forEach { $0.removeFromSuperview() }
+            
+            self.configureShortTitle()
             
             switch section {
             case 2:
@@ -164,7 +230,8 @@ class CollectionFirstHeader: UICollectionReusableView {
             return
         }
         // 0,1 섹션이면
-        [self.leftBaseView, self.leftTitleLabel, self.leftTitleImageView, self.rightBaseView, self.rightTitleLabel, self.rightTitleImageView].forEach { $0.removeFromSuperview() }
+        
+        self.configureLongTitle()
         
         switch section {
         case 0:

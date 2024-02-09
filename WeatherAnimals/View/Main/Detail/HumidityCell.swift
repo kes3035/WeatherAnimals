@@ -25,7 +25,12 @@ final class HumidityCell: UICollectionViewCell {
     private func configureUI() {
         self.backgroundColor = .clear
         self.baseView.backgroundColor = UIColor(named: "background")
-        
+        self.addSubview(self.baseView)
+        self.baseView.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().offset(10)
+            $0.trailing.bottom.equalToSuperview().inset(10)
+        }
     }
     
 }
