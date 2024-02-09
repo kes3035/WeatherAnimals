@@ -1,7 +1,7 @@
 import UIKit
 
-class CollectionFirstHeader: UICollectionReusableView {
-    static let identifier = "CollectionFirstHeader"
+class CollectionHeader: UICollectionReusableView {
+    static let identifier = "CollectionHeader"
     //MARK: - Properties
     
     private lazy var baseView = UIView()

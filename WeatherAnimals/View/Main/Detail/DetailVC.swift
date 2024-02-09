@@ -23,7 +23,7 @@ final class DetailVC: UIViewController {
         $0.register(ApparentTempCell.self, forCellWithReuseIdentifier: ApparentTempCell.identifier) //AirQualityCell 등록
         $0.register(RainFallCell.self, forCellWithReuseIdentifier: RainFallCell.identifier) //AirQualityCell 등록
         $0.register(HumidityCell.self, forCellWithReuseIdentifier: HumidityCell.identifier) //HumidityCell 등록
-        $0.register(CollectionFirstHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionFirstHeader.identifier) //Header 등록
+        $0.register(CollectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionHeader.identifier) //Header 등록
     }
     
     var weatherViewModel: WeatherViewModel! {
@@ -189,8 +189,8 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         
         guard kind == UICollectionView.elementKindSectionHeader,
               let firstHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                           withReuseIdentifier: CollectionFirstHeader.identifier,
-                                                                           for: indexPath)  as? CollectionFirstHeader
+                                                                           withReuseIdentifier: CollectionHeader.identifier,
+                                                                           for: indexPath)  as? CollectionHeader
 //              let secondHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
 //                                                                                 withReuseIdentifier: CollectionSecondHeader.identifier,
 //                                                                                 for: indexPath)  as? CollectionSecondHeader
