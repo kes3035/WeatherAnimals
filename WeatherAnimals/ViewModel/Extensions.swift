@@ -6,6 +6,24 @@ extension UIView {
             self.addSubview(view)
         }
     }
+    
+    func partialBackgroundColor(low: Double, high: Double, tempData: [Double]) {
+        self.backgroundColor = UIColor(named: "black")
+        
+        let minLow = tempData[0]
+        let maxHigh = tempData[1]
+        let sepCoeff = tempData[2]
+        let blackRect = CGRect(x: low - minLow, y: 0, width: high - low, height: 2)
+        let view = UIView()
+        view.backgroundColor = Constants.greenColor
+        self.addSubview(view)
+        view.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(low-minLow)
+            $0.width.equalTo(high - low)
+            $0.height.equalTo(2)
+            
+        }
+    }
 }
 
 extension UIStackView {

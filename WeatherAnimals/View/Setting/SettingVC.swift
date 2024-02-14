@@ -89,7 +89,7 @@ extension SettingVC: UITableViewDelegate, UITableViewDataSource {
     
    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = TableHeaderView()
+        let header = SettingHeaderView()
         switch section {
         case 0:
             header.titleLabel.text = "앱 설정"

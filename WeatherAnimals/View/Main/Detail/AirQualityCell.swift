@@ -62,7 +62,8 @@ final class AirQualityCell: UICollectionViewCell {
         }
         
         self.airQualityValueLabel.snp.makeConstraints {
-            $0.centerX.centerY.equalToSuperview()
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalTo(self.baseView.snp.centerY).offset(-30)
             $0.height.equalTo(60)
         }
         

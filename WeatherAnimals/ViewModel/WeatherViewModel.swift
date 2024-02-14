@@ -84,7 +84,15 @@ final class WeatherViewModel {
         }
     }
     
-
+    func configureWeekTempView(_ dayWeahter: DayWeather) -> [Double] {
+        guard let dayWeathers = self.dayWeathers else { return [0.0] }
+        let highTemps = dayWeathers.map { round($0.highTemperature.value) }
+        let lowTemps = dayWeathers.map { round($0.lowTemperature.value) }
+        let maxHigh = highTemps.max() ?? 0
+        let minLow = lowTemps.min() ?? 0
+        let sepCoeff = maxHigh - minLow + 1
+        return [minLow, maxHigh, sepCoeff]
+    }
     
  
    

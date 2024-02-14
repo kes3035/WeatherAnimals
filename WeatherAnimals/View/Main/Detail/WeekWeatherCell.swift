@@ -36,9 +36,12 @@ final class WeekWeatherCell: UITableViewCell {
         $0.font = UIFont.neoDeungeul(size: 16)
     }
     
-    lazy var tempColorView = UIView().then {
-        $0.backgroundColor = UIColor(named: "black")
-    }
+//    lazy var tempColorView = UIView().then {
+//        $0.backgroundColor = UIColor(named: "black")
+//    }
+    
+    lazy var tempColorView = WeekTempView()
+    
     
     lazy var customSeparator = UIView().then {
         $0.backgroundColor = UIColor(named: "black")

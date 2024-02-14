@@ -28,6 +28,8 @@
 		216D32262B6B529400B1229C /* HourWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D32252B6B529300B1229C /* HourWeatherCell.swift */; };
 		2191034F2B70E9BB007C5BF1 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2191034E2B70E9BB007C5BF1 /* Color.xcassets */; };
 		219103532B7228E6007C5BF1 /* HumidityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219103522B7228E6007C5BF1 /* HumidityCell.swift */; };
+		21937DE52B7CB3810088CE2C /* SettingHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21937DE42B7CB3810088CE2C /* SettingHeaderView.swift */; };
+		21937DE72B7CBB540088CE2C /* WeekTempView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21937DE62B7CBB540088CE2C /* WeekTempView.swift */; };
 		219937CD2AF1094900EC8518 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219937CC2AF1094900EC8518 /* WeatherViewModel.swift */; };
 		219937CF2AF10ECE00EC8518 /* WeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219937CE2AF10ECE00EC8518 /* WeatherCell.swift */; };
 		21AA8CD92B494B68008AABC5 /* WeekWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AA8CD82B494B68008AABC5 /* WeekWeatherCell.swift */; };
@@ -73,6 +75,8 @@
 		216D32252B6B529300B1229C /* HourWeatherCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HourWeatherCell.swift; sourceTree = "<group>"; };
 		2191034E2B70E9BB007C5BF1 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
 		219103522B7228E6007C5BF1 /* HumidityCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumidityCell.swift; sourceTree = "<group>"; };
+		21937DE42B7CB3810088CE2C /* SettingHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingHeaderView.swift; sourceTree = "<group>"; };
+		21937DE62B7CBB540088CE2C /* WeekTempView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekTempView.swift; sourceTree = "<group>"; };
 		219937CC2AF1094900EC8518 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		219937CE2AF10ECE00EC8518 /* WeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCell.swift; sourceTree = "<group>"; };
 		21AA8CD82B494B68008AABC5 /* WeekWeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekWeatherCell.swift; sourceTree = "<group>"; };
@@ -188,6 +192,7 @@
 				216D32252B6B529300B1229C /* HourWeatherCell.swift */,
 				212E38952B5BC80100F487B2 /* WeekCell.swift */,
 				21AA8CD82B494B68008AABC5 /* WeekWeatherCell.swift */,
+				21937DE62B7CBB540088CE2C /* WeekTempView.swift */,
 				216D321C2B68F62F00B1229C /* AirQualityCell.swift */,
 				21C292562B61196800312759 /* UltravioletCell.swift */,
 				216D321B2B68F62F00B1229C /* SunsetCell.swift */,
@@ -203,6 +208,7 @@
 			children = (
 				21F47D8E2B45463B0066F86E /* SettingVC.swift */,
 				21BCAD9C2B5664B8009B82F7 /* SettingCell.swift */,
+				21937DE42B7CB3810088CE2C /* SettingHeaderView.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -440,12 +446,14 @@
 				212E38892B5B9DBA00F487B2 /* CollectionHeader.swift in Sources */,
 				21F47D8F2B45463B0066F86E /* SettingVC.swift in Sources */,
 				21D4C6DA2AF3DF100048CF65 /* LocationViewModel.swift in Sources */,
+				21937DE72B7CBB540088CE2C /* WeekTempView.swift in Sources */,
 				216D320D2B68EFCA00B1229C /* Extensions.swift in Sources */,
 				219937CF2AF10ECE00EC8518 /* WeatherCell.swift in Sources */,
 				215730552B6B9EF0004B3AB8 /* AirQualityHeader.swift in Sources */,
 				212E389B2B5E537400F487B2 /* HeaderView.swift in Sources */,
 				215730592B6B9F0B004B3AB8 /* SunsetHeader.swift in Sources */,
 				216D32262B6B529400B1229C /* HourWeatherCell.swift in Sources */,
+				21937DE52B7CB3810088CE2C /* SettingHeaderView.swift in Sources */,
 				21C292622B663A8400312759 /* CustomFlowLayout.swift in Sources */,
 				2157305D2B6B9F25004B3AB8 /* RainHeader.swift in Sources */,
 				212E38942B5BC29900F487B2 /* HourCell.swift in Sources */,

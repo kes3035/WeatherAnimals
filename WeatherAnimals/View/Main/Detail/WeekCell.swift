@@ -15,8 +15,6 @@ final class WeekCell: UICollectionViewCell {
         $0.register(WeekWeatherCell.self, forCellReuseIdentifier: WeekWeatherCell.identifier)
         $0.backgroundColor = UIColor(named: "background")
         $0.rowHeight = 38
-//        $0.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-//        $0.separatorColor = UIColor(named: "black")
         $0.separatorStyle = .none
         
     }
@@ -25,6 +23,7 @@ final class WeekCell: UICollectionViewCell {
         didSet {
             DispatchQueue.main.async {
                 self.tenDaysTempView.reloadData()
+//                self.weatherViewModel.configureWeekTempView()
             }
         }
     }
@@ -51,9 +50,6 @@ final class WeekCell: UICollectionViewCell {
         }
     }
     
-    //MARK: - Actions
-    
-    
 }
 
 extension WeekCell: UITableViewDelegate, UITableViewDataSource {
@@ -63,9 +59,11 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeekWeatherCell.identifier, for: indexPath) as! WeekWeatherCell
+        
         guard let dayWeathers = self.weatherViewModel.dayWeathers else { return cell }
-//        cell.dayWeather = dayWeathers[indexPath.row]
+        
         let dayWeather = dayWeathers[indexPath.row]
+        let tempData = self.weatherViewModel.configureWeekTempView(dayWeathers[indexPath.row])
 
         if indexPath.row == 0 {
             cell.weekdaysTitleLabel.text = "오늘"
@@ -76,7 +74,7 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
         cell.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
         cell.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
         cell.weatherImageView.image = UIImage(named: dayWeather.symbolName)
-        
+        cell.tempColorView.partialBackgroundColor(low: round(dayWeather.lowTemperature.value), high: round(dayWeather.highTemperature.value), tempData: tempData)
         return cell
     }
 }
