@@ -41,7 +41,6 @@
 		21C292552B60EF5400312759 /* ItemsReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C292542B60EF5400312759 /* ItemsReusableView.swift */; };
 		21C292572B61196800312759 /* UltravioletCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C292562B61196800312759 /* UltravioletCell.swift */; };
 		21C2925D2B61199600312759 /* RainFallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C2925C2B61199600312759 /* RainFallCell.swift */; };
-		21C2925F2B6244D800312759 /* TableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C2925E2B6244D800312759 /* TableHeaderView.swift */; };
 		21C292622B663A8400312759 /* CustomFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C292612B663A8400312759 /* CustomFlowLayout.swift */; };
 		21D4C6DA2AF3DF100048CF65 /* LocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D4C6D92AF3DF100048CF65 /* LocationViewModel.swift */; };
 		21DDD86B2B4E77430074ABAB /* AddVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DDD86A2B4E77430074ABAB /* AddVC.swift */; };
@@ -90,7 +89,6 @@
 		21C292542B60EF5400312759 /* ItemsReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsReusableView.swift; sourceTree = "<group>"; };
 		21C292562B61196800312759 /* UltravioletCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltravioletCell.swift; sourceTree = "<group>"; };
 		21C2925C2B61199600312759 /* RainFallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RainFallCell.swift; sourceTree = "<group>"; };
-		21C2925E2B6244D800312759 /* TableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderView.swift; sourceTree = "<group>"; };
 		21C292612B663A8400312759 /* CustomFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFlowLayout.swift; sourceTree = "<group>"; };
 		21D4C6D92AF3DF100048CF65 /* LocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewModel.swift; sourceTree = "<group>"; };
 		21DDD86A2B4E77430074ABAB /* AddVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddVC.swift; sourceTree = "<group>"; };
@@ -186,7 +184,6 @@
 				212E389C2B5E57B800F487B2 /* DetailView.swift */,
 				21F47D952B4678D10066F86E /* DetailVC.swift */,
 				212E38882B5B9DBA00F487B2 /* CollectionHeader.swift */,
-				21C2925E2B6244D800312759 /* TableHeaderView.swift */,
 				212E38932B5BC29900F487B2 /* HourCell.swift */,
 				216D32252B6B529300B1229C /* HourWeatherCell.swift */,
 				212E38952B5BC80100F487B2 /* WeekCell.swift */,
@@ -425,7 +422,6 @@
 				2157305B2B6B9F1D004B3AB8 /* UltravioletHeader.swift in Sources */,
 				2152D3FE2B4E7D5000FF8811 /* AddCell.swift in Sources */,
 				216D32162B68F48000B1229C /* MyLocation.swift in Sources */,
-				21C2925F2B6244D800312759 /* TableHeaderView.swift in Sources */,
 				21AC9C5E2AEFB06E0048CA59 /* SceneDelegate.swift in Sources */,
 				216D321D2B68F62F00B1229C /* SunsetCell.swift in Sources */,
 				216D321A2B68F5C800B1229C /* ApparentTempCell.swift in Sources */,
