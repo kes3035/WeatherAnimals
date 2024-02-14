@@ -3,11 +3,9 @@ import WeatherKit
 
 final class DetailVC: UIViewController {
     //MARK: - Properties
-//    private let flowLayout = UICollectionViewFlowLayout()
     
     private let flowLayout = CustomFlowLayout()
 
-    
     private let topView = DetailView()
     
     private lazy var detailCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
@@ -24,6 +22,7 @@ final class DetailVC: UIViewController {
         $0.register(RainFallCell.self, forCellWithReuseIdentifier: RainFallCell.identifier) //AirQualityCell 등록
         $0.register(HumidityCell.self, forCellWithReuseIdentifier: HumidityCell.identifier) //HumidityCell 등록
         $0.register(CollectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionHeader.identifier) //Header 등록
+        
     }
     
     var weatherViewModel: WeatherViewModel! {
@@ -129,20 +128,19 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
             return cell
         case 2:
             if indexPath.row == 0 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
                 
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
                 //                cell.weather = self.weatherViewModel.currentWeather
                 return cell
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
-                
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
                 
                 return cell
             }
         case 3:
             if indexPath.row == 0 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HumidityCell.identifier, for: indexPath) as! HumidityCell
-                //                cell.weather = self.weatherViewModel.currentWeather
+                
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
@@ -155,7 +153,7 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
 //                cell.weatherViewModel = self.weatherViewModel
                 return cell
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HumidityCell.identifier, for: indexPath) as! HumidityCell
                 return cell
             }
         default:
@@ -173,12 +171,30 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         case 0:
             return CGSize(width: self.view.frame.width, height: 100)
         case 1:
-            return CGSize(width: self.view.frame.width, height: 600)
+            return CGSize(width: self.view.frame.width, height: 388)
         case 2, 3, 4:
-            return CGSize(width: self.view.frame.width/2 - 5, height: self.view.frame.width/2 - 5)
+            
+            let sectionInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+            let width = collectionView.frame.width
+            let itemsPerRow: CGFloat = 2
+            let widthPadding = sectionInsets.left * (itemsPerRow + 1)
+            let itemsPerColumn: CGFloat = 1
+            let cellWidth = (width - widthPadding) / itemsPerRow
+            let size = CGSize(width: cellWidth, height: cellWidth - 30)
+            return size
         default:
             return CGSize(width: 100, height: 100)
         }
+    }
+    
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 10)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -191,20 +207,10 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
               let firstHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
                                                                            withReuseIdentifier: CollectionHeader.identifier,
                                                                            for: indexPath)  as? CollectionHeader
-//              let secondHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-//                                                                                 withReuseIdentifier: CollectionSecondHeader.identifier,
-//                                                                                 for: indexPath)  as? CollectionSecondHeader
+
         else { return UICollectionReusableView()}
         firstHeader.section = indexPath.section
-////        secondHeader.section = indexPath.section
-//        switch indexPath.section {
-//        case 0, 1, 2:
-//            return firstHeader
-//        case 3,4:
-//            return secondHeader
-//        default:
-//            return firstHeader
-//        }
+
         return firstHeader
     }
 }

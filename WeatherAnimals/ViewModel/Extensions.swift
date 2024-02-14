@@ -60,10 +60,11 @@ extension CALayer {
             self.addSublayer(border)
         }
     }
+    
     func addBottomBorder(color: UIColor, width: CGFloat, spacing: CGFloat) {
         let border = CALayer()
         
-        border.frame = CGRect(x: spacing, y: frame.height - width, width: frame.width - 2*spacing, height: width)
+        border.frame = CGRect(x:spacing, y: bounds.height - width, width: bounds.width - 2*spacing, height: width)
         
         border.backgroundColor = color.cgColor
         

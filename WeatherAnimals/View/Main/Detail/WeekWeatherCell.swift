@@ -15,7 +15,7 @@ final class WeekWeatherCell: UITableViewCell {
     lazy var weekdaysTitleLabel = UILabel().then {
         $0.text = "로딩중"
         $0.textAlignment = .center
-        $0.font = UIFont.neoDeungeul(size: 14)
+        $0.font = UIFont.neoDeungeul(size: 16)
     }
     
     lazy var weatherImageView = UIImageView().then {
@@ -26,20 +26,23 @@ final class WeekWeatherCell: UITableViewCell {
    
     lazy var highTempLabel = UILabel().then {
         $0.text = "20"
-        $0.textAlignment = .center
-        $0.font = UIFont.neoDeungeul(size: 14)
+        $0.textAlignment = .right
+        $0.font = UIFont.neoDeungeul(size: 16)
     }
     
     lazy var lowTempLabel = UILabel().then {
         $0.text = "-20"
-        $0.textAlignment = .center
-        $0.font = UIFont.neoDeungeul(size: 14)
+        $0.textAlignment = .right
+        $0.font = UIFont.neoDeungeul(size: 16)
     }
     
     lazy var tempColorView = UIView().then {
-        $0.backgroundColor = Constants.greenColor
+        $0.backgroundColor = UIColor(named: "black")
     }
     
+    lazy var customSeparator = UIView().then {
+        $0.backgroundColor = UIColor(named: "black")
+    }
 
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -55,12 +58,12 @@ final class WeekWeatherCell: UITableViewCell {
         
         self.contentView.backgroundColor = UIColor(named: "background")
         
-        self.contentView.addSubviews(weekdaysTitleLabel, weatherImageView, highTempLabel, lowTempLabel, tempColorView)
+        self.contentView.addSubviews(weekdaysTitleLabel, weatherImageView, highTempLabel, lowTempLabel, tempColorView, customSeparator)
         
         weekdaysTitleLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(30)
-            $0.width.equalTo(30)
+            $0.width.equalTo(40)
         }
         
         weatherImageView.snp.makeConstraints {
@@ -82,11 +85,19 @@ final class WeekWeatherCell: UITableViewCell {
         }
         
         tempColorView.snp.makeConstraints {
-            $0.height.equalTo(1)
+            $0.height.equalTo(2)
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(lowTempLabel.snp.trailing).offset(5)
             $0.trailing.equalTo(highTempLabel.snp.leading).offset(-5)
         }
+        
+        customSeparator.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(2)
+        }
+        
     }
 }
 

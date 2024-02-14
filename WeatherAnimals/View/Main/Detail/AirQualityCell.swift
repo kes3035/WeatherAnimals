@@ -7,6 +7,8 @@
 
 import UIKit
 import WeatherKit
+import SnapKit
+import Then
 
 final class AirQualityCell: UICollectionViewCell {
     static let identifier = "AirQualityCell"
@@ -18,7 +20,7 @@ final class AirQualityCell: UICollectionViewCell {
     
     private lazy var airQualityValueLabel = UILabel().then {
         $0.text = "55"
-        $0.font = UIFont.neoDeungeul(size: 60)
+        $0.font = UIFont.neoDeungeul(size: 50)
         $0.textColor = .black
     }
 
@@ -43,21 +45,23 @@ final class AirQualityCell: UICollectionViewCell {
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-    
-    
     //MARK: - Helpers
     private func configureUI() {
-        self.backgroundColor = .white
+        
+        self.backgroundColor = .clear
+        
         self.addSubview(baseView)
+        
         self.baseView.addSubviews(airQualityValueLabel, airQualityLabel)
+        
         self.baseView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.bottom.equalToSuperview().inset(10)
+//            $0.top.equalToSuperview()
+//            $0.leading.equalToSuperview().offset(10)
+//            $0.trailing.bottom.equalToSuperview().inset(10)
+            $0.edges.equalToSuperview()
         }
         
         self.airQualityValueLabel.snp.makeConstraints {
-//            $0.top.equalToSuperview().offset(10)
             $0.centerX.centerY.equalToSuperview()
             $0.height.equalTo(60)
         }
@@ -66,13 +70,12 @@ final class AirQualityCell: UICollectionViewCell {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(airQualityValueLabel.snp.bottom).offset(5)
         }
-        
-        
     }
     
     private func configureUIWithData(_ weather: CurrentWeather) {
         DispatchQueue.main.async {
-//            self.airQualityValueLabel.text = weather.
+            
+
         }
     }
     

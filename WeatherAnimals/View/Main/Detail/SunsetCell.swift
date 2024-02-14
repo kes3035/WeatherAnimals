@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SunsetCell: UICollectionViewCell {
+final class SunsetCell: UICollectionViewCell {
     static let identifier = "SunsetCell"
     //MARK: - Properties
     
@@ -16,25 +16,9 @@ class SunsetCell: UICollectionViewCell {
     }
     
     private lazy var airQualityValueLabel = UILabel().then {
-        $0.text = "55"
-        $0.font = UIFont.neoDeungeul(size: 40)
+        $0.text = "PM 6:23"
+        $0.font = UIFont.neoDeungeul(size: 50)
         $0.textColor = .black
-    }
-
-    private lazy var airQualityLabel = UILabel().then {
-        $0.text = "보통"
-        $0.font = UIFont.neoDeungeul(size: 25)
-        $0.textColor = .black
-    }
-    
-    private lazy var airQualityView = UIView().then {
-        $0.backgroundColor = Constants.greenColor
-    }
-    
-    private lazy var airQualityDescriptionLabel = UILabel().then {
-        $0.font = UIFont.neoDeungeul(size: 16)
-        $0.numberOfLines = 0
-        $0.text = "일몰: 오후 5:47."
     }
     
     var weatherViewModel: WeatherViewModel! {
@@ -42,7 +26,6 @@ class SunsetCell: UICollectionViewCell {
             self.configureUIWithData(self.weatherViewModel)
         }
     }
-    
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -55,40 +38,25 @@ class SunsetCell: UICollectionViewCell {
     
     //MARK: - Helpers
     private func configureUI() {
+        
         self.backgroundColor = .white
+        
         self.addSubview(baseView)
-        self.baseView.addSubviews(airQualityValueLabel, airQualityLabel, airQualityDescriptionLabel, airQualityView)
+        
+        self.baseView.addSubviews(airQualityValueLabel)
+        
         self.baseView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.bottom.equalToSuperview().inset(10)
+//            $0.top.equalToSuperview()
+//            $0.leading.equalToSuperview().offset(10)
+//            $0.trailing.bottom.equalToSuperview().inset(10)
+            $0.edges.equalToSuperview()
+
         }
         
         self.airQualityValueLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(5)
-            $0.leading.equalToSuperview().offset(10)
+            $0.centerX.centerY.equalToSuperview()
             $0.height.equalTo(40)
         }
-        
-        self.airQualityLabel.snp.makeConstraints {
-            $0.leading.equalTo(airQualityValueLabel.snp.leading)
-            $0.top.equalTo(airQualityValueLabel.snp.bottom).offset(5)
-        }
-        
-        self.airQualityView.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.equalToSuperview().inset(10)
-            $0.height.equalTo(1)
-            $0.top.equalTo(airQualityLabel.snp.bottom).offset(15)
-        }
-        
-        self.airQualityDescriptionLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.equalToSuperview().inset(10)
-            $0.top.equalTo(airQualityView.snp.bottom).offset(15)
-        }
-        
-        
     }
     
     private func configureUIWithData(_ weatherViewModel: WeatherViewModel) {

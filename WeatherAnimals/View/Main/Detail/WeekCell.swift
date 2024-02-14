@@ -14,7 +14,11 @@ final class WeekCell: UICollectionViewCell {
         $0.isScrollEnabled = false
         $0.register(WeekWeatherCell.self, forCellReuseIdentifier: WeekWeatherCell.identifier)
         $0.backgroundColor = UIColor(named: "background")
-        $0.rowHeight = 60
+        $0.rowHeight = 38
+//        $0.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+//        $0.separatorColor = UIColor(named: "black")
+        $0.separatorStyle = .none
+        
     }
     
     var weatherViewModel: WeatherViewModel! {

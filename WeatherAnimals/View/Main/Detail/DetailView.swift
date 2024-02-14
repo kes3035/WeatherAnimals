@@ -37,7 +37,6 @@ final class DetailView: UIView {
     lazy var lowestTempLabel = UILabel().then {
         $0.text = "최저 : 123"
         $0.font = UIFont.neoDeungeul(size: 20)
-        
     }
     
     private lazy var tempView = UIView().then {

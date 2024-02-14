@@ -7,6 +7,8 @@
 
 import UIKit
 import WeatherKit
+import Then
+import SnapKit
 
 final class UltravioletCell: UICollectionViewCell {
     static let identifier = "UltravioletCell"
@@ -18,24 +20,14 @@ final class UltravioletCell: UICollectionViewCell {
     
     private lazy var uvValueLabel = UILabel().then {
         $0.text = "55"
-        $0.font = UIFont.neoDeungeul(size: 40)
-        $0.textColor = .black
+        $0.font = UIFont.neoDeungeul(size: 50)
+        $0.textColor = UIColor(named: "black")
     }
 
-    private lazy var uvLabel = UILabel().then {
+    private lazy var uvDescriptionLabel = UILabel().then {
         $0.text = "보통"
         $0.font = UIFont.neoDeungeul(size: 25)
-        $0.textColor = .black
-    }
-    
-    private lazy var uvView = UIView().then {
-        $0.backgroundColor = Constants.greenColor
-    }
-    
-    private lazy var uvDescriptionLabel = UILabel().then {
-        $0.font = UIFont.neoDeungeul(size: 16)
-        $0.numberOfLines = 0
-        $0.text = "남은 하루 동안 자외선 지수가 낮겠습니다."
+        $0.textColor = UIColor(named: "black")
     }
     
     var weather: CurrentWeather? {
@@ -44,7 +36,6 @@ final class UltravioletCell: UICollectionViewCell {
             self.configureUIWithData(weather)
         }
     }
-    
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -57,46 +48,35 @@ final class UltravioletCell: UICollectionViewCell {
     
     //MARK: - Helpers
     private func configureUI() {
-        self.backgroundColor = .white
+        
+        self.backgroundColor = .clear
+        
         self.addSubview(baseView)
-        self.baseView.addSubviews(uvValueLabel, uvLabel, uvDescriptionLabel, uvView)
+        
+        self.baseView.addSubviews(uvValueLabel, uvDescriptionLabel)
+        
         self.baseView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.bottom.equalToSuperview().inset(10)
+//            $0.top.equalToSuperview()
+//            $0.leading.equalToSuperview().offset(10)
+//            $0.trailing.bottom.equalToSuperview().inset(10)
+            $0.edges.equalToSuperview()
         }
         
         self.uvValueLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(5)
-            $0.leading.equalToSuperview().offset(10)
-            $0.height.equalTo(40)
-        }
-        
-        self.uvLabel.snp.makeConstraints {
-            $0.leading.equalTo(uvValueLabel.snp.leading)
-            $0.top.equalTo(uvValueLabel.snp.bottom).offset(5)
-        }
-        
-        self.uvView.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.equalToSuperview().inset(10)
-            $0.height.equalTo(1)
-            $0.top.equalTo(uvLabel.snp.bottom).offset(15)
+            $0.centerX.centerY.equalToSuperview()
+            $0.height.equalTo(60)
         }
         
         self.uvDescriptionLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.equalToSuperview().inset(10)
-            $0.top.equalTo(uvView.snp.bottom).offset(15)
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(uvValueLabel.snp.bottom).offset(5)
         }
-        
-        
     }
     
     private func configureUIWithData(_ weather: CurrentWeather) {
         DispatchQueue.main.async {
             self.uvValueLabel.text = String(weather.uvIndex.value)
-            self.uvLabel.text = weather.uvIndex.category.rawValue
+            self.uvDescriptionLabel.text = weather.uvIndex.category.rawValue
             
         }
     }

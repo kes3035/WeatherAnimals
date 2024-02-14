@@ -1,6 +1,6 @@
 import UIKit
 
-class CollectionHeader: UICollectionReusableView {
+final class CollectionHeader: UICollectionReusableView {
     static let identifier = "CollectionHeader"
     //MARK: - Properties
     
@@ -46,8 +46,15 @@ class CollectionHeader: UICollectionReusableView {
         $0.contentMode = .scaleAspectFill
     }
     
+    private lazy var baseBottomBorder = UIView()
+    
+    private lazy var leftBottomBorder = UIView()
+
+    private lazy var rightBottomBorder = UIView()
+    
     private lazy var baseViews = [baseView, leftBaseView, rightBaseView]
     
+    private lazy var borders = [baseBottomBorder, leftBottomBorder, rightBottomBorder]
     
     var section: Int? {
         didSet {
@@ -65,21 +72,29 @@ class CollectionHeader: UICollectionReusableView {
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.baseViews.forEach { $0.layer.addBottomBorder(color: UIColor(named: "black") ?? .black, width: 2, spacing: 20)}
-    }
+//    override func layoutSubviews() {
+//        DispatchQueue.main.async {
+//            self.baseViews.forEach {
+//                $0.layer.addBottomBorder(color: UIColor(named: "black") ?? .black, width: 2, spacing: 20)
+//            }
+//            
+//        }
+//        super.layoutSubviews()
+//
+//    }
+    
     
     //MARK: - Helpers
     private func configureUI() {
         self.backgroundColor = .white
-        
-        self.baseView.addSubviews(titleLabel, titleImageView)
-        self.rightBaseView.addSubviews(rightTitleLabel, rightTitleImageView)
-        self.leftBaseView.addSubviews(leftTitleLabel, leftTitleImageView)
+
+        self.baseView.addSubviews(titleLabel, titleImageView, baseBottomBorder)
+        self.rightBaseView.addSubviews(rightTitleLabel, rightTitleImageView, rightBottomBorder)
+        self.leftBaseView.addSubviews(leftTitleLabel, leftTitleImageView, leftBottomBorder)
         self.addSubviews(leftBaseView, rightBaseView, baseView)
         
         self.baseViews.forEach { $0.backgroundColor = UIColor(named: "background") }
+        self.borders.forEach { $0.backgroundColor = UIColor(named: "black") }
         
         self.baseView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(10)
@@ -98,9 +113,16 @@ class CollectionHeader: UICollectionReusableView {
             $0.leading.equalTo(self.titleImageView.snp.trailing).offset(10)
         }
         
+        self.baseBottomBorder.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(2)
+        }
+        
         self.leftBaseView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(10)
-            $0.trailing.equalTo(self.snp.centerX).offset(-15)
+            $0.trailing.equalTo(self.snp.centerX).offset(-5)
             $0.top.bottom.equalToSuperview()
         }
         
@@ -115,8 +137,15 @@ class CollectionHeader: UICollectionReusableView {
             $0.leading.equalTo(self.leftTitleImageView.snp.trailing).offset(10)
         }
         
+        self.leftBottomBorder.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(2)
+        }
+        
         self.rightBaseView.snp.makeConstraints {
-            $0.leading.equalTo(self.snp.centerX).offset(15)
+            $0.leading.equalTo(self.snp.centerX).offset(5)
             $0.trailing.equalToSuperview().inset(10)
             $0.top.bottom.equalToSuperview()
         }
@@ -130,6 +159,13 @@ class CollectionHeader: UICollectionReusableView {
         self.rightTitleLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(self.rightTitleImageView.snp.trailing).offset(10)
+        }
+        
+        self.rightBottomBorder.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(2)
         }
         
     }
@@ -163,7 +199,7 @@ class CollectionHeader: UICollectionReusableView {
         DispatchQueue.main.async {
             self.leftBaseView.snp.makeConstraints {
                 $0.leading.equalToSuperview().offset(10)
-                $0.trailing.equalTo(self.snp.centerX).offset(-15)
+                $0.trailing.equalTo(self.snp.centerX).offset(-5)
                 $0.top.bottom.equalToSuperview()
             }
             
@@ -179,7 +215,7 @@ class CollectionHeader: UICollectionReusableView {
             }
             
             self.rightBaseView.snp.makeConstraints {
-                $0.leading.equalTo(self.snp.centerX).offset(15)
+                $0.leading.equalTo(self.snp.centerX).offset(5)
                 $0.trailing.equalToSuperview().inset(10)
                 $0.top.bottom.equalToSuperview()
             }
@@ -209,20 +245,20 @@ class CollectionHeader: UICollectionReusableView {
             
             switch section {
             case 2:
-                self.leftTitleLabel.text = "자외선 지수"
-                self.leftTitleImageView.image = UIImage(systemName: "sun.max")
-                self.rightTitleLabel.text = "대기질"
-                self.rightTitleImageView.image = UIImage(systemName: "aqi.low")
+                self.leftTitleLabel.text = "대기질"
+                self.leftTitleImageView.image = UIImage(systemName: "aqi.low") 
+                self.rightTitleLabel.text = "자외선 지수"
+                self.rightTitleImageView.image = UIImage(systemName: "sun.max")
             case 3:
-                self.leftTitleLabel.text = "습도"
-                self.leftTitleImageView.image = UIImage(systemName: "humidity")
+                self.leftTitleLabel.text = "일출"
+                self.leftTitleImageView.image = UIImage(systemName: "sunrise")
                 self.rightTitleLabel.text = "체감온도"
                 self.rightTitleImageView.image = UIImage(systemName: "thermometer")
             case 4:
                 self.leftTitleLabel.text = "강수량"
                 self.leftTitleImageView.image = UIImage(systemName: "drop.fill")
-                self.rightTitleLabel.text = "일출"
-                self.rightTitleImageView.image = UIImage(systemName: "sunrise")
+                self.rightTitleLabel.text = "습도"
+                self.rightTitleImageView.image = UIImage(systemName: "humidity")
             default:
                 break
             }
