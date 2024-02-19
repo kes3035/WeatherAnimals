@@ -9,17 +9,44 @@ extension UIView {
     
     func partialBackgroundColor(low: Double, high: Double, tempData: [Double]) {
         self.backgroundColor = UIColor(named: "black")
+        /*
+         10일간 데이터들 중
+         최저 : -10도 ==> minLow
+         최고 :  20도 ==> maxHigh
+         
+         칸 갯수는 20 - (-10) + 1 ==> number
+         
+         만약 오늘 온도가 -3 ~ 12도
+         
+         
+         */
+        let minLow = tempData[0] //전체 데이터의 최소
         
-        let minLow = tempData[0]
-        let maxHigh = tempData[1]
-        let sepCoeff = tempData[2]
-        let blackRect = CGRect(x: low - minLow, y: 0, width: high - low, height: 2)
+        let maxHigh = tempData[1] //전체 데이터의 최대
+        
+        let sepCoeff = tempData[2] - 1 //
+        let frameSize: Double = 120
+
+        let ratio = frameSize/sepCoeff // 기준길이/프레임길이
+        
+        let widthOfMyWeather = (maxHigh - minLow)
+
+        print("10일간의 날씨 데이터중 최솟값 : \(minLow)")
+        print("10일간의 날씨 데이터중 최댓값 : \(maxHigh)")
+        print("날씨 데이터중 최솟값 : \(low)")
+        print("날씨 데이터중 최댓값 : \(high)")
+        print("맞춰야할 프레임의 길이 : \(self.frame.width)")
         let view = UIView()
         view.backgroundColor = Constants.greenColor
         self.addSubview(view)
         view.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(low-minLow)
-            $0.width.equalTo(high - low)
+            $0.leading.equalToSuperview().offset(
+                abs(low-minLow)/abs(widthOfMyWeather)*abs(frameSize/widthOfMyWeather)
+            )
+            $0.width.equalTo(abs(high - low)*ratio)
+//            $0.width.equalTo(
+//                abs(high - low)/abs(widthOfMyWeather)*abs(frameSize/widthOfMyWeather)
+//            )
             $0.height.equalTo(2)
             
         }

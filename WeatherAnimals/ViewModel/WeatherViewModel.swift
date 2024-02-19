@@ -22,7 +22,27 @@ final class WeatherViewModel {
         }
     }
     
+    var dayWeather: DayWeather? {
+        didSet {
+            didChangeWeather?(self)
+        }
+    }
+    
     var dayWeathers: [DayWeather]?
+    
+    var maxTempOfWeek: Double? {
+        didSet {
+            guard let maxTempOfWeek = self.maxTempOfWeek else { return }
+            print(maxTempOfWeek)
+        }
+    }
+    
+    var minTempOfWeek: Double? {
+        didSet {
+            guard let minTempOfWeek = self.minTempOfWeek else { return }
+            print(minTempOfWeek)
+        }
+    }
     
     var hourWeathers: [HourWeather]?
     
@@ -84,17 +104,39 @@ final class WeatherViewModel {
         }
     }
     
-    func configureWeekTempView(_ dayWeahter: DayWeather) -> [Double] {
-        guard let dayWeathers = self.dayWeathers else { return [0.0] }
+    func getMaxMinTempOfWeek(_ dayWeahter: DayWeather) {
+        guard let dayWeathers = self.dayWeathers else { return }
         let highTemps = dayWeathers.map { round($0.highTemperature.value) }
         let lowTemps = dayWeathers.map { round($0.lowTemperature.value) }
-        let maxHigh = highTemps.max() ?? 0
-        let minLow = lowTemps.min() ?? 0
-        let sepCoeff = maxHigh - minLow + 1
-        return [minLow, maxHigh, sepCoeff]
+        self.maxTempOfWeek = highTemps.max()
+        self.minTempOfWeek = lowTemps.min()
     }
     
- 
+    func getLeadingWidth() -> Double {
+        guard let maxTempOfWeek = self.maxTempOfWeek,
+              let minTempOfWeek = self.minTempOfWeek,
+              let dayWeather = self.dayWeather else {
+            print("디버깅: Failed to unwrap")
+            return 0.0}
+        
+        let myLow = round(dayWeather.lowTemperature.value)
+//        let myHigh = round(dayWeather.highTemperature.value)
+        // -3 ~ 13
+        // 3 ~ 13
+        let leading = (myLow-minTempOfWeek)/(maxTempOfWeek-minTempOfWeek)
+        return leading
+    }
+    
+    func getWidth() -> Double {
+        guard let maxTempOfWeek = self.maxTempOfWeek,
+              let minTempOfWeek = self.minTempOfWeek,
+              let dayWeather = self.dayWeather else { return 0.0}
+        let myLow = round(dayWeather.lowTemperature.value)
+        let myHigh = round(dayWeather.highTemperature.value)
+        
+        let width = (myHigh-myLow)/(maxTempOfWeek-minTempOfWeek)
+        return width
+    }
    
     
     func convertWeatherCondition(condition: WeatherCondition) -> String {
