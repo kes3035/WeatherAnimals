@@ -22,14 +22,6 @@ final class HourCell: UICollectionViewCell {
             }
         }
     }
-    
-//    var hourWeathers: [HourWeather]? {
-//        didSet {
-//            DispatchQueue.main.async {
-//                self.hourCollectionView.reloadData()
-//            }
-//        }
-//    }
  
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -43,7 +35,6 @@ final class HourCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     //MARK: - Helpers
-    
     private func configureUI() {
         self.contentView.backgroundColor = .clear
         self.contentView.addSubview(hourCollectionView)
@@ -61,6 +52,8 @@ final class HourCell: UICollectionViewCell {
     }
 }
 
+
+//MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
@@ -76,21 +69,17 @@ extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
         
         guard let hourWeathers = self.weatherViewModel.hourWeathers else { return cell }
         
-        let hourWeather = hourWeathers[indexPath.row]
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "a h:mm"
-        dateFormatter.locale = Locale(identifier:"ko_KR")
-        let dateString = dateFormatter.string(from: hourWeather.date)
+        self.weatherViewModel.hourWeather = hourWeathers[indexPath.row]
         
-        cell.topLabel.text = dateString
-        cell.tempLabel.text = round(hourWeather.temperature.value).description + String(UnicodeScalar(0x00B0))
-        cell.tempImageView.image = UIImage(named: hourWeather.symbolName)
+        cell.weatherViewModel = self.weatherViewModel
         
         return cell
     }
     
 }
 
+
+//MARK: - UICollectionViewDelegateFlowLayout
 extension HourCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 80, height: 100)

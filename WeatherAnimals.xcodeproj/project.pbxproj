@@ -13,13 +13,6 @@
 		212E389B2B5E537400F487B2 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E389A2B5E537400F487B2 /* HeaderView.swift */; };
 		212E389D2B5E57B800F487B2 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E389C2B5E57B800F487B2 /* DetailView.swift */; };
 		2152D3FE2B4E7D5000FF8811 /* AddCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152D3FD2B4E7D5000FF8811 /* AddCell.swift */; };
-		215730512B6B9EDA004B3AB8 /* HourHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215730502B6B9EDA004B3AB8 /* HourHeader.swift */; };
-		215730532B6B9EE6004B3AB8 /* WeekHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215730522B6B9EE6004B3AB8 /* WeekHeader.swift */; };
-		215730552B6B9EF0004B3AB8 /* AirQualityHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215730542B6B9EF0004B3AB8 /* AirQualityHeader.swift */; };
-		215730572B6B9F02004B3AB8 /* ApparentHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215730562B6B9F02004B3AB8 /* ApparentHeader.swift */; };
-		215730592B6B9F0B004B3AB8 /* SunsetHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215730582B6B9F0B004B3AB8 /* SunsetHeader.swift */; };
-		2157305B2B6B9F1D004B3AB8 /* UltravioletHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2157305A2B6B9F1D004B3AB8 /* UltravioletHeader.swift */; };
-		2157305D2B6B9F25004B3AB8 /* RainHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2157305C2B6B9F25004B3AB8 /* RainHeader.swift */; };
 		216D320D2B68EFCA00B1229C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D320C2B68EFCA00B1229C /* Extensions.swift */; };
 		216D32162B68F48000B1229C /* MyLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D32152B68F48000B1229C /* MyLocation.swift */; };
 		216D321A2B68F5C800B1229C /* ApparentTempCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D32192B68F5C800B1229C /* ApparentTempCell.swift */; };
@@ -60,13 +53,6 @@
 		212E389A2B5E537400F487B2 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		212E389C2B5E57B800F487B2 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		2152D3FD2B4E7D5000FF8811 /* AddCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCell.swift; sourceTree = "<group>"; };
-		215730502B6B9EDA004B3AB8 /* HourHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourHeader.swift; sourceTree = "<group>"; };
-		215730522B6B9EE6004B3AB8 /* WeekHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekHeader.swift; sourceTree = "<group>"; };
-		215730542B6B9EF0004B3AB8 /* AirQualityHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirQualityHeader.swift; sourceTree = "<group>"; };
-		215730562B6B9F02004B3AB8 /* ApparentHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApparentHeader.swift; sourceTree = "<group>"; };
-		215730582B6B9F0B004B3AB8 /* SunsetHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunsetHeader.swift; sourceTree = "<group>"; };
-		2157305A2B6B9F1D004B3AB8 /* UltravioletHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltravioletHeader.swift; sourceTree = "<group>"; };
-		2157305C2B6B9F25004B3AB8 /* RainHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RainHeader.swift; sourceTree = "<group>"; };
 		216D320C2B68EFCA00B1229C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = ../ViewModel/Extensions.swift; sourceTree = "<group>"; };
 		216D32152B68F48000B1229C /* MyLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLocation.swift; sourceTree = "<group>"; };
 		216D32192B68F5C800B1229C /* ApparentTempCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApparentTempCell.swift; sourceTree = "<group>"; };
@@ -118,20 +104,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2157304F2B6B9EB6004B3AB8 /* CustomHeader */ = {
-			isa = PBXGroup;
-			children = (
-				215730502B6B9EDA004B3AB8 /* HourHeader.swift */,
-				215730522B6B9EE6004B3AB8 /* WeekHeader.swift */,
-				215730542B6B9EF0004B3AB8 /* AirQualityHeader.swift */,
-				215730562B6B9F02004B3AB8 /* ApparentHeader.swift */,
-				215730582B6B9F0B004B3AB8 /* SunsetHeader.swift */,
-				2157305A2B6B9F1D004B3AB8 /* UltravioletHeader.swift */,
-				2157305C2B6B9F25004B3AB8 /* RainHeader.swift */,
-			);
-			path = CustomHeader;
-			sourceTree = "<group>";
-		};
 		216D32122B68F13800B1229C /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -184,7 +156,6 @@
 		216D32222B68F7B400B1229C /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				2157304F2B6B9EB6004B3AB8 /* CustomHeader */,
 				212E389C2B5E57B800F487B2 /* DetailView.swift */,
 				21F47D952B4678D10066F86E /* DetailVC.swift */,
 				212E38882B5B9DBA00F487B2 /* CollectionHeader.swift */,
@@ -421,11 +392,9 @@
 				21C2925D2B61199600312759 /* RainFallCell.swift in Sources */,
 				21AC9C602AEFB06E0048CA59 /* MainVC.swift in Sources */,
 				212E389D2B5E57B800F487B2 /* DetailView.swift in Sources */,
-				215730532B6B9EE6004B3AB8 /* WeekHeader.swift in Sources */,
 				219937CD2AF1094900EC8518 /* WeatherViewModel.swift in Sources */,
 				21AC9C5C2AEFB06E0048CA59 /* AppDelegate.swift in Sources */,
 				21C292572B61196800312759 /* UltravioletCell.swift in Sources */,
-				2157305B2B6B9F1D004B3AB8 /* UltravioletHeader.swift in Sources */,
 				2152D3FE2B4E7D5000FF8811 /* AddCell.swift in Sources */,
 				216D32162B68F48000B1229C /* MyLocation.swift in Sources */,
 				21AC9C5E2AEFB06E0048CA59 /* SceneDelegate.swift in Sources */,
@@ -436,9 +405,7 @@
 				21BCAD9D2B5664B8009B82F7 /* SettingCell.swift in Sources */,
 				21F47D962B4678D10066F86E /* DetailVC.swift in Sources */,
 				212E38962B5BC80100F487B2 /* WeekCell.swift in Sources */,
-				215730512B6B9EDA004B3AB8 /* HourHeader.swift in Sources */,
 				21AC9C782AEFB7090048CA59 /* Constants.swift in Sources */,
-				215730572B6B9F02004B3AB8 /* ApparentHeader.swift in Sources */,
 				21DDD86B2B4E77430074ABAB /* AddVC.swift in Sources */,
 				21AA8CD92B494B68008AABC5 /* WeekWeatherCell.swift in Sources */,
 				219103532B7228E6007C5BF1 /* HumidityCell.swift in Sources */,
@@ -449,13 +416,10 @@
 				21937DE72B7CBB540088CE2C /* WeekTempView.swift in Sources */,
 				216D320D2B68EFCA00B1229C /* Extensions.swift in Sources */,
 				219937CF2AF10ECE00EC8518 /* WeatherCell.swift in Sources */,
-				215730552B6B9EF0004B3AB8 /* AirQualityHeader.swift in Sources */,
 				212E389B2B5E537400F487B2 /* HeaderView.swift in Sources */,
-				215730592B6B9F0B004B3AB8 /* SunsetHeader.swift in Sources */,
 				216D32262B6B529400B1229C /* HourWeatherCell.swift in Sources */,
 				21937DE52B7CB3810088CE2C /* SettingHeaderView.swift in Sources */,
 				21C292622B663A8400312759 /* CustomFlowLayout.swift in Sources */,
-				2157305D2B6B9F25004B3AB8 /* RainHeader.swift in Sources */,
 				212E38942B5BC29900F487B2 /* HourCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

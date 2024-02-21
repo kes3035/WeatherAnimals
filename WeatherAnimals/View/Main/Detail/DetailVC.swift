@@ -4,10 +4,15 @@ import WeatherKit
 final class DetailVC: UIViewController {
     //MARK: - Properties
     
+    // 콜렉션 뷰를 위한 FlowLayout
     private let flowLayout = CustomFlowLayout()
 
+    
+    // 디테일VC의 최상단 화면을 구성하는 TopView
     private let topView = DetailView()
     
+    
+    // 콜렉션 뷰
     private lazy var detailCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
         $0.delegate = self
         $0.dataSource = self
@@ -25,6 +30,8 @@ final class DetailVC: UIViewController {
         
     }
     
+    
+    // 뷰모델
     var weatherViewModel: WeatherViewModel! {
         didSet {
             DispatchQueue.main.async {
@@ -48,8 +55,11 @@ final class DetailVC: UIViewController {
     
     //MARK: - Helpers
     func configureUI() {
+        //최초UI 구성
         self.view.backgroundColor = .white
+        
         self.view.addSubviews(detailCollectionView, topView)
+        
         self.topView.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(10)
             $0.leading.trailing.equalToSuperview()
@@ -130,21 +140,25 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
                 
-                //                cell.weather = self.weatherViewModel.currentWeather
+                cell.weatherViewModel = self.weatherViewModel
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
                 
+                cell.weatherViewModel = self.weatherViewModel
                 return cell
             }
         case 3:
             if indexPath.row == 0 {
                 
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
+                cell.weatherViewModel = self.weatherViewModel
+
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
-                
+                cell.weatherViewModel = self.weatherViewModel
+
                 return cell
             }
         case 4:

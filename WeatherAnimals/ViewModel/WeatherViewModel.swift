@@ -33,14 +33,18 @@ final class WeatherViewModel {
     var maxTempOfWeek: Double? {
         didSet {
             guard let maxTempOfWeek = self.maxTempOfWeek else { return }
-            print(maxTempOfWeek)
         }
     }
     
     var minTempOfWeek: Double? {
         didSet {
             guard let minTempOfWeek = self.minTempOfWeek else { return }
-            print(minTempOfWeek)
+        }
+    }
+    
+    var hourWeather: HourWeather? {
+        didSet {
+            didChangeWeather?(self)
         }
     }
     
@@ -112,32 +116,36 @@ final class WeatherViewModel {
         self.minTempOfWeek = lowTemps.min()
     }
     
-    func getLeadingWidth() -> Double {
+    func getLeadingWidthOfTempView() -> (Double, Double) {
         guard let maxTempOfWeek = self.maxTempOfWeek,
               let minTempOfWeek = self.minTempOfWeek,
               let dayWeather = self.dayWeather else {
-            print("디버깅: Failed to unwrap")
-            return 0.0}
+            return (0.0, 0.0)
+        }
         
-        let myLow = round(dayWeather.lowTemperature.value)
-//        let myHigh = round(dayWeather.highTemperature.value)
-        // -3 ~ 13
-        // 3 ~ 13
-        let leading = (myLow-minTempOfWeek)/(maxTempOfWeek-minTempOfWeek)
-        return leading
-    }
-    
-    func getWidth() -> Double {
-        guard let maxTempOfWeek = self.maxTempOfWeek,
-              let minTempOfWeek = self.minTempOfWeek,
-              let dayWeather = self.dayWeather else { return 0.0}
         let myLow = round(dayWeather.lowTemperature.value)
         let myHigh = round(dayWeather.highTemperature.value)
-        
+    
+        let leading = (myLow-minTempOfWeek)/(maxTempOfWeek-minTempOfWeek)
         let width = (myHigh-myLow)/(maxTempOfWeek-minTempOfWeek)
-        return width
+
+        return (leading, width)
     }
    
+    func getAirQualityCondition() -> (Int, String){
+        guard let currentWeather = self.currentWeather else {
+            return (0, "오류")
+        }
+        
+        let airQualityValue = 0
+        
+        var airQualityDescription = ""
+        
+        
+        return (airQualityValue, airQualityDescription)
+        
+    }
+    
     
     func convertWeatherCondition(condition: WeatherCondition) -> String {
         switch condition {

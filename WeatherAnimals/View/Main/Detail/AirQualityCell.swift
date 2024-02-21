@@ -33,7 +33,12 @@ final class AirQualityCell: UICollectionViewCell {
     var weather: CurrentWeather? {
         didSet {
             guard let weather = self.weather else { return }
-            self.configureUIWithData(weather)
+        }
+    }
+    
+    var weatherViewModel: WeatherViewModel! {
+        didSet {
+            self.configureUIWithData()
         }
     }
     
@@ -55,9 +60,6 @@ final class AirQualityCell: UICollectionViewCell {
         self.baseView.addSubviews(airQualityValueLabel, airQualityLabel)
         
         self.baseView.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.leading.equalToSuperview().offset(10)
-//            $0.trailing.bottom.equalToSuperview().inset(10)
             $0.edges.equalToSuperview()
         }
         
@@ -73,8 +75,9 @@ final class AirQualityCell: UICollectionViewCell {
         }
     }
     
-    private func configureUIWithData(_ weather: CurrentWeather) {
+    private func configureUIWithData() {
         DispatchQueue.main.async {
+            guard let currentWeather = self.weatherViewModel.currentWeather else { return }
             
 
         }

@@ -30,10 +30,16 @@ final class UltravioletCell: UICollectionViewCell {
         $0.textColor = UIColor(named: "black")
     }
     
-    var weather: CurrentWeather? {
+//    var weather: CurrentWeather? {
+//        didSet {
+//            guard let weather = self.weather else { return }
+//            self.configureUIWithData(weather)
+//        }
+//    }
+    
+    var weatherViewModel: WeatherViewModel! {
         didSet {
-            guard let weather = self.weather else { return }
-            self.configureUIWithData(weather)
+            self.configureUIWithData()
         }
     }
     
@@ -74,10 +80,11 @@ final class UltravioletCell: UICollectionViewCell {
         }
     }
     
-    private func configureUIWithData(_ weather: CurrentWeather) {
+    private func configureUIWithData() {
+        guard let currentWeather = self.weatherViewModel.currentWeather else { return }
         DispatchQueue.main.async {
-            self.uvValueLabel.text = String(weather.uvIndex.value)
-            self.uvDescriptionLabel.text = weather.uvIndex.category.rawValue
+            self.uvValueLabel.text = String(currentWeather.uvIndex.value)
+            self.uvDescriptionLabel.text = currentWeather.uvIndex.category.rawValue
             
         }
     }

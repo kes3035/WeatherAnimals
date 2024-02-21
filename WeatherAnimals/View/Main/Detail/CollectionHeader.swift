@@ -77,7 +77,7 @@ final class CollectionHeader: UICollectionReusableView {
 //            self.baseViews.forEach {
 //                $0.layer.addBottomBorder(color: UIColor(named: "black") ?? .black, width: 2, spacing: 20)
 //            }
-//            
+//
 //        }
 //        super.layoutSubviews()
 //
@@ -246,7 +246,7 @@ final class CollectionHeader: UICollectionReusableView {
             switch section {
             case 2:
                 self.leftTitleLabel.text = "대기질"
-                self.leftTitleImageView.image = UIImage(systemName: "aqi.low") 
+                self.leftTitleImageView.image = UIImage(systemName: "aqi.low")
                 self.rightTitleLabel.text = "자외선 지수"
                 self.rightTitleImageView.image = UIImage(systemName: "sun.max")
             case 3:

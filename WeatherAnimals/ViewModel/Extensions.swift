@@ -66,6 +66,7 @@ extension UIFont {
     static func neoDeungeul(size: CGFloat, name: String = "NeoDunggeunmoPro-Regular") -> UIFont? {
         return UIFont(name: name, size: size)
     }
+
 }
 
 

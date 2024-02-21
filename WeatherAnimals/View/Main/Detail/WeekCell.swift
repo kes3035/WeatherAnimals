@@ -51,6 +51,8 @@ final class WeekCell: UICollectionViewCell {
     
 }
 
+
+//MARK: - UITableViewDelegate, UITableViewDataSource
 extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 10
@@ -63,31 +65,15 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
             return cell
         }
         
-        let dayWeather = dayWeathers[indexPath.row]
+        self.weatherViewModel.dayWeather = dayWeathers[indexPath.row]
         
-//        cell.weatherViewModel.dayWeather = dayWeather
-        
-        cell.dayWeather = dayWeather
         cell.weatherViewModel = self.weatherViewModel
-//        
-//        self.weatherViewModel.didChangeWeather = { weatherViewModel in
-//            cell.weatherViewModel = weatherViewModel
-//        }
-        
+
         if indexPath.row == 0 {
             cell.weekdaysTitleLabel.text = "오늘"
         } else {
             cell.weekdaysTitleLabel.text = self.weatherViewModel.getDayOfWeeks(from: Date())[indexPath.row]
         }
-        
-        
-//        cell.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
-//        cell.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
-//        cell.weatherImageView.image = UIImage(named: dayWeather.symbolName)
-//        
-        
-//        cell.tempColorView.partialBackgroundColor(low: round(dayWeather.lowTemperature.value), high: round(dayWeather.highTemperature.value), tempData: tempData)
-//        
         
         return cell
     }
