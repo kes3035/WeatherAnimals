@@ -132,10 +132,16 @@ final class WeatherViewModel {
         return (leading, width)
     }
    
-    func getAirQualityCondition() -> (Int, String){
+    func getAirQualityCondition(lat: Double, lng: Double, token: String) -> (Int, String) {
         guard let currentWeather = self.currentWeather else {
             return (0, "오류")
         }
+        
+        guard let url = URL(string: "https://api.waqi.info/feed/geo:\(lat);\(lng)/?token=\(token)") else { return (0, "오류") }
+        
+        
+        let request = URLRequest(url: url)
+        
         
         let airQualityValue = 0
         
@@ -146,6 +152,28 @@ final class WeatherViewModel {
         
     }
     
+    
+    func convertUVIndex(category: UVIndex.ExposureCategory) -> (String, UIColor) {
+        switch category {
+        case .extreme:
+            return ("심각함", UIColor.purple)
+        case .high:
+            return ("높음", UIColor.systemOrange)
+        case .low:
+            return ("낮음", Constants.greenColor)
+        case .moderate:
+            return ("보통", UIColor(named: "black") ?? UIColor.black)
+        case .veryHigh:
+            return ("매우 높음", UIColor.systemRed)
+        }
+    }
+    
+//    func convertAQI(category: String) -> (String, UIColor) {
+//        switch category {
+//        case "좋음":
+//            return
+//        }
+//    }
     
     func convertWeatherCondition(condition: WeatherCondition) -> String {
         switch condition {

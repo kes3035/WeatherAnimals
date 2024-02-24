@@ -142,6 +142,8 @@ final class WeekWeatherCell: UITableViewCell {
             self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
             self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
             
+            
+            
             if dayWeather.precipitationChance.magnitude >= 2.0  {
                 self.rainFall.text = String(Int(round(dayWeather.precipitationChance.magnitude))) + "%"
             }

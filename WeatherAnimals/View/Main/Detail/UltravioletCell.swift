@@ -62,9 +62,6 @@ final class UltravioletCell: UICollectionViewCell {
         self.baseView.addSubviews(uvValueLabel, uvDescriptionLabel)
         
         self.baseView.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.leading.equalToSuperview().offset(10)
-//            $0.trailing.bottom.equalToSuperview().inset(10)
             $0.edges.equalToSuperview()
         }
         
@@ -80,11 +77,19 @@ final class UltravioletCell: UICollectionViewCell {
         }
     }
     
+    
+    
     private func configureUIWithData() {
         guard let currentWeather = self.weatherViewModel.currentWeather else { return }
+        
+        let (category, color) = self.weatherViewModel.convertUVIndex(category: currentWeather.uvIndex.category)
+        
         DispatchQueue.main.async {
             self.uvValueLabel.text = String(currentWeather.uvIndex.value)
-            self.uvDescriptionLabel.text = currentWeather.uvIndex.category.rawValue
+            self.uvValueLabel.textColor = color
+            
+            self.uvDescriptionLabel.text = category
+            self.uvDescriptionLabel.textColor = color
             
         }
     }

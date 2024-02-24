@@ -46,11 +46,7 @@ final class SunsetCell: UICollectionViewCell {
         self.baseView.addSubviews(sunsetLabel)
         
         self.baseView.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.leading.equalToSuperview().offset(10)
-//            $0.trailing.bottom.equalToSuperview().inset(10)
             $0.edges.equalToSuperview()
-
         }
         
         self.sunsetLabel.snp.makeConstraints {

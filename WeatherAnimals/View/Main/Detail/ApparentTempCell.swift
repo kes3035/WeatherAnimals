@@ -15,14 +15,16 @@ final class ApparentTempCell: UICollectionViewCell {
         $0.backgroundColor = UIColor(named: "background")
     }
     
-    private lazy var airQualityValueLabel = UILabel().then {
+    private lazy var apparentTempLabel = UILabel().then {
         $0.text = "-13도"
         $0.font = UIFont.neoDeungeul(size: 50)
         $0.textColor = .black
     }
     
     var weatherViewModel: WeatherViewModel! {
-        didSet { self.configureUIWithData(self.weatherViewModel) }
+        didSet { 
+            self.configureUIWithData()
+        }
     }
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -39,7 +41,7 @@ final class ApparentTempCell: UICollectionViewCell {
         
         self.addSubview(baseView)
         
-        self.baseView.addSubviews(airQualityValueLabel)
+        self.baseView.addSubviews(apparentTempLabel)
         
         self.baseView.snp.makeConstraints {
 //            $0.top.equalToSuperview()
@@ -49,16 +51,17 @@ final class ApparentTempCell: UICollectionViewCell {
 
         }
         
-        self.airQualityValueLabel.snp.makeConstraints {
+        self.apparentTempLabel.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
             $0.height.equalTo(40)
         }
     }
     
-    private func configureUIWithData(_ weatherViewModel: WeatherViewModel) {
+    private func configureUIWithData() {
+        guard let currentWeather = self.weatherViewModel.currentWeather else { return }
+
         DispatchQueue.main.async {
-            guard let currentWeather = weatherViewModel.currentWeather else { return }
-            self.airQualityValueLabel.text = String(round(currentWeather.apparentTemperature.value)) + currentWeather.apparentTemperature.unit.symbol
+            self.apparentTempLabel.text = String(round(currentWeather.apparentTemperature.value)) + currentWeather.apparentTemperature.unit.symbol
 
             
         }

@@ -13,6 +13,8 @@
 		212E389B2B5E537400F487B2 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E389A2B5E537400F487B2 /* HeaderView.swift */; };
 		212E389D2B5E57B800F487B2 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E389C2B5E57B800F487B2 /* DetailView.swift */; };
 		2152D3FE2B4E7D5000FF8811 /* AddCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152D3FD2B4E7D5000FF8811 /* AddCell.swift */; };
+		216CA64D2B8A162100A56C8D /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 216CA64C2B8A162100A56C8D /* .gitignore */; };
+		216CA64F2B8A16F100A56C8D /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216CA64E2B8A16F100A56C8D /* APIKey.swift */; };
 		216D320D2B68EFCA00B1229C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D320C2B68EFCA00B1229C /* Extensions.swift */; };
 		216D32162B68F48000B1229C /* MyLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D32152B68F48000B1229C /* MyLocation.swift */; };
 		216D321A2B68F5C800B1229C /* ApparentTempCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D32192B68F5C800B1229C /* ApparentTempCell.swift */; };
@@ -53,6 +55,8 @@
 		212E389A2B5E537400F487B2 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		212E389C2B5E57B800F487B2 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		2152D3FD2B4E7D5000FF8811 /* AddCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCell.swift; sourceTree = "<group>"; };
+		216CA64C2B8A162100A56C8D /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		216CA64E2B8A16F100A56C8D /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
 		216D320C2B68EFCA00B1229C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = ../ViewModel/Extensions.swift; sourceTree = "<group>"; };
 		216D32152B68F48000B1229C /* MyLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLocation.swift; sourceTree = "<group>"; };
 		216D32192B68F5C800B1229C /* ApparentTempCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApparentTempCell.swift; sourceTree = "<group>"; };
@@ -221,6 +225,7 @@
 				21AC9C732AEFB5410048CA59 /* LaunchScreen */,
 				21AC9C6F2AEFB4340048CA59 /* WeatherAnimals.entitlements */,
 				21AC9C702AEFB4B90048CA59 /* Resources */,
+				216CA64C2B8A162100A56C8D /* .gitignore */,
 			);
 			path = WeatherAnimals;
 			sourceTree = "<group>";
@@ -235,6 +240,7 @@
 				21AC9C772AEFB7090048CA59 /* Constants.swift */,
 				216D320C2B68EFCA00B1229C /* Extensions.swift */,
 				21C292612B663A8400312759 /* CustomFlowLayout.swift */,
+				216CA64E2B8A16F100A56C8D /* APIKey.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -336,6 +342,7 @@
 				21F47D942B45B78C0066F86E /* NeoDunggeunmoPro-Regular.ttf in Resources */,
 				2191034F2B70E9BB007C5BF1 /* Color.xcassets in Resources */,
 				21AC9C682AEFB0700048CA59 /* LaunchScreen.storyboard in Resources */,
+				216CA64D2B8A162100A56C8D /* .gitignore in Resources */,
 				21AC9C652AEFB0700048CA59 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -417,6 +424,7 @@
 				216D320D2B68EFCA00B1229C /* Extensions.swift in Sources */,
 				219937CF2AF10ECE00EC8518 /* WeatherCell.swift in Sources */,
 				212E389B2B5E537400F487B2 /* HeaderView.swift in Sources */,
+				216CA64F2B8A16F100A56C8D /* APIKey.swift in Sources */,
 				216D32262B6B529400B1229C /* HourWeatherCell.swift in Sources */,
 				21937DE52B7CB3810088CE2C /* SettingHeaderView.swift in Sources */,
 				21C292622B663A8400312759 /* CustomFlowLayout.swift in Sources */,
