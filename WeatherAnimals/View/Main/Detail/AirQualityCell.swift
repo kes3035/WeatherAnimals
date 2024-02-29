@@ -76,6 +76,7 @@ final class AirQualityCell: UICollectionViewCell {
     }
     
     private func configureUIWithData() {
+      
         DispatchQueue.main.async {
             guard let currentWeather = self.weatherViewModel.currentWeather else { return }
             

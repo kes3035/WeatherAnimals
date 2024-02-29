@@ -16,7 +16,6 @@ final class WeatherViewModel {
 
     var currentWeather: CurrentWeather? {
         didSet {
-            print("디버깅: WeatherViewModel's CurrentWeather Changed")
             didChangeWeather?(self)
             didFetchedWeathers?()
         }
@@ -49,6 +48,8 @@ final class WeatherViewModel {
     }
     
     var hourWeathers: [HourWeather]?
+    
+    var airQuality: AirQuality?
     
     //MARK: - Inputs
     
@@ -132,15 +133,28 @@ final class WeatherViewModel {
         return (leading, width)
     }
    
-    func getAirQualityCondition(lat: Double, lng: Double, token: String) -> (Int, String) {
-        guard let currentWeather = self.currentWeather else {
-            return (0, "오류")
-        }
+    func getAirQualityCondition(location: CLLocation) {
+        let lat = location.coordinate.latitude.magnitude
+        let lng = location.coordinate.longitude.magnitude
         
-        guard let url = URL(string: "https://api.waqi.info/feed/geo:\(lat);\(lng)/?token=\(token)") else { return (0, "오류") }
-        
+        guard let url = URL(string: "https://api.waqi.info/feed/geo:\(lat);\(lng)/?token=\(APIKey.aqicn_key)")
+        else {
+            print("API doesn't exist - 143")
+            return }
         
         let request = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("error")
+                print(error.localizedDescription)
+            }
+            dump(data)
+            print("⭐️------------------⭐️")
+            dump(response)
+        }
+        
+        
         
         
         let airQualityValue = 0
@@ -148,7 +162,6 @@ final class WeatherViewModel {
         var airQualityDescription = ""
         
         
-        return (airQualityValue, airQualityDescription)
         
     }
     

@@ -36,7 +36,7 @@ final class MainVC: UIViewController {
         self.configureUI()
         self.settingNav()
         self.settingTV()
-        self.settingLocation()
+//        self.settingLocation()
     }
     
     //MARK: - Helpers
