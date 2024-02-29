@@ -187,12 +187,24 @@ final class WeatherViewModel {
         }
     }
     
-//    func convertAQI(category: String) -> (String, UIColor) {
-//        switch category {
-//        case "좋음":
-//            return
-//        }
-//    }
+    func convertAQIIndex(value: Int) -> (String, UIColor) {
+        switch value {
+        case 0...50:
+            return ("좋음", Constants.greenColor)
+        case 51...100:
+            return ("보통", UIColor.yellow)
+        case 101...150:
+            return ("민감군영향", UIColor.orange)
+        case 151...200:
+            return ("나쁨", UIColor.systemRed)
+        case 201...300:
+            return ("매우 나쁨", UIColor.purple)
+        case 301...:
+            return ("위험", UIColor.darkGray)
+        default:
+            return ("로딩중", UIColor(named: "black") ?? UIColor.black)
+        }
+    }
     
     func convertWeatherCondition(condition: WeatherCondition) -> String {
         switch condition {
