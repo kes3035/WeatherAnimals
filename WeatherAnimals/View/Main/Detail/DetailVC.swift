@@ -49,7 +49,9 @@ final class DetailVC: UIViewController {
         self.weatherViewModel = WeatherViewModel()
       
         self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin)
+        
         self.weatherViewModel.getAirQualityCondition(location: self.weatherViewModel.yongin)
+
         self.configureUI()
         self.settingNav()
         self.settingFlowLayout()

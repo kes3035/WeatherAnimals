@@ -8,8 +8,12 @@
 import UIKit
 
 struct AirQuality: Codable {
-    let averageAQI: Int
-    let maxAQI: Int
-    let minAQI: Int
+    let aqi: Int
+//    let maxAQI: Int
+//    let minAQI: Int
     
+}
+
+struct AirQualityResponse: Codable {
+    let data: AirQuality
 }

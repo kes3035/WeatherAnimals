@@ -8,7 +8,7 @@ import CoreLocation
 final class WeatherViewModel {
     //MARK: - Model
     
-    let yongin = CLLocation(latitude: 37.33229036093, longitude: 127.13131714737)
+    let yongin = CLLocation(latitude: 37.32360894097521, longitude: 127.12394643315668)
     
     var location: CLLocation?
     
@@ -29,17 +29,9 @@ final class WeatherViewModel {
     
     var dayWeathers: [DayWeather]?
     
-    var maxTempOfWeek: Double? {
-        didSet {
-            guard let maxTempOfWeek = self.maxTempOfWeek else { return }
-        }
-    }
+    var maxTempOfWeek: Double?
     
-    var minTempOfWeek: Double? {
-        didSet {
-            guard let minTempOfWeek = self.minTempOfWeek else { return }
-        }
-    }
+    var minTempOfWeek: Double? 
     
     var hourWeather: HourWeather? {
         didSet {
@@ -49,7 +41,11 @@ final class WeatherViewModel {
     
     var hourWeathers: [HourWeather]?
     
-    var airQuality: AirQuality?
+    var airQuality: AirQuality? {
+        didSet {
+            print(airQuality)
+        }
+    }
     
     //MARK: - Inputs
     
@@ -144,23 +140,33 @@ final class WeatherViewModel {
         
         let request = URLRequest(url: url)
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("error")
-                print(error.localizedDescription)
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error { print(error.localizedDescription)
+                return
             }
-            dump(data)
-            print("⭐️------------------⭐️")
-            dump(response)
+            //            guard (response as? HTTPURLResponse)?.statusCode != 200 else { return }
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid HTTP Response")
+                return
+            }
+
+            guard let responseData = data else {
+                print("No data received")
+                return
+            }
+            do {
+                let airQualityResponse = try JSONDecoder().decode(AirQualityResponse.self, from: responseData)
+                let aqi = airQualityResponse.data
+                // 여기서 필요한 정보를 사용하여 AirQuality 구조체를 생성하거나 다른 작업을 수행할 수 있습니다.
+                let airQuality = AirQuality(aqi: aqi.aqi) // 여기서 최대, 최소 AQI 값은 API 응답에서 가져와야 합니다.
+                self.airQuality = airQuality
+                // 이후에 필요한 처리를 진행합니다.
+            } catch {
+                print("Error decoding JSON: \(error.localizedDescription)")
+            }
+            
         }
-        
-        
-        
-        
-        let airQualityValue = 0
-        
-        var airQualityDescription = ""
-        
+        task.resume()
         
         
     }

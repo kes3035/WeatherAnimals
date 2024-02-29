@@ -30,11 +30,6 @@ final class AirQualityCell: UICollectionViewCell {
         $0.textColor = .black
     }
  
-    var weather: CurrentWeather? {
-        didSet {
-            guard let weather = self.weather else { return }
-        }
-    }
     
     var weatherViewModel: WeatherViewModel! {
         didSet {
@@ -46,7 +41,10 @@ final class AirQualityCell: UICollectionViewCell {
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.weatherViewModel = WeatherViewModel()
         self.configureUI()
+        self.weatherViewModel.getAirQualityCondition(location: self.weatherViewModel.yongin)
+
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -76,10 +74,10 @@ final class AirQualityCell: UICollectionViewCell {
     }
     
     private func configureUIWithData() {
-      
+        guard let aqi = self.weatherViewModel.airQuality else { return }
+        
         DispatchQueue.main.async {
-            guard let currentWeather = self.weatherViewModel.currentWeather else { return }
-            
+            self.airQualityValueLabel.text = String(aqi.aqi)
 
         }
     }
