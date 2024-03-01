@@ -20,9 +20,15 @@ final class HumidityCell: UICollectionViewCell {
         $0.textColor = UIColor(named: "black")
     }
     
+    var weatherViewModel: WeatherViewModel! {
+        didSet {
+            self.configureUIWithData()
+        }
+    }
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.weatherViewModel = WeatherViewModel()
         self.configureUI()
     }
     
@@ -40,16 +46,19 @@ final class HumidityCell: UICollectionViewCell {
         self.addSubview(self.baseView)
         
         self.baseView.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.leading.equalToSuperview().offset(10)
-//            $0.trailing.bottom.equalToSuperview().inset(10)
             $0.edges.equalToSuperview()
-
         }
         
         self.humidityLabel.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
             $0.height.equalTo(60)
+        }
+    }
+    
+    private func configureUIWithData() {
+        guard let currentWeather = self.weatherViewModel.currentWeather else { return }
+        DispatchQueue.main.async {
+            self.humidityLabel.text = String(round(currentWeather.humidity)) + "%"
         }
     }
     

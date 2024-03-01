@@ -34,18 +34,12 @@ final class WeatherViewModel {
     var minTempOfWeek: Double? 
     
     var hourWeather: HourWeather? {
-        didSet {
-            didChangeWeather?(self)
-        }
+        didSet { didChangeWeather?(self) }
     }
     
     var hourWeathers: [HourWeather]?
     
-    var airQuality: AirQuality? {
-        didSet {
-            print(airQuality)
-        }
-    }
+    var airQuality: AirQuality?
     
     //MARK: - Inputs
     
@@ -134,17 +128,16 @@ final class WeatherViewModel {
         let lng = location.coordinate.longitude.magnitude
         
         guard let url = URL(string: "https://api.waqi.info/feed/geo:\(lat);\(lng)/?token=\(APIKey.aqicn_key)")
-        else {
-            print("API doesn't exist - 143")
-            return }
+        else { return }
         
         let request = URLRequest(url: url)
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error { print(error.localizedDescription)
+            if let error = error { 
+                print(error.localizedDescription)
                 return
             }
-            //            guard (response as? HTTPURLResponse)?.statusCode != 200 else { return }
+            
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                 print("Invalid HTTP Response")
                 return
@@ -154,6 +147,7 @@ final class WeatherViewModel {
                 print("No data received")
                 return
             }
+            
             do {
                 let airQualityResponse = try JSONDecoder().decode(AirQualityResponse.self, from: responseData)
                 let aqi = airQualityResponse.data

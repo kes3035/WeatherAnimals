@@ -60,11 +60,8 @@ final class AddVC: UIViewController {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "도시 검색"
-        
         searchController.searchBar.searchTextField.font = UIFont.neoDeungeul(size: 15)
-        
-        
-
+    
         navigationItem.searchController = searchController
         definesPresentationContext = true
     }
@@ -94,18 +91,20 @@ final class AddVC: UIViewController {
 extension AddVC: UITableViewDelegate {
     //tableView의 셀이 선택되었을 때 실행되는 메서드
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       let selectedResult = searchResults[indexPath.row]
-       let searchRequest = MKLocalSearch.Request(completion: selectedResult)
-       let search = MKLocalSearch(request: searchRequest)
-
-       search.start { response, error in
-        guard error == nil else { return }
-           
-        guard let placemark = response?.mapItems[0].placemark else { return }
-
+        let selectedResult = searchResults[indexPath.row]
+        let searchRequest = MKLocalSearch.Request(completion: selectedResult)
+        let search = MKLocalSearch(request: searchRequest)
         
-       }
-   }
+//        search.start { response, error in
+//            guard error == nil else { return }
+//            guard let placemark = response?.mapItems[0].placemark else { return }
+//        }
+        let detailVC = DetailVC()
+        detailVC.configureNavButton()
+        let nav = UINavigationController(rootViewController: detailVC)
+        self.present(nav, animated: true)
+        
+    }
 }
 //MARK: - UITableViewDataSource
 extension AddVC: UITableViewDataSource {

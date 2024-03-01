@@ -86,6 +86,7 @@ final class MainVC: UIViewController {
     @objc func plusButtonTapped(_ sender: UIButton) {
         // When Plus Button Tapped, AddVC will be pushed
         let addVC = AddVC()
+//        let nav = UINavigationController(rootViewController: addVC)
         addVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(addVC, animated: true)
     }
@@ -117,9 +118,10 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         detailVC.weatherViewModel = self.weatherViewModel
         detailVC.hidesBottomBarWhenPushed = true
         self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin)
+        let nav = UINavigationController(rootViewController: detailVC)
         self.weatherViewModel.didFetchedWeathers = {
             DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailVC, animated: true)
+                self.navigationController?.pushViewController(nav, animated: true)
             }
         }
     }

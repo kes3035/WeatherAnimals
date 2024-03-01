@@ -77,8 +77,7 @@ final class AirQualityCell: UICollectionViewCell {
         guard let aqi = self.weatherViewModel.airQuality else { return }
         let (text, color) = self.weatherViewModel.convertAQIIndex(value: aqi.aqi)
         DispatchQueue.main.async {
-            self.airQualityValueLabel.text =
-            String(aqi.aqi)
+            self.airQualityValueLabel.text = String(aqi.aqi)
             self.airQualityLabel.text = text
             self.airQualityLabel.textColor = color
             self.airQualityValueLabel.textColor = color

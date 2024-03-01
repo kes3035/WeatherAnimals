@@ -31,6 +31,8 @@ final class DetailVC: UIViewController {
     }
     
     
+    
+    
     // 뷰모델
     var weatherViewModel: WeatherViewModel! {
         didSet {
@@ -53,12 +55,12 @@ final class DetailVC: UIViewController {
         self.weatherViewModel.getAirQualityCondition(location: self.weatherViewModel.yongin)
 
         self.configureUI()
-        self.settingNav()
+//        self.settingNav()
         self.settingFlowLayout()
     }
     
     //MARK: - Helpers
-    func configureUI() {
+    private func configureUI() {
         //최초UI 구성
         self.view.backgroundColor = .white
         
@@ -106,6 +108,27 @@ final class DetailVC: UIViewController {
         flowLayout.sectionHeadersPinToVisibleBounds = true
         
     }
+    
+    func configureNavButton() {
+        let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(buttonTapped(_:)))
+        let addButton = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(buttonTapped(_:)))
+        
+        self.navigationItem.leftBarButtonItem = cancelButton
+        self.navigationItem.rightBarButtonItem = addButton
+    }
+    
+    @objc func buttonTapped(_ sender: UIButton) {
+        guard let titleLabel = sender.currentTitle else { return }
+        switch titleLabel {
+        case "취소":
+            self.dismiss(animated: true)
+        case "추가":
+            print("addButtonTapped")
+        default:
+            break
+        }
+    }
+    
 }
 //MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -168,10 +191,12 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         case 4:
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RainFallCell.identifier, for: indexPath) as! RainFallCell
-//                cell.weatherViewModel = self.weatherViewModel
+                cell.weatherViewModel = self.weatherViewModel
+                
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HumidityCell.identifier, for: indexPath) as! HumidityCell
+                cell.weatherViewModel = self.weatherViewModel
                 return cell
             }
         default:

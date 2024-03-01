@@ -14,14 +14,21 @@ final class RainFallCell: UICollectionViewCell {
         $0.backgroundColor = UIColor(named: "background")
     }
     
-    private lazy var airQualityValueLabel = UILabel().then {
+    private lazy var rainFallLabel = UILabel().then {
         $0.text = "70mm"
         $0.font = UIFont.neoDeungeul(size: 50)
         $0.textColor = .black
     }
+    
+    var weatherViewModel: WeatherViewModel! {
+        didSet {
+            self.configureUIWithData()
+        }
+    }
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.weatherViewModel = WeatherViewModel()
         self.configureUI()
     }
     
@@ -33,19 +40,27 @@ final class RainFallCell: UICollectionViewCell {
         
         self.addSubview(baseView)
         
-        self.baseView.addSubviews(airQualityValueLabel)
+        self.baseView.addSubviews(rainFallLabel)
         
-        self.baseView.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.leading.equalToSuperview().offset(10)
-//            $0.trailing.bottom.equalToSuperview().inset(10)
-            $0.edges.equalToSuperview()
-
-        }
+        self.baseView.snp.makeConstraints { $0.edges.equalToSuperview() }
         
-        self.airQualityValueLabel.snp.makeConstraints {
+        self.rainFallLabel.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview().offset(5)
             $0.height.equalTo(60)
         }
+    }
+
+    private func configureUIWithData() {
+        
+        guard let currentWeather = self.weatherViewModel.currentWeather else { return }
+        
+        DispatchQueue.main.async {
+            
+            self.rainFallLabel.text = String(currentWeather.precipitationIntensity.value)
+            
+            
+            
+        }
+        
     }
 }
