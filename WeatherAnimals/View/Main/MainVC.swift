@@ -36,7 +36,7 @@ final class MainVC: UIViewController {
         self.configureUI()
         self.settingNav()
         self.settingTV()
-//        self.settingLocation()
+        self.settingLocation()
     }
     
     //MARK: - Helpers
@@ -113,15 +113,15 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // When selected, DetailVC will be pushed
+
         let detailVC = DetailVC()
         detailVC.weatherViewModel = self.weatherViewModel
         detailVC.hidesBottomBarWhenPushed = true
+        
         self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin)
-        let nav = UINavigationController(rootViewController: detailVC)
         self.weatherViewModel.didFetchedWeathers = {
             DispatchQueue.main.async {
-                self.navigationController?.pushViewController(nav, animated: true)
+                self.navigationController?.pushViewController(detailVC, animated: true)
             }
         }
     }

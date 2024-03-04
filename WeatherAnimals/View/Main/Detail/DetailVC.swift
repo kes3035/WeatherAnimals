@@ -30,7 +30,9 @@ final class DetailVC: UIViewController {
         
     }
     
+    private lazy var cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(buttonTapped(_:)))
     
+    private lazy var addButton = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(buttonTapped(_:)))
     
     
     // 뷰모델
@@ -55,7 +57,7 @@ final class DetailVC: UIViewController {
         self.weatherViewModel.getAirQualityCondition(location: self.weatherViewModel.yongin)
 
         self.configureUI()
-//        self.settingNav()
+
         self.settingFlowLayout()
     }
     
@@ -110,20 +112,19 @@ final class DetailVC: UIViewController {
     }
     
     func configureNavButton() {
-        let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(buttonTapped(_:)))
-        let addButton = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(buttonTapped(_:)))
-        
         self.navigationItem.leftBarButtonItem = cancelButton
         self.navigationItem.rightBarButtonItem = addButton
     }
     
-    @objc func buttonTapped(_ sender: UIButton) {
-        guard let titleLabel = sender.currentTitle else { return }
+    @objc func buttonTapped(_ sender: UIBarButtonItem) {
+        
+        guard let titleLabel = sender.title else { return }
         switch titleLabel {
         case "취소":
             self.dismiss(animated: true)
         case "추가":
             print("addButtonTapped")
+            self.dismiss(animated: true)
         default:
             break
         }
@@ -221,7 +222,7 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
             let width = collectionView.frame.width
             let itemsPerRow: CGFloat = 2
             let widthPadding = sectionInsets.left * (itemsPerRow + 1)
-            let itemsPerColumn: CGFloat = 1
+//            let itemsPerColumn: CGFloat = 1
             let cellWidth = (width - widthPadding) / itemsPerRow
             let size = CGSize(width: cellWidth, height: cellWidth - 30)
             return size

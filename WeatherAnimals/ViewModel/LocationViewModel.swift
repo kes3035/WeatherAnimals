@@ -8,7 +8,12 @@ final class LocationViewModel: CLLocationManager, CLLocationManagerDelegate {
     private var fetchLocationCompletion: FetchLocationCompletion?
     
     // 위치 저장
-    var loc: CLLocation?
+    var loc: CLLocation? {
+        didSet {
+            guard let location = self.loc else { return }
+            print("사용자의 위치는 \(location)")
+        }
+    }
     
     override init() {
         super.init()

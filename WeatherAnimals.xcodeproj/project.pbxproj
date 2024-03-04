@@ -12,6 +12,7 @@
 		212E38962B5BC80100F487B2 /* WeekCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E38952B5BC80100F487B2 /* WeekCell.swift */; };
 		212E389B2B5E537400F487B2 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E389A2B5E537400F487B2 /* HeaderView.swift */; };
 		212E389D2B5E57B800F487B2 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E389C2B5E57B800F487B2 /* DetailView.swift */; };
+		214C90462B9582FA007E8BC8 /* LaunchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214C90452B9582FA007E8BC8 /* LaunchVC.swift */; };
 		2152D3FE2B4E7D5000FF8811 /* AddCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152D3FD2B4E7D5000FF8811 /* AddCell.swift */; };
 		216CA64D2B8A162100A56C8D /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 216CA64C2B8A162100A56C8D /* .gitignore */; };
 		216CA64F2B8A16F100A56C8D /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216CA64E2B8A16F100A56C8D /* APIKey.swift */; };
@@ -55,6 +56,7 @@
 		212E38952B5BC80100F487B2 /* WeekCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekCell.swift; sourceTree = "<group>"; };
 		212E389A2B5E537400F487B2 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		212E389C2B5E57B800F487B2 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		214C90452B9582FA007E8BC8 /* LaunchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LaunchVC.swift; path = ../LaunchVC.swift; sourceTree = "<group>"; };
 		2152D3FD2B4E7D5000FF8811 /* AddCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCell.swift; sourceTree = "<group>"; };
 		216CA64C2B8A162100A56C8D /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		216CA64E2B8A16F100A56C8D /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 		216D32202B68F72C00B1229C /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				214C90452B9582FA007E8BC8 /* LaunchVC.swift */,
 				21AC9C5F2AEFB06E0048CA59 /* MainVC.swift */,
 				219937CE2AF10ECE00EC8518 /* WeatherCell.swift */,
 				21DDD86A2B4E77430074ABAB /* AddVC.swift */,
@@ -402,6 +405,7 @@
 				21C2925D2B61199600312759 /* RainFallCell.swift in Sources */,
 				21AC9C602AEFB06E0048CA59 /* MainVC.swift in Sources */,
 				212E389D2B5E57B800F487B2 /* DetailView.swift in Sources */,
+				214C90462B9582FA007E8BC8 /* LaunchVC.swift in Sources */,
 				219937CD2AF1094900EC8518 /* WeatherViewModel.swift in Sources */,
 				21AC9C5C2AEFB06E0048CA59 /* AppDelegate.swift in Sources */,
 				21C292572B61196800312759 /* UltravioletCell.swift in Sources */,

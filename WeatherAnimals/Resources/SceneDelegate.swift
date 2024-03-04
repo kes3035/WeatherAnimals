@@ -17,9 +17,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         let tabBarController = TabBC()
-                
-        window.rootViewController = tabBarController
-        
+        let loadingVC = LaunchVC()
+//        window.rootViewController = tabBarController
+        window.rootViewController = loadingVC
+
 //        let detail = DetailVC()
 //        window.rootViewController = detail
 
