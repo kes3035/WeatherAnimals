@@ -4,26 +4,33 @@
 //
 //  Created by 김은상 on 10/30/23.
 //
-
+import CoreData
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
-        let tabBarController = TabBC()
-        let loadingVC = LaunchVC()
-//        window.rootViewController = tabBarController
-        window.rootViewController = loadingVC
-
-//        let detail = DetailVC()
-//        window.rootViewController = detail
-
+        let launchVC = LaunchVC()
+        
+        DispatchQueue.global().async {
+            self.fetchMyData { [weak self] myDatas in
+                guard let self = self else { return }
+                print(myDatas.count)
+                DispatchQueue.main.async {
+                    let tabBarController = TabBC()
+                    window.rootViewController = tabBarController
+                }
+            }
+        }
+       
+        DispatchQueue.main.async {
+            window.rootViewController = launchVC
+        }
         window.makeKeyAndVisible()
         self.window = window
     }
@@ -56,7 +63,59 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
+    // MARK: - Core Data stack
+    
+    lazy var persistentContainer: NSPersistentContainer = {
 
+        let container = NSPersistentContainer(name: "Model")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                /*
 
+                 Typical reasons for an error here include:
+                 * The parent directory does not exist, cannot be created, or disallows writing.
+                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
+                 * The device is out of space.
+                 * The store could not be migrated to the current model version.
+                 Check the error message to determine what the actual problem was.
+                 */
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
+        return container
+    }()
+    
+    // MARK: - Core Data Saving support
+    func saveContext () {
+        let context = persistentContainer.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+        }
+    }
+    
+    func fetchMyData( completion: @escaping([MyData])->(Void)) {
+//        let appDelegate = UIApplication.shared.delegate as! SceneDelegate
+        let context = self.persistentContainer.viewContext
+        
+        do {
+            let myData = try context.fetch(MyData.fetchRequest()) as! [MyData]
+            myData.forEach {
+                print($0.latitude)
+                print($0.longitude)
+            }
+            completion(myData)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 }
 

@@ -23,6 +23,7 @@
 		216D321E2B68F62F00B1229C /* AirQualityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D321C2B68F62F00B1229C /* AirQualityCell.swift */; };
 		216D32262B6B529400B1229C /* HourWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D32252B6B529300B1229C /* HourWeatherCell.swift */; };
 		2178D1222B8F489D001F8F67 /* AirQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2178D1212B8F489D001F8F67 /* AirQuality.swift */; };
+		2185388E2B9850E300337721 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2185388C2B9850E300337721 /* Model.xcdatamodeld */; };
 		2191034F2B70E9BB007C5BF1 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2191034E2B70E9BB007C5BF1 /* Color.xcassets */; };
 		219103532B7228E6007C5BF1 /* HumidityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219103522B7228E6007C5BF1 /* HumidityCell.swift */; };
 		21937DE52B7CB3810088CE2C /* SettingHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21937DE42B7CB3810088CE2C /* SettingHeaderView.swift */; };
@@ -67,6 +68,7 @@
 		216D321C2B68F62F00B1229C /* AirQualityCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirQualityCell.swift; sourceTree = "<group>"; };
 		216D32252B6B529300B1229C /* HourWeatherCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HourWeatherCell.swift; sourceTree = "<group>"; };
 		2178D1212B8F489D001F8F67 /* AirQuality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirQuality.swift; sourceTree = "<group>"; };
+		2185388D2B9850E300337721 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		2191034E2B70E9BB007C5BF1 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
 		219103522B7228E6007C5BF1 /* HumidityCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumidityCell.swift; sourceTree = "<group>"; };
 		21937DE42B7CB3810088CE2C /* SettingHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingHeaderView.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 			children = (
 				216D32152B68F48000B1229C /* MyLocation.swift */,
 				2178D1212B8F489D001F8F67 /* AirQuality.swift */,
+				2185388C2B9850E300337721 /* Model.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -224,13 +227,13 @@
 		21AC9C5A2AEFB06E0048CA59 /* WeatherAnimals */ = {
 			isa = PBXGroup;
 			children = (
+				21AC9C702AEFB4B90048CA59 /* Resources */,
 				216D32132B68F14600B1229C /* Model */,
 				216D32122B68F13800B1229C /* View */,
 				216D32142B68F15100B1229C /* ViewModel */,
 				21AC9C692AEFB0700048CA59 /* Info.plist */,
 				21AC9C732AEFB5410048CA59 /* LaunchScreen */,
 				21AC9C6F2AEFB4340048CA59 /* WeatherAnimals.entitlements */,
-				21AC9C702AEFB4B90048CA59 /* Resources */,
 				216CA64C2B8A162100A56C8D /* .gitignore */,
 			);
 			path = WeatherAnimals;
@@ -425,6 +428,7 @@
 				21AA8CD92B494B68008AABC5 /* WeekWeatherCell.swift in Sources */,
 				219103532B7228E6007C5BF1 /* HumidityCell.swift in Sources */,
 				21F47D912B45500E0066F86E /* TabBC.swift in Sources */,
+				2185388E2B9850E300337721 /* Model.xcdatamodeld in Sources */,
 				212E38892B5B9DBA00F487B2 /* CollectionHeader.swift in Sources */,
 				21F47D8F2B45463B0066F86E /* SettingVC.swift in Sources */,
 				21D4C6DA2AF3DF100048CF65 /* LocationViewModel.swift in Sources */,
@@ -655,6 +659,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		2185388C2B9850E300337721 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2185388D2B9850E300337721 /* Model.xcdatamodel */,
+			);
+			currentVersion = 2185388D2B9850E300337721 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 21AC9C502AEFB06E0048CA59 /* Project object */;
 }

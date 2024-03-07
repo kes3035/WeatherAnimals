@@ -124,6 +124,7 @@ final class DetailVC: UIViewController {
             self.dismiss(animated: true)
         case "추가":
             print("addButtonTapped")
+            self.weatherViewModel.setValue(self.weatherViewModel)
             self.dismiss(animated: true)
         default:
             break
