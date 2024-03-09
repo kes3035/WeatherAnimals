@@ -43,7 +43,9 @@ final class AirQualityCell: UICollectionViewCell {
         super.init(frame: frame)
         self.weatherViewModel = WeatherViewModel()
         self.configureUI()
-        self.weatherViewModel.getAirQualityCondition(location: self.weatherViewModel.yongin)
+        guard let location = self.weatherViewModel.location else { return }
+
+        self.weatherViewModel.getAirQualityCondition(location: location)
 
     }
     

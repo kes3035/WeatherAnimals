@@ -52,9 +52,11 @@ final class DetailVC: UIViewController {
         super.viewDidLoad()
         self.weatherViewModel = WeatherViewModel()
       
-        self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin)
+        guard let location = self.weatherViewModel.location else { return }
         
-        self.weatherViewModel.getAirQualityCondition(location: self.weatherViewModel.yongin)
+        self.weatherViewModel.getDetailVCWeather(location: location)
+        
+        self.weatherViewModel.getAirQualityCondition(location: location)
 
         self.configureUI()
 

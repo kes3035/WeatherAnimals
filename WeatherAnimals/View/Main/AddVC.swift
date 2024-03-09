@@ -95,14 +95,22 @@ extension AddVC: UITableViewDelegate {
         let searchRequest = MKLocalSearch.Request(completion: selectedResult)
         let search = MKLocalSearch(request: searchRequest)
         
-//        search.start { response, error in
-//            guard error == nil else { return }
-//            guard let placemark = response?.mapItems[0].placemark else { return }
-//        }
         let detailVC = DetailVC()
         detailVC.configureNavButton()
-        let nav = UINavigationController(rootViewController: detailVC)
-        self.present(nav, animated: true)
+        
+        search.start { response, error in
+            guard error == nil else { return }
+            guard let placemark = response?.mapItems[0].placemark else { return }
+            print(placemark)
+            let location = CLLocation(latitude: placemark.coordinate.latitude, longitude: placemark.coordinate.longitude)
+            self.weatherViewModel.location = location
+            detailVC.weatherViewModel = self.weatherViewModel
+            let nav = UINavigationController(rootViewController: detailVC)
+            self.present(nav, animated: true)
+        }
+        
+        
+        
         
     }
 }

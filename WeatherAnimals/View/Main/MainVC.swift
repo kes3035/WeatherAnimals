@@ -20,6 +20,7 @@ final class MainVC: UIViewController {
     
     var weatherViewModel: WeatherViewModel! {
         didSet {
+            self.weatherViewModel.fetchMyData()
             DispatchQueue.main.async {
                 self.mainTableView.reloadData()
             }
@@ -32,7 +33,7 @@ final class MainVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.weatherViewModel = WeatherViewModel()
-        self.weatherViewModel.getMainVCWeather(location: self.weatherViewModel.yongin)
+//        self.weatherViewModel.getMainVCWeather(location: self.weatherViewModel.yongin)
         self.configureUI()
         self.settingNav()
         self.settingTV()
@@ -96,17 +97,26 @@ final class MainVC: UIViewController {
 extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Returns the count of locations user added
-        return 1
+        guard let myDatas = self.weatherViewModel.myDatas else { return 0 }
+        
+        return myDatas.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Data Transport to Cell
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
+        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
         
+        let location = CLLocation(latitude: myDatas[indexPath.row].latitude, longitude: myDatas[indexPath.row].longitude)
+        
+        self.weatherViewModel.getMainVCWeather(location: location )
+
         self.weatherViewModel.didChangeWeather = { [weak self] weatherViewModel in
+            
             cell.weatherViewModel = weatherViewModel
             self?.weatherViewModel = weatherViewModel
+            
         }
         
         return cell
@@ -115,6 +125,9 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         let detailVC = DetailVC()
+        guard let myDatas = self.weatherViewModel.myDatas else { return }
+        let location = CLLocation(latitude: myDatas[indexPath.row].latitude, longitude: myDatas[indexPath.row].longitude)
+        self.weatherViewModel.location = location
         detailVC.weatherViewModel = self.weatherViewModel
         detailVC.hidesBottomBarWhenPushed = true
         

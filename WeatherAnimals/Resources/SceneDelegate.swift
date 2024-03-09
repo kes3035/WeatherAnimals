@@ -20,7 +20,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         DispatchQueue.global().async {
             self.fetchMyData { [weak self] myDatas in
                 guard let self = self else { return }
-                print(myDatas.count)
                 DispatchQueue.main.async {
                     let tabBarController = TabBC()
                     window.rootViewController = tabBarController

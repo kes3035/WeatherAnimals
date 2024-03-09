@@ -27,7 +27,8 @@ final class HourCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.weatherViewModel = WeatherViewModel()
-        self.weatherViewModel.getHourWeather(location: self.weatherViewModel.yongin)
+        guard let location = self.weatherViewModel.location else { return }
+        self.weatherViewModel.getHourWeather(location: location )
         self.configureUI()
         self.settingFlowLayout()
     }

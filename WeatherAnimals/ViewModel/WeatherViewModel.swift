@@ -41,6 +41,8 @@ final class WeatherViewModel {
     
     var airQuality: AirQuality?
     
+    var myDatas: [MyData]?
+    
     //MARK: - Inputs
     
    
@@ -293,37 +295,38 @@ final class WeatherViewModel {
    
     
     func setValue(_ viewModel: WeatherViewModel) {
-        guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
-        
-        let context = sceneDelegate.persistentContainer.viewContext
-        let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context)
-        
-        if let entity = entity {
-            let myData = NSManagedObject(entity: entity, insertInto: context)
-            myData.setValue(viewModel.yongin.coordinate.latitude, forKey: "latitude")
-            myData.setValue(viewModel.yongin.coordinate.longitude, forKey: "longitude")
-            do {
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
+        DispatchQueue.main.async {
+            guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
             
+            let context = sceneDelegate.persistentContainer.viewContext
+            
+            let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context)
+            
+            if let entity = entity {
+                let myData = NSManagedObject(entity: entity, insertInto: context)
+                myData.setValue(viewModel.yongin.coordinate.latitude, forKey: "latitude")
+                myData.setValue(viewModel.yongin.coordinate.longitude, forKey: "longitude")
+                do {
+                    try context.save()
+                } catch {
+                    print(error.localizedDescription)
+                }
+                
+            }
         }
     }
     
-    func fetchMyData( completion: @escaping([MyData])->(Void)) {
-        let appDelegate = UIApplication.shared.delegate as! SceneDelegate
-        let context = appDelegate.persistentContainer.viewContext
-        
-        do {
-            let myData = try context.fetch(MyData.fetchRequest()) as! [MyData]
-            myData.forEach {
-                print($0.latitude)
-                print($0.longitude)
+    func fetchMyData() {
+        DispatchQueue.main.async {
+            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate
+            let context = sceneDelegate.persistentContainer.viewContext
+            
+            do {
+                guard let myData = try context.fetch(MyData.fetchRequest()) as? [MyData] else { return }
+                self.myDatas = myData
+            } catch {
+                print(error.localizedDescription)
             }
-            completion(myData)
-        } catch {
-            print(error.localizedDescription)
         }
     }
     
