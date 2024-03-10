@@ -16,20 +16,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         let launchVC = LaunchVC()
-        
-        DispatchQueue.global().async {
+        let tabBarController = TabBC()
+
+        DispatchQueue.global(qos: .default).async {
+            
             self.fetchMyData { [weak self] myDatas in
                 guard let self = self else { return }
-                DispatchQueue.main.async {
-                    let tabBarController = TabBC()
-                    window.rootViewController = tabBarController
-                }
+                DispatchQueue.main.async { window.rootViewController = tabBarController }
             }
         }
        
-        DispatchQueue.main.async {
-            window.rootViewController = launchVC
-        }
+        DispatchQueue.main.async { window.rootViewController = launchVC }
         window.makeKeyAndVisible()
         self.window = window
     }
@@ -88,7 +85,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Core Data Saving support
     func saveContext () {
-        let context = persistentContainer.viewContext
+        let context = self.persistentContainer.viewContext
+        
         if context.hasChanges {
             do {
                 try context.save()
@@ -102,19 +100,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func fetchMyData( completion: @escaping([MyData])->(Void)) {
-//        let appDelegate = UIApplication.shared.delegate as! SceneDelegate
         let context = self.persistentContainer.viewContext
         
         do {
             let myData = try context.fetch(MyData.fetchRequest()) as! [MyData]
-            myData.forEach {
-                print($0.latitude)
-                print($0.longitude)
-            }
             completion(myData)
-        } catch {
-            print(error.localizedDescription)
-        }
+        } catch { print(error.localizedDescription) }
     }
 }
 

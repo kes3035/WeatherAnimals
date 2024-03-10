@@ -53,7 +53,9 @@ final class WeekWeatherCell: UITableViewCell {
         $0.backgroundColor = UIColor(named: "black")
     }
     
-    var weatherViewModel: WeatherViewModel! {
+    lazy var tempViewConstraints: [Double] = []
+    
+    var dayWeather: DayWeather? {
         didSet {
             self.configureUIWithData()
         }
@@ -62,9 +64,7 @@ final class WeekWeatherCell: UITableViewCell {
     //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        self.weatherViewModel = WeatherViewModel()
         self.configureUI()
-        
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -129,11 +129,8 @@ final class WeekWeatherCell: UITableViewCell {
     }
     
     private func configureUIWithData() {
-        guard let dayWeather = self.weatherViewModel.dayWeather else { return }
-        
-        self.weatherViewModel.getMaxMinTempOfWeek(dayWeather)
+        guard let dayWeather = self.dayWeather else { return }
 
-        let (leading, width) = self.weatherViewModel.getLeadingWidthOfTempView()
         
       
         DispatchQueue.main.async {
@@ -143,15 +140,14 @@ final class WeekWeatherCell: UITableViewCell {
             self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
             
             
-            
             if dayWeather.precipitationChance.magnitude >= 2.0  {
                 self.rainFall.text = String(Int(round(dayWeather.precipitationChance.magnitude))) + "%"
             }
             
             self.tempView.snp.remakeConstraints {
                 $0.top.bottom.equalToSuperview()
-                $0.leading.equalToSuperview().offset(leading*86.333333)
-                $0.width.equalTo(width*86.333333)
+                $0.leading.equalToSuperview().offset(self.tempViewConstraints[0]*86.333333)
+                $0.width.equalTo(self.tempViewConstraints[1]*86.333333)
                 
             }
         }

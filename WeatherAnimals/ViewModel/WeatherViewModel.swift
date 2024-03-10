@@ -70,6 +70,7 @@ final class WeatherViewModel {
                 self.dayWeathers = weather.1.forecast
                 self.hourWeathers = weather.2.forecast
                 self.currentWeather = weather.0
+                
             } catch let error { print(String(describing: error)) }
         }
     }
@@ -101,19 +102,29 @@ final class WeatherViewModel {
         }
     }
     
-    func getMaxMinTempOfWeek(_ dayWeahter: DayWeather) {
-        guard let dayWeathers = self.dayWeathers else { return }
-        let highTemps = dayWeathers.map { round($0.highTemperature.value) }
-        let lowTemps = dayWeathers.map { round($0.lowTemperature.value) }
-        self.maxTempOfWeek = highTemps.max()
-        self.minTempOfWeek = lowTemps.min()
+    func configureTopView() -> (String, String, String) {
+        guard let dayWeathers = self.dayWeathers,
+              let current = self.currentWeather else { return ("", "", "") }
+        let currentTemp = String(round(current.temperature.value)) +  "°"
+        let highestTemp = "최고 : " + String(round(dayWeathers[0].highTemperature.value)) +  "°"
+        let lowestTemp = "최저 : " + String(round(dayWeathers[0].lowTemperature.value)) +  "°"
+        return (currentTemp, highestTemp, lowestTemp)
     }
     
-    func getLeadingWidthOfTempView() -> (Double, Double) {
+    
+    
+    func getMaxMinTempOfWeek() -> [Double] {
+        guard let dayWeathers = self.dayWeathers else { return [0.0, 0.0] }
+        let highTemps = dayWeathers.map { round($0.highTemperature.value) }
+        let lowTemps = dayWeathers.map { round($0.lowTemperature.value) }
+        return getLeadingWidthOfTempView(max: highTemps.max() ?? 0.0, min: lowTemps.min() ?? 0.0)
+    }
+    
+    func getLeadingWidthOfTempView(max: Double, min: Double) -> [Double] {
         guard let maxTempOfWeek = self.maxTempOfWeek,
               let minTempOfWeek = self.minTempOfWeek,
               let dayWeather = self.dayWeather else {
-            return (0.0, 0.0)
+            return [0.0, 0.0]
         }
         
         let myLow = round(dayWeather.lowTemperature.value)
@@ -122,7 +133,7 @@ final class WeatherViewModel {
         let leading = (myLow-minTempOfWeek)/(maxTempOfWeek-minTempOfWeek)
         let width = (myHigh-myLow)/(maxTempOfWeek-minTempOfWeek)
 
-        return (leading, width)
+        return [leading, width]
     }
    
     func getAirQualityCondition(location: CLLocation) {

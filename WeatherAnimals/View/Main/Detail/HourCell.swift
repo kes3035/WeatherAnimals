@@ -15,10 +15,8 @@ final class HourCell: UICollectionViewCell {
         $0.register(HourWeatherCell.self, forCellWithReuseIdentifier: HourWeatherCell.identifier)
     }
     
-    var weatherViewModel: WeatherViewModel! {
+    lazy var weatherViewModel = WeatherViewModel() {
         didSet {
-            guard let location = self.weatherViewModel.location else { return }
-            self.weatherViewModel.getHourWeather(location: location )
             DispatchQueue.main.async {
                 self.hourCollectionView.reloadData()
             }
@@ -28,8 +26,6 @@ final class HourCell: UICollectionViewCell {
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.weatherViewModel = WeatherViewModel()
-       
         self.configureUI()
         self.settingFlowLayout()
     }
@@ -71,9 +67,8 @@ extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
         
         guard let hourWeathers = self.weatherViewModel.hourWeathers else { return cell }
         
-        self.weatherViewModel.hourWeather = hourWeathers[indexPath.row]
         
-        cell.weatherViewModel = self.weatherViewModel
+        cell.hourWeather = hourWeathers[indexPath.row]
         
         return cell
     }

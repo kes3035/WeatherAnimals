@@ -6,13 +6,9 @@ final class TabBC: UITabBarController {
         super.viewDidLoad()
         self.settingTB()
     }
-    
-    
-    
     //MARK: - Helpers
     private func settingTB() {
         
-        // Tabbar Appearance Setting
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = Constants.greenColor
@@ -22,10 +18,9 @@ final class TabBC: UITabBarController {
         self.tabBar.isTranslucent = false
         self.tabBar.tintColor = .white
         
-        
-        // ViewControllers Initialize
-        let homeVC = MainVC()
-        homeVC.tabBarItem = UITabBarItem(title: "홈",
+        let mainVC = MainVC()
+        mainVC.weatherViewModel.fetchMyData()
+        mainVC.tabBarItem = UITabBarItem(title: "홈",
                                          image: UIImage(systemName: "person"),
                                          selectedImage: UIImage(systemName: "person.fill"))
         let settingVC = SettingVC()
@@ -33,13 +28,11 @@ final class TabBC: UITabBarController {
                                             image: UIImage(systemName: "gearshape"),
                                             selectedImage: UIImage(systemName: "gearshape.fill"))
         
-        // NavController Initialize
-        let nav1 = UINavigationController(rootViewController: homeVC)
+        let nav1 = UINavigationController(rootViewController: mainVC)
         let nav2 = UINavigationController(rootViewController: settingVC)
         
 
-        
+
         self.viewControllers = [nav1, nav2]
-        
     }
 }

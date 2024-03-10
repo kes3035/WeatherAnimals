@@ -4,7 +4,6 @@ import SnapKit
 import Then
 import CoreLocation
 
-
 final class MainVC: UIViewController {
     //MARK: - Properties
     private lazy var mainTableView = UITableView()
@@ -18,21 +17,13 @@ final class MainVC: UIViewController {
         $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(plusButtonTapped(_:))))
     }
     
-    var weatherViewModel: WeatherViewModel! {
-        didSet {
-            self.weatherViewModel.fetchMyData()
-            DispatchQueue.main.async {
-                self.mainTableView.reloadData()
-            }
-        }
-    }
+    lazy var weatherViewModel = WeatherViewModel()
     
     private var locationViewModel: LocationViewModel!
     
     //MARK: - LifeCycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.weatherViewModel = WeatherViewModel()      //최초 viewModel 생성
         self.configureUI()                              //UI결정
         self.settingNav()                               //Nav세팅
         self.settingTV()                                //TableView세팅
@@ -41,13 +32,15 @@ final class MainVC: UIViewController {
     
     //MARK: - Helpers
     private func configureUI() {
+        
         self.view.backgroundColor = .white
         self.view.addSubview(mainTableView)
         self.mainTableView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        
     }
     
     private func settingNav() {
-        // Navigation Setting For Custom Title Font
+
         let attributes = [
             NSAttributedString.Key.font: UIFont(name: "NeoDunggeunmoPro-Regular", size: 34.0)!]
         let attributedString = NSAttributedString(string: "날씨보개", attributes: attributes)
@@ -63,30 +56,35 @@ final class MainVC: UIViewController {
         self.plusImage.frame = CGRect(x: 0, y: 0, width: 26, height: 26)
         let rightBarButtonItem = UIBarButtonItem(customView: plusImage)
         navigationItem.rightBarButtonItem = rightBarButtonItem
+        
     }
     
     private func settingTV() {
-
+        
         self.mainTableView.dataSource = self
         self.mainTableView.delegate = self
         self.mainTableView.separatorStyle = .none
         self.mainTableView.register(WeatherCell.self, forCellReuseIdentifier: WeatherCell.identifier)
         self.mainTableView.rowHeight = self.view.frame.height/7
+        
     }
     
     private func settingLocation() {
-        // When App Run for the first time, User needs to allow using their location
+
         self.locationViewModel = LocationViewModel()
         self.locationViewModel.fetchLocation { [weak self] (location, error) in
             self?.locationViewModel.loc = CLLocation(latitude: location?.latitude ?? 0.0, longitude: location?.longitude ?? 0.0)
         }
+        
     }
     
     //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
         let addVC = AddVC()
         addVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(addVC, animated: true)
+        DispatchQueue.main.async {
+            self.navigationController?.pushViewController(addVC, animated: true)
+        }
     }
 }
 
@@ -95,7 +93,6 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     //테이블 뷰의 셀 갯수를 리턴하는 함수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
         guard let myDatas = self.weatherViewModel.myDatas else { return 0 }
         
         return myDatas.count
@@ -111,15 +108,13 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
         
         DispatchQueue.global(qos: .default).async {
+            
             self.weatherViewModel.getMainVCWeather(location: location)
             
             self.weatherViewModel.didFetchedWeathers = { [weak self] in
                 cell.weatherViewModel = self?.weatherViewModel
                 
-                DispatchQueue.main.async {
-                    self?.mainTableView.reloadData()
-                }
-                
+                DispatchQueue.main.async { self?.mainTableView.reloadData() }
             }
         }
         
@@ -136,12 +131,12 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         DispatchQueue.global().async {
             self.weatherViewModel.getDetailVCWeather(location: location)
             
-            self.weatherViewModel.didFetchedWeathers = {
+            self.weatherViewModel.didChangeWeather = { [weak self] weatherViewModel in
                 
-                detailVC.weatherViewModel = self.weatherViewModel
+                detailVC.weatherViewModel = weatherViewModel
                 
                 DispatchQueue.main.async {
-                    self.navigationController?.pushViewController(detailVC, animated: true)
+                    self?.navigationController?.pushViewController(detailVC, animated: true)
                 }
             }
         }

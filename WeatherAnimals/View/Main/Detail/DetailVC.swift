@@ -18,15 +18,15 @@ final class DetailVC: UIViewController {
         $0.dataSource = self
         $0.backgroundColor = .white
         $0.showsVerticalScrollIndicator = false
-        $0.register(HourCell.self, forCellWithReuseIdentifier: HourCell.identifier) //CurrentCell 등록
-        $0.register(WeekCell.self, forCellWithReuseIdentifier: WeekCell.identifier) //WeekCell 등록
-        $0.register(AirQualityCell.self, forCellWithReuseIdentifier: AirQualityCell.identifier) //AirQualityCell 등록
-        $0.register(UltravioletCell.self, forCellWithReuseIdentifier: UltravioletCell.identifier) //AirQualityCell 등록
-        $0.register(SunsetCell.self, forCellWithReuseIdentifier: SunsetCell.identifier) //AirQualityCell 등록
-        $0.register(ApparentTempCell.self, forCellWithReuseIdentifier: ApparentTempCell.identifier) //AirQualityCell 등록
-        $0.register(RainFallCell.self, forCellWithReuseIdentifier: RainFallCell.identifier) //AirQualityCell 등록
-        $0.register(HumidityCell.self, forCellWithReuseIdentifier: HumidityCell.identifier) //HumidityCell 등록
-        $0.register(CollectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionHeader.identifier) //Header 등록
+        $0.register(HourCell.self, forCellWithReuseIdentifier: HourCell.identifier)
+        $0.register(WeekCell.self, forCellWithReuseIdentifier: WeekCell.identifier)
+        $0.register(AirQualityCell.self, forCellWithReuseIdentifier: AirQualityCell.identifier)
+        $0.register(UltravioletCell.self, forCellWithReuseIdentifier: UltravioletCell.identifier)
+        $0.register(SunsetCell.self, forCellWithReuseIdentifier: SunsetCell.identifier)
+        $0.register(ApparentTempCell.self, forCellWithReuseIdentifier: ApparentTempCell.identifier)
+        $0.register(RainFallCell.self, forCellWithReuseIdentifier: RainFallCell.identifier)
+        $0.register(HumidityCell.self, forCellWithReuseIdentifier: HumidityCell.identifier)
+        $0.register(CollectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionHeader.identifier) 
         
     }
     
@@ -36,17 +36,10 @@ final class DetailVC: UIViewController {
     
     
     // 뷰모델
-    var weatherViewModel: WeatherViewModel! {
+    lazy var weatherViewModel = WeatherViewModel() {
         didSet {
-            guard let location = self.weatherViewModel.location else { return }
-            
-            self.weatherViewModel.getDetailVCWeather(location: location)
-            
-            self.weatherViewModel.getAirQualityCondition(location: location)
-            
             DispatchQueue.main.async {
                 self.detailCollectionView.reloadData()
-                self.configureTopView()
             }
         }
     }
@@ -56,11 +49,9 @@ final class DetailVC: UIViewController {
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.weatherViewModel = WeatherViewModel()
-      
-        self.configureUI()
-
-        self.settingFlowLayout()
+        self.configureUI()                  //UI결정
+        self.settingFlowLayout()            //CollectionView FlowLayout세팅
+        self.configureTopView()
     }
     
     //MARK: - Helpers
@@ -83,34 +74,17 @@ final class DetailVC: UIViewController {
     }
     
     private func configureTopView() {
-        guard let dayWeather = weatherViewModel.dayWeathers,
-              let current = weatherViewModel.currentWeather else { return }
+        let (currentTemp, highTemp, lowTemp) = self.weatherViewModel.configureTopView()
         DispatchQueue.main.async {
-            self.topView.tempLabel.text = String(round(current.temperature.value)) +  "°"
-            self.topView.highestTempLabel.text = "최고 : " + String(round(dayWeather[0].highTemperature.value)) +  "°"
-            self.topView.lowestTempLabel.text = "최저 : " + String(round(dayWeather[0].lowTemperature.value)) +  "°"
+            self.topView.tempLabel.text = currentTemp
+            self.topView.highestTempLabel.text = highTemp
+            self.topView.lowestTempLabel.text = lowTemp
         }
-    }
-    
-    private func settingNav() {
-        let rightButton = UIButton().then {
-            $0.setImage(UIImage(systemName: "ellipsis"), for: .normal)
-            $0.imageView?.tintColor = Constants.greenColor
-            $0.imageView?.contentMode = .scaleAspectFit
-            $0.backgroundColor = .systemGray4
-            $0.layer.cornerRadius = 5
-        }
-        
-        rightButton.frame = CGRect(x: 0, y: 0, width: 34, height: 32)
-        let rightBarButton = UIBarButtonItem(customView: rightButton)
-        self.navigationItem.rightBarButtonItem = rightBarButton
-        
     }
     
     private func settingFlowLayout() {
-        flowLayout.scrollDirection = .vertical
-        flowLayout.sectionHeadersPinToVisibleBounds = true
-        
+        self.flowLayout.scrollDirection = .vertical
+        self.flowLayout.sectionHeadersPinToVisibleBounds = true
     }
     
     func configureNavButton() {
@@ -119,8 +93,8 @@ final class DetailVC: UIViewController {
     }
     
     @objc func buttonTapped(_ sender: UIBarButtonItem) {
-        
         guard let titleLabel = sender.title else { return }
+        
         switch titleLabel {
         case "취소":
             self.dismiss(animated: true)
@@ -132,8 +106,8 @@ final class DetailVC: UIViewController {
             break
         }
     }
-    
 }
+
 //MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int { return 5 }
@@ -225,7 +199,6 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
             let width = collectionView.frame.width
             let itemsPerRow: CGFloat = 2
             let widthPadding = sectionInsets.left * (itemsPerRow + 1)
-//            let itemsPerColumn: CGFloat = 1
             let cellWidth = (width - widthPadding) / itemsPerRow
             let size = CGSize(width: cellWidth, height: cellWidth - 30)
             return size

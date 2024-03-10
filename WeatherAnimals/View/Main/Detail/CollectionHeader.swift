@@ -72,16 +72,6 @@ final class CollectionHeader: UICollectionReusableView {
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
-//    override func layoutSubviews() {
-//        DispatchQueue.main.async {
-//            self.baseViews.forEach {
-//                $0.layer.addBottomBorder(color: UIColor(named: "black") ?? .black, width: 2, spacing: 20)
-//            }
-//
-//        }
-//        super.layoutSubviews()
-//
-//    }
     
     
     //MARK: - Helpers

@@ -44,9 +44,8 @@ final class AirQualityCell: UICollectionViewCell {
         self.weatherViewModel = WeatherViewModel()
         self.configureUI()
         guard let location = self.weatherViewModel.location else { return }
-
         self.weatherViewModel.getAirQualityCondition(location: location)
-
+        
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -77,6 +76,7 @@ final class AirQualityCell: UICollectionViewCell {
     
     private func configureUIWithData() {
         guard let aqi = self.weatherViewModel.airQuality else { return }
+        
         let (text, color) = self.weatherViewModel.convertAQIIndex(value: aqi.aqi)
         DispatchQueue.main.async {
             self.airQualityValueLabel.text = String(aqi.aqi)

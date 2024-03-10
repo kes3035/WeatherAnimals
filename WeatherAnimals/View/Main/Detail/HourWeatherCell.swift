@@ -21,7 +21,7 @@ final class HourWeatherCell: UICollectionViewCell {
 
     }
 
-    var weatherViewModel: WeatherViewModel! {
+    var hourWeather: HourWeather? {
         didSet {
             self.configureUIWithData()
         }
@@ -30,10 +30,9 @@ final class HourWeatherCell: UICollectionViewCell {
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.weatherViewModel = WeatherViewModel()
         self.configureUI()
-        
     }
+    
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     //MARK: - Helpers
@@ -58,16 +57,17 @@ final class HourWeatherCell: UICollectionViewCell {
     }
     
     private func configureUIWithData() {
+        guard let hourWeather = self.hourWeather else { return }
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "a h:mm"
         dateFormatter.locale = Locale(identifier:"ko_KR")
-        
-        guard let hourWeather = weatherViewModel.hourWeather else { return }
-        
         let dateString = dateFormatter.string(from: hourWeather.date)
         
-        self.topLabel.text = dateString
-        self.tempLabel.text = round(hourWeather.temperature.value).description + String(UnicodeScalar(0x00B0))
-        self.tempImageView.image = UIImage(named: hourWeather.symbolName)
+        DispatchQueue.main.async {
+            self.topLabel.text = dateString
+            self.tempLabel.text = round(hourWeather.temperature.value).description + String(UnicodeScalar(0x00B0))
+            self.tempImageView.image = UIImage(named: hourWeather.symbolName)
+        }
     }
 }
