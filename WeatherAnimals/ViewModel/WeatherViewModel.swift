@@ -330,4 +330,11 @@ final class WeatherViewModel {
         }
     }
     
+    func creatLocation(cellForRowAt row: Int) -> CLLocation {
+        guard let myDatas = self.myDatas else { return CLLocation(latitude: 0, longitude: 0)}
+        let location = CLLocation(latitude: myDatas[row].latitude, longitude: myDatas[row].longitude)
+        self.location = location
+        return location
+    }
+    
 }

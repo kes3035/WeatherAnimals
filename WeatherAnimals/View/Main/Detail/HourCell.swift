@@ -17,6 +17,8 @@ final class HourCell: UICollectionViewCell {
     
     var weatherViewModel: WeatherViewModel! {
         didSet {
+            guard let location = self.weatherViewModel.location else { return }
+            self.weatherViewModel.getHourWeather(location: location )
             DispatchQueue.main.async {
                 self.hourCollectionView.reloadData()
             }
@@ -27,8 +29,7 @@ final class HourCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.weatherViewModel = WeatherViewModel()
-        guard let location = self.weatherViewModel.location else { return }
-        self.weatherViewModel.getHourWeather(location: location )
+       
         self.configureUI()
         self.settingFlowLayout()
     }

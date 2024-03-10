@@ -101,12 +101,23 @@ extension AddVC: UITableViewDelegate {
         search.start { response, error in
             guard error == nil else { return }
             guard let placemark = response?.mapItems[0].placemark else { return }
-            print(placemark)
             let location = CLLocation(latitude: placemark.coordinate.latitude, longitude: placemark.coordinate.longitude)
+            
+            print(location)
+            
+            self.weatherViewModel.getDetailVCWeather(location: location)
+            
             self.weatherViewModel.location = location
             detailVC.weatherViewModel = self.weatherViewModel
             let nav = UINavigationController(rootViewController: detailVC)
-            self.present(nav, animated: true)
+
+            self.weatherViewModel.didFetchedWeathers = {
+                DispatchQueue.main.async {
+                    self.present(nav, animated: true)
+                }
+            }
+            
+            
         }
         
         

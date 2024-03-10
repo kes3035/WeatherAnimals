@@ -32,17 +32,15 @@ final class MainVC: UIViewController {
     //MARK: - LifeCycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.weatherViewModel = WeatherViewModel()
-//        self.weatherViewModel.getMainVCWeather(location: self.weatherViewModel.yongin)
-        self.configureUI()
-        self.settingNav()
-        self.settingTV()
-        self.settingLocation()
+        self.weatherViewModel = WeatherViewModel()      //최초 viewModel 생성
+        self.configureUI()                              //UI결정
+        self.settingNav()                               //Nav세팅
+        self.settingTV()                                //TableView세팅
+        self.settingLocation()                          //사용자 위치 세팅
     }
     
     //MARK: - Helpers
     private func configureUI() {
-        // Basic Setting For Drawing View
         self.view.backgroundColor = .white
         self.view.addSubview(mainTableView)
         self.mainTableView.snp.makeConstraints { $0.edges.equalToSuperview() }
@@ -53,26 +51,27 @@ final class MainVC: UIViewController {
         let attributes = [
             NSAttributedString.Key.font: UIFont(name: "NeoDunggeunmoPro-Regular", size: 34.0)!]
         let attributedString = NSAttributedString(string: "날씨보개", attributes: attributes)
+        
         let titleLabel = UILabel()
         titleLabel.textAlignment = .left
         titleLabel.attributedText = attributedString
         titleLabel.sizeToFit()
+        
         let leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         navigationItem.leftBarButtonItem = leftBarButtonItem
 
-        // Navigation Setting For rightBarButtonItem
         self.plusImage.frame = CGRect(x: 0, y: 0, width: 26, height: 26)
         let rightBarButtonItem = UIBarButtonItem(customView: plusImage)
         navigationItem.rightBarButtonItem = rightBarButtonItem
     }
     
     private func settingTV() {
-        // Basic Setting For Main TableView
+
         self.mainTableView.dataSource = self
         self.mainTableView.delegate = self
         self.mainTableView.separatorStyle = .none
-        mainTableView.register(WeatherCell.self, forCellReuseIdentifier: WeatherCell.identifier)
-        mainTableView.rowHeight = self.view.frame.height/7
+        self.mainTableView.register(WeatherCell.self, forCellReuseIdentifier: WeatherCell.identifier)
+        self.mainTableView.rowHeight = self.view.frame.height/7
     }
     
     private func settingLocation() {
@@ -85,9 +84,7 @@ final class MainVC: UIViewController {
     
     //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
-        // When Plus Button Tapped, AddVC will be pushed
         let addVC = AddVC()
-//        let nav = UINavigationController(rootViewController: addVC)
         addVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(addVC, animated: true)
     }
@@ -95,28 +92,35 @@ final class MainVC: UIViewController {
 
 //MARK: - UITableViewDataSource, UITableViewDelegate
 extension MainVC: UITableViewDataSource, UITableViewDelegate {
+    
+    //테이블 뷰의 셀 갯수를 리턴하는 함수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // Returns the count of locations user added
+
         guard let myDatas = self.weatherViewModel.myDatas else { return 0 }
         
         return myDatas.count
     }
     
+    
+    //테이블 뷰의 셀을 리턴하는 함수
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Data Transport to Cell
+
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
-        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
+                
+        let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
         
-        let location = CLLocation(latitude: myDatas[indexPath.row].latitude, longitude: myDatas[indexPath.row].longitude)
-        
-        self.weatherViewModel.getMainVCWeather(location: location )
-
-        self.weatherViewModel.didChangeWeather = { [weak self] weatherViewModel in
+        DispatchQueue.global(qos: .default).async {
+            self.weatherViewModel.getMainVCWeather(location: location)
             
-            cell.weatherViewModel = weatherViewModel
-            self?.weatherViewModel = weatherViewModel
-            
+            self.weatherViewModel.didFetchedWeathers = { [weak self] in
+                cell.weatherViewModel = self?.weatherViewModel
+                
+                DispatchQueue.main.async {
+                    self?.mainTableView.reloadData()
+                }
+                
+            }
         }
         
         return cell
@@ -125,16 +129,20 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         let detailVC = DetailVC()
-        guard let myDatas = self.weatherViewModel.myDatas else { return }
-        let location = CLLocation(latitude: myDatas[indexPath.row].latitude, longitude: myDatas[indexPath.row].longitude)
-        self.weatherViewModel.location = location
-        detailVC.weatherViewModel = self.weatherViewModel
         detailVC.hidesBottomBarWhenPushed = true
+
+        let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
         
-        self.weatherViewModel.getDetailVCWeather(location: self.weatherViewModel.yongin)
-        self.weatherViewModel.didFetchedWeathers = {
-            DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailVC, animated: true)
+        DispatchQueue.global().async {
+            self.weatherViewModel.getDetailVCWeather(location: location)
+            
+            self.weatherViewModel.didFetchedWeathers = {
+                
+                detailVC.weatherViewModel = self.weatherViewModel
+                
+                DispatchQueue.main.async {
+                    self.navigationController?.pushViewController(detailVC, animated: true)
+                }
             }
         }
     }

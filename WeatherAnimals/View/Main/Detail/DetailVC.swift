@@ -38,6 +38,12 @@ final class DetailVC: UIViewController {
     // 뷰모델
     var weatherViewModel: WeatherViewModel! {
         didSet {
+            guard let location = self.weatherViewModel.location else { return }
+            
+            self.weatherViewModel.getDetailVCWeather(location: location)
+            
+            self.weatherViewModel.getAirQualityCondition(location: location)
+            
             DispatchQueue.main.async {
                 self.detailCollectionView.reloadData()
                 self.configureTopView()
@@ -52,12 +58,6 @@ final class DetailVC: UIViewController {
         super.viewDidLoad()
         self.weatherViewModel = WeatherViewModel()
       
-        guard let location = self.weatherViewModel.location else { return }
-        
-        self.weatherViewModel.getDetailVCWeather(location: location)
-        
-        self.weatherViewModel.getAirQualityCondition(location: location)
-
         self.configureUI()
 
         self.settingFlowLayout()
