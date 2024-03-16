@@ -47,12 +47,12 @@ final class HourWeatherCell: UICollectionViewCell {
         
         self.topLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(tempImageView.snp.top).offset(-5)
+            $0.bottom.equalTo(tempImageView.snp.top)
         }
         
         self.tempLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(tempImageView.snp.bottom).offset(5)
+            $0.top.equalTo(tempImageView.snp.bottom)
         }
     }
     

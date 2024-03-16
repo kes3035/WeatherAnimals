@@ -1,11 +1,13 @@
 import UIKit
 
 final class TabBC: UITabBarController {
+    
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.settingTB()
     }
+
     //MARK: - Helpers
     private func settingTB() {
         

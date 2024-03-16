@@ -24,6 +24,7 @@ final class MainVC: UIViewController {
     //MARK: - LifeCycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.weatherViewModel.creatLocation()
         self.configureUI()                              //UI결정
         self.settingNav()                               //Nav세팅
         self.settingTV()                                //TableView세팅
@@ -105,14 +106,14 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
                 
-        let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
-        
+        guard let locations = self.weatherViewModel.locations else { return cell }
         DispatchQueue.global(qos: .default).async {
             
-            self.weatherViewModel.getMainVCWeather(location: location)
+            self.weatherViewModel.getMainVCWeather(location: locations[indexPath.row])
             
-            self.weatherViewModel.didFetchedWeathers = { [weak self] in
-                cell.weatherViewModel = self?.weatherViewModel
+            self.weatherViewModel.didChangeWeather = { [weak self] weatherViewModel in 
+                guard self == self else { return }
+                cell.weatherViewModel = weatherViewModel
                 
                 DispatchQueue.main.async { self?.mainTableView.reloadData() }
             }
@@ -122,23 +123,34 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-        let detailVC = DetailVC()
-        detailVC.hidesBottomBarWhenPushed = true
-
-        let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
         
+        guard let locations = self.weatherViewModel.locations else { return }
+        let location = locations[indexPath.row]
         DispatchQueue.global().async {
-            self.weatherViewModel.getDetailVCWeather(location: location)
             
-            self.weatherViewModel.didChangeWeather = { [weak self] weatherViewModel in
-                
-                detailVC.weatherViewModel = weatherViewModel
-                
+//            self.weatherViewModel.getDetailVCWeather(location: location)
+
+//            self.weatherViewModel.didFetchedWeathers = { [weak self] in
+//                guard let self = self else { return }
+//                print("FetchedWeathers")
+//                DispatchQueue.main.async {
+//                    let detailVC = DetailVC()
+//                    detailVC.weatherViewModel = self.weatherViewModel
+//                    detailVC.hidesBottomBarWhenPushed = true
+//                    self.navigationController?.pushViewController(detailVC, animated: true)
+//                    
+//                }
+//            }
+            
+            self.weatherViewModel.getDetailVCWeather(location: location) { [weak self] weatherViewModel in
                 DispatchQueue.main.async {
+                    let detailVC = DetailVC()
+                    detailVC.weatherViewModel = weatherViewModel
+                    detailVC.hidesBottomBarWhenPushed = true
                     self?.navigationController?.pushViewController(detailVC, animated: true)
                 }
             }
+            
         }
     }
 }

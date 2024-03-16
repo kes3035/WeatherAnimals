@@ -18,15 +18,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let launchVC = LaunchVC()
         let tabBarController = TabBC()
 
-        DispatchQueue.global(qos: .default).async {
-            
-            self.fetchMyData { [weak self] myDatas in
-                guard let self = self else { return }
-                DispatchQueue.main.async { window.rootViewController = tabBarController }
-            }
-        }
-       
-        DispatchQueue.main.async { window.rootViewController = launchVC }
+//        DispatchQueue.global(qos: .default).async {
+//            
+//            self.fetchMyData { [weak self] _ in
+//                guard let self = self else { return }
+//                DispatchQueue.main.async { window.rootViewController = tabBarController }
+//            }
+//        }
+//       
+//        DispatchQueue.main.async { window.rootViewController = launchVC }
+        let detail = DetailVC()
+        window.rootViewController = detail
         window.makeKeyAndVisible()
         self.window = window
     }

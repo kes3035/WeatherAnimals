@@ -8,13 +8,12 @@ import WeatherKit
 final class WeekCell: UICollectionViewCell {
     static let identifier = "WeekCell"
     //MARK: - Properties
-    private lazy var tenDaysTempView = UITableView().then {
+    lazy var tenDaysTempView = UITableView().then {
         $0.delegate = self
         $0.dataSource = self
         $0.isScrollEnabled = false
         $0.register(WeekWeatherCell.self, forCellReuseIdentifier: WeekWeatherCell.identifier)
         $0.backgroundColor = UIColor(named: "background")
-        $0.rowHeight = 38
         $0.separatorStyle = .none
         
     }
@@ -42,8 +41,8 @@ final class WeekCell: UICollectionViewCell {
         self.backgroundColor = .white
         self.contentView.addSubview(tenDaysTempView)
         self.tenDaysTempView.snp.makeConstraints { 
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.bottom.equalToSuperview().inset(10)
+            $0.leading.equalToSuperview()
+            $0.trailing.bottom.equalToSuperview()
             $0.top.equalToSuperview()
         }
     }

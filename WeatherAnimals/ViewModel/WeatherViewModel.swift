@@ -12,11 +12,12 @@ final class WeatherViewModel {
     
     var location: CLLocation?
     
+    var locations: [CLLocation]?
+    
     let weatherService = WeatherService()
 
     var currentWeather: CurrentWeather? {
         didSet {
-            didChangeWeather?(self)
             didFetchedWeathers?()
         }
     }
@@ -41,7 +42,17 @@ final class WeatherViewModel {
     
     var airQuality: AirQuality?
     
-    var myDatas: [MyData]?
+    var myDatas: [MyData]? {
+        didSet {
+            guard let myDatas = self.myDatas else { return }
+            self.locations = []
+            myDatas.forEach {
+                let location = CLLocation(latitude: $0.latitude, longitude: $0.longitude)
+                
+                self.locations!.append(location)
+            }
+        }
+    }
     
     //MARK: - Inputs
     
@@ -59,6 +70,8 @@ final class WeatherViewModel {
             do {
                 let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
                 self.currentWeather = currentWeather
+                self.didChangeWeather?(self)
+                self.didFetchedWeathers?()
             } catch let error { print(String(describing: error)) }
         }
     }
@@ -70,7 +83,21 @@ final class WeatherViewModel {
                 self.dayWeathers = weather.1.forecast
                 self.hourWeathers = weather.2.forecast
                 self.currentWeather = weather.0
-                
+                print("Completely Changed viewModel's value")
+//                self.didFetchedWeathers?()
+            } catch let error { print(String(describing: error)) }
+        }
+    }
+    
+    func getDetailVCWeather(location: CLLocation, _ completion: @escaping ((WeatherViewModel) -> ())) {
+        Task {
+            do {
+                let weather = try await WeatherService.shared.weather(for: location, including: .current, .daily, .hourly)
+                self.dayWeathers = weather.1.forecast
+                self.hourWeathers = weather.2.forecast
+                self.currentWeather = weather.0
+                print("Completely Changed viewModel's value")
+                completion(self)
             } catch let error { print(String(describing: error)) }
         }
     }
@@ -346,6 +373,15 @@ final class WeatherViewModel {
         let location = CLLocation(latitude: myDatas[row].latitude, longitude: myDatas[row].longitude)
         self.location = location
         return location
+    }
+    
+    func creatLocation() {
+        guard let myDatas = self.myDatas else { return }
+         
+        myDatas.forEach {
+            self.locations?.append( CLLocation(latitude: $0.latitude, longitude: $0.longitude))
+        }
+        
     }
     
 }

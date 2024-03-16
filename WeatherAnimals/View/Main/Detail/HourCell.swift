@@ -36,11 +36,12 @@ final class HourCell: UICollectionViewCell {
     private func configureUI() {
         self.contentView.backgroundColor = .clear
         self.contentView.addSubview(hourCollectionView)
+        self.contentView.snp.makeConstraints { $0.edges.equalToSuperview() }
         self.hourCollectionView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().inset(5)
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.equalToSuperview().inset(10)
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
         }
     }
     
@@ -62,6 +63,8 @@ extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
         return 1
     }
     
+    
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourWeatherCell.identifier, for: indexPath) as! HourWeatherCell
         
@@ -79,6 +82,6 @@ extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
 //MARK: - UICollectionViewDelegateFlowLayout
 extension HourCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 80, height: 100)
+        return CGSize(width: 80, height: 80)
     }
 }
