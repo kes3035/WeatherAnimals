@@ -106,16 +106,16 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
                 
-        guard let locations = self.weatherViewModel.locations else { return cell }
+//        guard let locations = self.weatherViewModel.locations else { return cell }
+        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
         DispatchQueue.global(qos: .default).async {
             
-            self.weatherViewModel.getMainVCWeather(location: locations[indexPath.row])
-            
-            self.weatherViewModel.didChangeWeather = { [weak self] weatherViewModel in 
-                guard self == self else { return }
-                cell.weatherViewModel = weatherViewModel
-                
-                DispatchQueue.main.async { self?.mainTableView.reloadData() }
+//            self.weatherViewModel.getMainVCWeather(location: locations[indexPath.row]) { [weak self] in
+//                guard let self = self else { return }
+//                cell.weatherViewModel = self.weatherViewModel
+//            }
+            self.weatherViewModel.configureWeatherCell(with: myDatas, cellForRowAt: indexPath.row) { weatherData, locationTitle in
+                cell.configureUIWithData(weatherData, locationTitle)
             }
         }
         
@@ -127,20 +127,6 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         guard let locations = self.weatherViewModel.locations else { return }
         let location = locations[indexPath.row]
         DispatchQueue.global().async {
-            
-//            self.weatherViewModel.getDetailVCWeather(location: location)
-
-//            self.weatherViewModel.didFetchedWeathers = { [weak self] in
-//                guard let self = self else { return }
-//                print("FetchedWeathers")
-//                DispatchQueue.main.async {
-//                    let detailVC = DetailVC()
-//                    detailVC.weatherViewModel = self.weatherViewModel
-//                    detailVC.hidesBottomBarWhenPushed = true
-//                    self.navigationController?.pushViewController(detailVC, animated: true)
-//                    
-//                }
-//            }
             
             self.weatherViewModel.getDetailVCWeather(location: location) { [weak self] weatherViewModel in
                 DispatchQueue.main.async {

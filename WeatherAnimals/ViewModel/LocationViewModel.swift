@@ -11,7 +11,6 @@ final class LocationViewModel: CLLocationManager, CLLocationManagerDelegate {
     var loc: CLLocation? {
         didSet {
             guard let location = self.loc else { return }
-            print("사용자의 위치는 \(location)")
         }
     }
     

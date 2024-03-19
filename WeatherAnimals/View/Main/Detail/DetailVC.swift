@@ -100,7 +100,6 @@ final class DetailVC: UIViewController {
         case "취소":
             self.dismiss(animated: true)
         case "추가":
-            print("addButtonTapped")
             self.weatherViewModel.setValue(self.weatherViewModel)
             self.dismiss(animated: true)
         default:

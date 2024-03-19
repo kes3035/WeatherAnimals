@@ -14,13 +14,13 @@ final class WeatherViewModel {
     
     var locations: [CLLocation]?
     
+    var title: String?
+    
+    var titles: [String]?
+    
     let weatherService = WeatherService()
 
-    var currentWeather: CurrentWeather? {
-        didSet {
-            didFetchedWeathers?()
-        }
-    }
+    var currentWeather: CurrentWeather?
     
     var dayWeather: DayWeather? {
         didSet {
@@ -32,7 +32,7 @@ final class WeatherViewModel {
     
     var maxTempOfWeek: Double?
     
-    var minTempOfWeek: Double? 
+    var minTempOfWeek: Double?
     
     var hourWeather: HourWeather? {
         didSet { didChangeWeather?(self) }
@@ -42,17 +42,7 @@ final class WeatherViewModel {
     
     var airQuality: AirQuality?
     
-    var myDatas: [MyData]? {
-        didSet {
-            guard let myDatas = self.myDatas else { return }
-            self.locations = []
-            myDatas.forEach {
-                let location = CLLocation(latitude: $0.latitude, longitude: $0.longitude)
-                
-                self.locations!.append(location)
-            }
-        }
-    }
+    var myDatas: [MyData]?
     
     //MARK: - Inputs
     
@@ -65,13 +55,24 @@ final class WeatherViewModel {
     
     //MARK: - Logics
     //현재 날씨 정보를 가져오는 메서드
-    func getMainVCWeather(location: CLLocation) {
+    func getMainVCWeather(location: CLLocation, completion: @escaping( () -> () ) ) {
         Task {
             do {
                 let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
                 self.currentWeather = currentWeather
-                self.didChangeWeather?(self)
-                self.didFetchedWeathers?()
+                completion()
+            } catch let error { print(String(describing: error)) }
+        }
+    }
+    
+    func configureWeatherCell(with datas: [MyData], cellForRowAt index: Int, completion: @escaping(((CurrentWeather, String))->())) {
+        Task {
+            do {
+                let location = CLLocation(latitude: datas[index].latitude, longitude: datas[index].longitude)
+                guard let locationTitle = datas[index].title else { return }
+                let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
+                self.currentWeather = currentWeather
+                completion((currentWeather, locationTitle))
             } catch let error { print(String(describing: error)) }
         }
     }
@@ -83,20 +84,17 @@ final class WeatherViewModel {
                 self.dayWeathers = weather.1.forecast
                 self.hourWeathers = weather.2.forecast
                 self.currentWeather = weather.0
-                print("Completely Changed viewModel's value")
-//                self.didFetchedWeathers?()
             } catch let error { print(String(describing: error)) }
         }
     }
     
-    func getDetailVCWeather(location: CLLocation, _ completion: @escaping ((WeatherViewModel) -> ())) {
+    func getDetailVCWeather(location: CLLocation, completion: @escaping ((WeatherViewModel) -> ())) {
         Task {
             do {
                 let weather = try await WeatherService.shared.weather(for: location, including: .current, .daily, .hourly)
                 self.dayWeathers = weather.1.forecast
                 self.hourWeathers = weather.2.forecast
                 self.currentWeather = weather.0
-                print("Completely Changed viewModel's value")
                 completion(self)
             } catch let error { print(String(describing: error)) }
         }
@@ -341,9 +339,11 @@ final class WeatherViewModel {
             let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context)
             
             if let entity = entity {
+                guard let title = viewModel.title else { return }
                 let myData = NSManagedObject(entity: entity, insertInto: context)
-                myData.setValue(viewModel.yongin.coordinate.latitude, forKey: "latitude")
-                myData.setValue(viewModel.yongin.coordinate.longitude, forKey: "longitude")
+                myData.setValue(viewModel.location?.coordinate.latitude, forKey: "latitude")
+                myData.setValue(viewModel.location?.coordinate.longitude, forKey: "longitude")
+                myData.setValue(title, forKey: "title")
                 do {
                     try context.save()
                 } catch {
@@ -383,5 +383,10 @@ final class WeatherViewModel {
         }
         
     }
+    
+//    //MARK: - initialize
+//    init(with models: [MyData]?) {
+//        self.myDatas = models
+//    }
     
 }

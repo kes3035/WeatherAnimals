@@ -2,6 +2,8 @@ import UIKit
 
 final class TabBC: UITabBarController {
     
+    lazy var viewModel = WeatherViewModel()
+    
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,8 +22,10 @@ final class TabBC: UITabBarController {
         self.tabBar.isTranslucent = false
         self.tabBar.tintColor = .white
         
+        
         let mainVC = MainVC()
-        mainVC.weatherViewModel.fetchMyData()
+        mainVC.weatherViewModel = self.viewModel
+        
         mainVC.tabBarItem = UITabBarItem(title: "홈",
                                          image: UIImage(systemName: "person"),
                                          selectedImage: UIImage(systemName: "person.fill"))

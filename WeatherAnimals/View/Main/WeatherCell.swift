@@ -60,44 +60,47 @@ final class WeatherCell: UITableViewCell {
     
 //MARK: - Helpers
     private func configureUI() {
-        self.contentView.addSubview(baseView)
-        baseView.addSubviews(tempLabel,
-                             addressLabel,
-                             celsiusLabel,
-                             weatherImageView,
-                             animalImageView)
+        self.contentView.addSubview(self.baseView)
         
-        baseView.snp.makeConstraints {
+        self.contentView.snp.makeConstraints{$0.edges.equalToSuperview()}
+        
+        self.baseView.addSubviews(self.tempLabel,
+                                  self.addressLabel,
+                                  self.celsiusLabel,
+                                  self.weatherImageView,
+                                  self.animalImageView)
+        
+        self.baseView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalToSuperview().inset(20)
             $0.top.equalToSuperview().offset(15)
             $0.bottom.equalToSuperview().inset(15)
         }
         
-        tempLabel.snp.makeConstraints {
+        self.tempLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(30)
         }
         
-        addressLabel.snp.makeConstraints {
+        self.addressLabel.snp.makeConstraints {
             $0.leading.equalTo(tempLabel.snp.leading)
             $0.bottom.equalToSuperview().offset(-5)
             
         }
         
-        celsiusLabel.snp.makeConstraints {
+        self.celsiusLabel.snp.makeConstraints {
             $0.top.equalTo(tempLabel.snp.top).offset(3)
             $0.leading.equalTo(tempLabel.snp.trailing).inset(3)
             
         }
         
-        weatherImageView.snp.makeConstraints {
+        self.weatherImageView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(celsiusLabel.snp.trailing).offset(15)
             $0.width.height.equalTo(45)
         }
         
-        animalImageView.snp.makeConstraints {
+        self.animalImageView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.trailing.equalToSuperview().inset(30)
             $0.width.height.equalTo(70)
@@ -105,9 +108,18 @@ final class WeatherCell: UITableViewCell {
     }
     
     private func configureUIWithData(_ weather: CurrentWeather) {
+        guard let title = self.weatherViewModel.title else { return }
         DispatchQueue.main.async {
             self.tempLabel.text = String(round(weather.temperature.value))
             self.weatherImageView.image = UIImage(named: weather.symbolName)
+            self.addressLabel.text = title
+        }
+    }
+    func configureUIWithData(_ currentWeather: CurrentWeather, _ locationTitle: String) {
+        DispatchQueue.main.async {
+            self.tempLabel.text = String(round(currentWeather.temperature.value))
+            self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
+            self.addressLabel.text = locationTitle
         }
     }
 }
