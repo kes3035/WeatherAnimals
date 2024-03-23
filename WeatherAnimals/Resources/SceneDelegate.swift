@@ -17,9 +17,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let launchVC = LaunchVC()
         let tabBarController = TabBC()
+        let delay = DispatchTime.now()
+        
+        DispatchQueue.global().async {
+            launchVC.locationViewModel.fetchLocation { coordinate, error in
+                if let error = error {
+                    print(error.localizedDescription)
+                }
+                DispatchQueue.main.async {
+                    launchVC.configureLoadingBar()
+                    window.rootViewController = launchVC
+                }
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: delay + 2) {
+            launchVC.configureLoadingBar2()
+        }
+        
 
         
-        DispatchQueue.global(qos: .default).async {
+        DispatchQueue.global(qos: .default).asyncAfter(deadline: delay + 3) {
             
             self.fetchMyData { [weak self] models in
                 
@@ -31,7 +49,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
        
-        DispatchQueue.main.async { window.rootViewController = launchVC }
 //        let detail = DetailVC()
 //        window.rootViewController = detail
         window.makeKeyAndVisible()

@@ -74,7 +74,12 @@ final class MainVC: UIViewController {
 
         self.locationViewModel = LocationViewModel()
         self.locationViewModel.fetchLocation { [weak self] (location, error) in
-            self?.locationViewModel.loc = CLLocation(latitude: location?.latitude ?? 0.0, longitude: location?.longitude ?? 0.0)
+            guard let location = location,
+                  let self = self else { return }
+        
+            self.locationViewModel.loc = CLLocation(latitude: location.latitude, longitude: location.longitude)
+            
+            
         }
         
     }
@@ -94,7 +99,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     //테이블 뷰의 셀 갯수를 리턴하는 함수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let myDatas = self.weatherViewModel.myDatas else { return 0 }
+        guard let myDatas = self.weatherViewModel.myDatas else { return 1 }
         
         return myDatas.count
     }
@@ -105,15 +110,10 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
-                
-//        guard let locations = self.weatherViewModel.locations else { return cell }
+        
         guard let myDatas = self.weatherViewModel.myDatas else { return cell }
+        
         DispatchQueue.global(qos: .default).async {
-            
-//            self.weatherViewModel.getMainVCWeather(location: locations[indexPath.row]) { [weak self] in
-//                guard let self = self else { return }
-//                cell.weatherViewModel = self.weatherViewModel
-//            }
             self.weatherViewModel.configureWeatherCell(with: myDatas, cellForRowAt: indexPath.row) { weatherData, locationTitle in
                 cell.configureUIWithData(weatherData, locationTitle)
             }
@@ -124,8 +124,8 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        guard let locations = self.weatherViewModel.locations else { return }
-        let location = locations[indexPath.row]
+        let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
+        
         DispatchQueue.global().async {
             
             self.weatherViewModel.getDetailVCWeather(location: location) { [weak self] weatherViewModel in

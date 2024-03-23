@@ -38,7 +38,7 @@ final class LaunchVC: UIViewController {
     
     private lazy var loadingBar = UIView().then { $0.backgroundColor = .white }
     
-    var locationViewModel: LocationViewModel! {
+    var locationViewModel: LocationViewModel! = LocationViewModel() {
         didSet {
             self.locationViewModel.fetchLocation { [weak self] (location, error) in
             self?.locationViewModel.loc = CLLocation(latitude: location?.latitude ?? 0.0, longitude: location?.longitude ?? 0.0)
@@ -52,7 +52,7 @@ final class LaunchVC: UIViewController {
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.locationViewModel = LocationViewModel()
+//        self.locationViewModel = LocationViewModel()
         self.viewModel = WeatherViewModel()
         self.configureUI()
     }
@@ -81,5 +81,17 @@ final class LaunchVC: UIViewController {
         }
     }
     
+    func configureLoadingBar() {
+        
+        DispatchQueue.main.async {
+            self.loadingLabel.text = "34%..."
+        }
+    }
     
+    func configureLoadingBar2() {
+        
+        DispatchQueue.main.async {
+            self.loadingLabel.text = "68%..."
+        }
+    }
 }

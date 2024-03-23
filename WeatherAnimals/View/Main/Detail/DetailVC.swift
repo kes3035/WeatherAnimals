@@ -5,9 +5,7 @@ final class DetailVC: UIViewController {
     //MARK: - Properties
     
     // 콜렉션 뷰를 위한 FlowLayout
-    private let flowLayout = UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = .zero
-    }
+    private let flowLayout = UICollectionViewFlowLayout()
     
     // 디테일VC의 최상단 화면을 구성하는 TopView
     private let topView = DetailView()

@@ -56,7 +56,7 @@ extension LocationViewModel {
         // 사용자의 최신 위치 정보를 가져옵니다.
         guard let location = locations.first else { return }
         let coordinate = location.coordinate
-        
+        self.loc = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         // coordinate 값을 갖고 저장 한, 동작을 실행
         self.fetchLocationCompletion?(coordinate, nil)
         // 위의 실행 후 클로저 초기화
