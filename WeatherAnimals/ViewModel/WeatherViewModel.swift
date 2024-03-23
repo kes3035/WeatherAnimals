@@ -10,6 +10,10 @@ final class WeatherViewModel {
     
     let yongin = CLLocation(latitude: 37.32360894097521, longitude: 127.12394643315668)
     
+    var myLocation: CLLocation?
+    
+    var myLocationTitle: String?
+    
     var location: CLLocation?
     
     var locations: [CLLocation]?
@@ -68,11 +72,21 @@ final class WeatherViewModel {
     func configureWeatherCell(with datas: [MyData], cellForRowAt index: Int, completion: @escaping(((CurrentWeather, String))->())) {
         Task {
             do {
-                let location = CLLocation(latitude: datas[index].latitude, longitude: datas[index].longitude)
-                guard let locationTitle = datas[index].title else { return }
-                let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
-                self.currentWeather = currentWeather
-                completion((currentWeather, locationTitle))
+                if index == 0 {
+                    
+                    let currentWeather = try await WeatherService.shared.weather(for: self.myLocation ?? CLLocation(latitude: 0.0, longitude: 0.0), including: .current)
+                    self.currentWeather = currentWeather
+                    self.getMyLocationTitle(location: self.myLocation ?? CLLocation(latitude: 0.0, longitude: 0.0)) { myTitle in
+                        completion((currentWeather, myTitle))
+                    }
+//                    completion((currentWeather, ""))
+                } else {
+                    let location = CLLocation(latitude: datas[index - 1].latitude, longitude: datas[index - 1].longitude)
+                    guard let locationTitle = datas[index - 1].title else { return }
+                    let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
+                    self.currentWeather = currentWeather
+                    completion((currentWeather, locationTitle))
+                }
             } catch let error { print(String(describing: error)) }
         }
     }
@@ -382,6 +396,25 @@ final class WeatherViewModel {
             self.locations?.append( CLLocation(latitude: $0.latitude, longitude: $0.longitude))
         }
         
+    }
+    
+    func getMyLocationTitle(location: CLLocation, completion: @escaping((String) -> ())) {
+        let geocoder = CLGeocoder()
+        let locale = Locale(identifier: "Ko-kr")
+            
+        geocoder.reverseGeocodeLocation(location, preferredLocale: locale, completionHandler: {(placemarks, error) in
+            if let address: [CLPlacemark] = placemarks {
+                var myAdd: String = ""
+                if let area: String = address.last?.locality{
+                    myAdd += area
+                }
+                if let country: String = address.last?.country {
+                    myAdd += ", "
+                    myAdd += country
+                }
+                completion(myAdd)
+            }
+        })
     }
     
 //    //MARK: - initialize

@@ -6,6 +6,7 @@
 //
 import CoreData
 import UIKit
+import CoreLocation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -14,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        
+        var myLocation = CLLocation(latitude: 0.0, longitude: 0.0)
         let launchVC = LaunchVC()
         let tabBarController = TabBC()
         let delay = DispatchTime.now()
@@ -24,6 +25,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 if let error = error {
                     print(error.localizedDescription)
                 }
+                guard let coordinate = coordinate else { return }
+                myLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
                 DispatchQueue.main.async {
                     launchVC.configureLoadingBar()
                     window.rootViewController = launchVC
@@ -44,6 +47,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 guard self == self else { return }
                 
                 tabBarController.viewModel.myDatas = models
+                tabBarController.viewModel.myLocation = myLocation
                 
                 DispatchQueue.main.async { window.rootViewController = tabBarController }
             }

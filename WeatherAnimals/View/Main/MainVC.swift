@@ -101,7 +101,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let myDatas = self.weatherViewModel.myDatas else { return 1 }
         
-        return myDatas.count
+        return myDatas.count + 1
     }
     
     
@@ -111,9 +111,12 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
         
-        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
         
+        
+        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
         DispatchQueue.global(qos: .default).async {
+            
+            
             self.weatherViewModel.configureWeatherCell(with: myDatas, cellForRowAt: indexPath.row) { weatherData, locationTitle in
                 cell.configureUIWithData(weatherData, locationTitle)
             }
