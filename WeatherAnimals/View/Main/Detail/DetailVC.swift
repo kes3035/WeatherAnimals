@@ -135,6 +135,7 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
             
             cell.weatherViewModel = self.weatherViewModel
+            
             cell.tenDaysTempView.rowHeight = self.detailCollectionView.frame.height/14.5
             return cell
         case 2:

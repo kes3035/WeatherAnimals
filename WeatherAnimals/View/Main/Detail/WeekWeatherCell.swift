@@ -53,13 +53,11 @@ final class WeekWeatherCell: UITableViewCell {
         $0.backgroundColor = UIColor(named: "black")
     }
     
-    lazy var tempViewConstraints: [Double] = []
+    var tempViewConstraints: [Double]?
     
-    var dayWeather: DayWeather? {
-        didSet {
-            self.configureUIWithData()
-        }
-    }
+    var dayWeather: DayWeather?
+    
+    
     
     //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -128,17 +126,19 @@ final class WeekWeatherCell: UITableViewCell {
             
     }
     
-    private func configureUIWithData() {
-        guard let dayWeather = self.dayWeather else { return }
+    func configureUIWithData(row: Int, viewModel: WeatherViewModel) {
 
+        guard let dayWeathers = viewModel.dayWeathers,
+        let tempViewConstraints = viewModel.tempViewConstraints else { return }
         
-      
+        let dayWeather = dayWeathers[row]
+        
+        
         DispatchQueue.main.async {
             
             self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
             self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
             self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
-            
             
             if dayWeather.precipitationChance.magnitude >= 2.0  {
                 self.rainFall.text = String(Int(round(dayWeather.precipitationChance.magnitude))) + "%"
@@ -146,9 +146,8 @@ final class WeekWeatherCell: UITableViewCell {
             
             self.tempView.snp.remakeConstraints {
                 $0.top.bottom.equalToSuperview()
-                $0.leading.equalToSuperview().offset(self.tempViewConstraints[0]*86.333333)
-                $0.width.equalTo(self.tempViewConstraints[1]*86.333333)
-                
+                $0.leading.equalToSuperview().offset(tempViewConstraints[0]*86.333333)
+                $0.width.equalTo(tempViewConstraints[1]*86.333333)
             }
         }
     }

@@ -59,17 +59,22 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeekWeatherCell.identifier, for: indexPath) as! WeekWeatherCell
         
-        guard let dayWeathers = self.weatherViewModel.dayWeathers else { return cell }
+//        guard let dayWeathers = self.weatherViewModel.dayWeathers else { return cell }
         
-        let tempViewConstraints = self.weatherViewModel.getMaxMinTempOfWeek()
+        self.weatherViewModel.getTempViewConstraints(row: indexPath.row)
         
-        cell.tempViewConstraints = tempViewConstraints
-        cell.dayWeather = dayWeathers[indexPath.row]
+        cell.configureUIWithData(row: indexPath.row, viewModel: self.weatherViewModel)
+        
+//        cell.dayWeather = dayWeathers[indexPath.row]
 
         if indexPath.row == 0 {
+            
             cell.weekdaysTitleLabel.text = "오늘"
+            
         } else {
+            
             cell.weekdaysTitleLabel.text = self.weatherViewModel.getDayOfWeeks(from: Date())[indexPath.row]
+            
         }
         
         return cell

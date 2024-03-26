@@ -34,13 +34,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: delay + 2) {
+        DispatchQueue.main.asyncAfter(deadline: delay + 1) {
             launchVC.configureLoadingBar2()
         }
         
 
         
-        DispatchQueue.global(qos: .default).asyncAfter(deadline: delay + 3) {
+        DispatchQueue.global(qos: .default).asyncAfter(deadline: delay + 2) {
             
             self.fetchMyData { [weak self] models in
                 
