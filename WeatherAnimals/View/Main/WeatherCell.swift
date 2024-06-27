@@ -40,6 +40,12 @@ final class WeatherCell: UITableViewCell {
         $0.backgroundColor = .gray
     }
     
+    lazy var myViewModel = MyViewModel() {
+        didSet {
+            
+        }
+    }
+    
     lazy var weatherViewModel = WeatherViewModel() {
         didSet {
             self.configureUIWithData(weatherViewModel.currentWeather)

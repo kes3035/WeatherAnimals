@@ -53,9 +53,10 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //        guard let myLocation = self.weatherViewModel.myLocation else { return 1 }
         
-        guard let myDatas = self.weatherViewModel.myDatas else { return 1 }
-        
-        return myDatas.count + 1
+//        guard let myDatas = self.weatherViewModel.myDatas else { return 1 }
+//        
+//        return myDatas.count + 1
+        return myViewModel.getWeatherCellCount()
     }
     
     
@@ -67,14 +68,14 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         
         
         
-        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
-        DispatchQueue.global(qos: .default).async {
-            
-            
-            self.weatherViewModel.configureWeatherCell(with: myDatas, cellForRowAt: indexPath.row) { weatherData, locationTitle in
-                cell.configureUIWithData(weatherData, locationTitle)
-            }
-        }
+//        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
+//        DispatchQueue.global(qos: .default).async {
+//            
+//            
+//            self.weatherViewModel.configureWeatherCell(with: myDatas, cellForRowAt: indexPath.row) { weatherData, locationTitle in
+//                cell.configureUIWithData(weatherData, locationTitle)
+//            }
+//        }
         
         return cell
     }

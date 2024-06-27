@@ -29,6 +29,8 @@ final class TabBC: UITabBarController {
         let settingVC = SettingVC()
 
         mainVC.weatherViewModel = self.viewModel
+        mainVC.myViewModel = self.myViewModel
+        
         
         mainVC.tabBarItem = UITabBarItem(title: "홈",
                                          image: UIImage(systemName: "person"),
