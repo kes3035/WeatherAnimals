@@ -7,7 +7,6 @@ import CoreData
 
 final class WeatherViewModel {
     //MARK: - Model
-    
     let yongin = CLLocation(latitude: 37.32360894097521, longitude: 127.12394643315668)
     
     var myLocation: CLLocation?
@@ -23,7 +22,7 @@ final class WeatherViewModel {
     var titles: [String]?
     
     let weatherService = WeatherService()
-
+    
     var currentWeather: CurrentWeather?
     
     var tempViewConstraints: [Double]?
@@ -50,14 +49,21 @@ final class WeatherViewModel {
     
     var myDatas: [MyData]?
     
+    var isAuthorized: Bool?
+    
     //MARK: - Inputs
     
-   
+    
+    
+    
+    
+    
     //MARK: - Outputs
     
     var didChangeWeather: ((WeatherViewModel) -> Void)?
 
     var didFetchedWeathers: (() -> Void)?
+    
     
     //MARK: - Logics
     //현재 날씨 정보를 가져오는 메서드
@@ -426,6 +432,10 @@ final class WeatherViewModel {
                 completion(myAdd)
             }
         })
+    }
+    
+    func weatherCellCount() -> Int {
+        return 5
     }
     
 //    //MARK: - initialize

@@ -17,9 +17,11 @@ final class MainVC: UIViewController {
         $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(plusButtonTapped(_:))))
     }
     
+    lazy var myViewModel = MyViewModel()
+    
     lazy var weatherViewModel = WeatherViewModel()
     
-    private var locationViewModel: LocationViewModel!
+    private lazy var locationViewModel = LocationViewModel()
     
     //MARK: - LifeCycles
     override func viewDidLoad() {
@@ -28,61 +30,11 @@ final class MainVC: UIViewController {
         self.configureUI()                              //UI결정
         self.settingNav()                               //Nav세팅
         self.settingTV()                                //TableView세팅
-        self.settingLocation()                          //사용자 위치 세팅
+//        self.settingLocation()                          //사용자 위치 세팅
     }
     
     //MARK: - Helpers
-    private func configureUI() {
-        
-        self.view.backgroundColor = .white
-        self.view.addSubview(mainTableView)
-        self.mainTableView.snp.makeConstraints { $0.edges.equalToSuperview() }
-        
-    }
     
-    private func settingNav() {
-
-        let attributes = [
-            NSAttributedString.Key.font: UIFont(name: "NeoDunggeunmoPro-Regular", size: 34.0)!]
-        let attributedString = NSAttributedString(string: "날씨보개", attributes: attributes)
-        
-        let titleLabel = UILabel()
-        titleLabel.textAlignment = .left
-        titleLabel.attributedText = attributedString
-        titleLabel.sizeToFit()
-        
-        let leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
-        navigationItem.leftBarButtonItem = leftBarButtonItem
-
-        self.plusImage.frame = CGRect(x: 0, y: 0, width: 26, height: 26)
-        let rightBarButtonItem = UIBarButtonItem(customView: plusImage)
-        navigationItem.rightBarButtonItem = rightBarButtonItem
-        
-    }
-    
-    private func settingTV() {
-        
-        self.mainTableView.dataSource = self
-        self.mainTableView.delegate = self
-        self.mainTableView.separatorStyle = .none
-        self.mainTableView.register(WeatherCell.self, forCellReuseIdentifier: WeatherCell.identifier)
-        self.mainTableView.rowHeight = self.view.frame.height/7
-        
-    }
-    
-    private func settingLocation() {
-
-        self.locationViewModel = LocationViewModel()
-        self.locationViewModel.fetchLocation { [weak self] (location, error) in
-            guard let location = location,
-                  let self = self else { return }
-        
-            self.locationViewModel.loc = CLLocation(latitude: location.latitude, longitude: location.longitude)
-            
-            
-        }
-        
-    }
     
     //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
@@ -99,6 +51,8 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     //테이블 뷰의 셀 갯수를 리턴하는 함수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        guard let myLocation = self.weatherViewModel.myLocation else { return 1 }
+        
         guard let myDatas = self.weatherViewModel.myDatas else { return 1 }
         
         return myDatas.count + 1
@@ -139,6 +93,61 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
                     self?.navigationController?.pushViewController(detailVC, animated: true)
                 }
             }
+            
+        }
+    }
+}
+
+extension MainVC {
+    
+    // UI설정
+    private func configureUI() {
+        self.view.backgroundColor = .white
+        self.view.addSubview(mainTableView)
+        self.mainTableView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+    }
+    
+    // NavigationController 설정
+    private func settingNav() {
+
+        let attributes = [ NSAttributedString.Key.font:
+                            UIFont(name: "NeoDunggeunmoPro-Regular",
+                            size: 34.0)!]
+        let attributedString = NSAttributedString(string: "날씨보개", 
+                                                  attributes: attributes)
+        
+        let titleLabel = UILabel()
+        titleLabel.textAlignment = .left
+        titleLabel.attributedText = attributedString
+        titleLabel.sizeToFit()
+        
+        let leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        navigationItem.leftBarButtonItem = leftBarButtonItem
+
+        self.plusImage.frame = CGRect(x: 0, y: 0, width: 26, height: 26)
+        let rightBarButtonItem = UIBarButtonItem(customView: plusImage)
+        navigationItem.rightBarButtonItem = rightBarButtonItem
+        
+    }
+    
+    // TableView 설정
+    private func settingTV() {
+        self.mainTableView.dataSource = self
+        self.mainTableView.delegate = self
+        self.mainTableView.separatorStyle = .none
+        self.mainTableView.register(WeatherCell.self, forCellReuseIdentifier: WeatherCell.identifier)
+        self.mainTableView.rowHeight = self.view.frame.height/7
+    }
+    
+    // 위치 설정
+    private func settingLocation() {
+        self.locationViewModel.fetchLocation { [weak self] (location, error) in
+            guard let location = location,
+                  let self = self else { return }
+        
+            self.locationViewModel.userLocation = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
             
         }
     }

@@ -2,17 +2,27 @@ import UIKit
 import CoreLocation
 
 final class LocationViewModel: CLLocationManager, CLLocationManagerDelegate {
-    typealias FetchLocationCompletion = (CLLocationCoordinate2D?, Error?) -> Void
+    typealias FetchLocationCompletion = (CLLocation?, Error?) -> Void
+    //MARK: - Models
+    // 위치 저장
+    private var userLocation: CLLocation?
     
+    var authorizationStatusOfLocation: Bool?
+    
+    
+    //MARK: - Inputs
+    
+    
+    //MARK: - Outpus
     // 동작을 담아주기 위해 클로저를 만들어 줌
     private var fetchLocationCompletion: FetchLocationCompletion?
     
-    // 위치 저장
-    var loc: CLLocation? {
-        didSet {
-            guard let location = self.loc else { return }
-        }
+    //MARK: - Logics
+    
+    func makeUserLocation(with location: CLLocation) {
+        self.userLocation = location
     }
+    
     
     override init() {
         super.init()
@@ -56,9 +66,10 @@ extension LocationViewModel {
         // 사용자의 최신 위치 정보를 가져옵니다.
         guard let location = locations.first else { return }
         let coordinate = location.coordinate
-        self.loc = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let latestLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        self.userLocation = latestLocation
         // coordinate 값을 갖고 저장 한, 동작을 실행
-        self.fetchLocationCompletion?(coordinate, nil)
+        self.fetchLocationCompletion?(latestLocation, nil)
         // 위의 실행 후 클로저 초기화
         self.fetchLocationCompletion = nil
     }
@@ -83,6 +94,8 @@ extension LocationViewModel {
             self.startUpdatingLocation()
         case .notDetermined , .denied , .restricted:
             print("Location Auth: denied")
+            self.authorizationStatusOfLocation = false
+            // 인증이 안된 경우, 본인의 위치에 대한 날씨정보는 받아올 수 없음!
             self.stopUpdatingLocation()
         default: break
         }

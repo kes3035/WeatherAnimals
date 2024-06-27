@@ -36,13 +36,13 @@ final class WeatherCell: UITableViewCell {
     }
     
     
-    private lazy var animalImageView = UIImageView().then { $0.backgroundColor = .gray }
+    private lazy var animalImageView = UIImageView().then {
+        $0.backgroundColor = .gray
+    }
     
-
-    var weatherViewModel: WeatherViewModel! {
+    lazy var weatherViewModel = WeatherViewModel() {
         didSet {
-            guard let currentWeather = weatherViewModel.currentWeather else { return }
-            self.configureUIWithData(currentWeather)
+            self.configureUIWithData(weatherViewModel.currentWeather)
         }
     }
     
@@ -50,7 +50,6 @@ final class WeatherCell: UITableViewCell {
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        self.weatherViewModel = WeatherViewModel()
         self.configureUI()
         
     }
@@ -59,9 +58,9 @@ final class WeatherCell: UITableViewCell {
     
     
 //MARK: - Helpers
+    // UI설정
     private func configureUI() {
         self.contentView.addSubview(self.baseView)
-        
         self.contentView.snp.makeConstraints{$0.edges.equalToSuperview()}
         
         self.baseView.addSubviews(self.tempLabel,
@@ -107,19 +106,14 @@ final class WeatherCell: UITableViewCell {
         }
     }
     
-    private func configureUIWithData(_ weather: CurrentWeather) {
+    // 데이터로 UI설정
+    private func configureUIWithData(_ weather: CurrentWeather?) {
+        guard let currentWeather = weather else { return }
         guard let title = self.weatherViewModel.title else { return }
-        DispatchQueue.main.async {
-            self.tempLabel.text = String(round(weather.temperature.value))
-            self.weatherImageView.image = UIImage(named: weather.symbolName)
-            self.addressLabel.text = title
-        }
-    }
-    func configureUIWithData(_ currentWeather: CurrentWeather, _ locationTitle: String) {
         DispatchQueue.main.async {
             self.tempLabel.text = String(round(currentWeather.temperature.value))
             self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
-            self.addressLabel.text = locationTitle
+            self.addressLabel.text = title
         }
     }
 }

@@ -11,22 +11,24 @@ import CoreLocation
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        var myLocation = CLLocation(latitude: 0.0, longitude: 0.0)
+        
+        
+        var myLocation: CLLocation? = CLLocation(latitude: 0.0, longitude: 0.0)
         let launchVC = LaunchVC()
         let tabBarController = TabBC()
+        
         let delay = DispatchTime.now()
         
         DispatchQueue.global().async {
-            launchVC.locationViewModel.fetchLocation { coordinate, error in
-                if let error = error {
-                    print(error.localizedDescription)
-                }
-                guard let coordinate = coordinate else { return }
-                myLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            launchVC.locationViewModel.fetchLocation { latestLocation, error in
+                if let error = error { print(error.localizedDescription) }
+                myLocation = latestLocation
                 DispatchQueue.main.async {
                     launchVC.configureLoadingBar()
                     window.rootViewController = launchVC
@@ -34,19 +36,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: delay + 1) {
+        DispatchQueue.main.asyncAfter(deadline: delay + 0.5) {
             launchVC.configureLoadingBar2()
         }
         
-
-        
-        DispatchQueue.global(qos: .default).asyncAfter(deadline: delay + 2) {
-            
-            self.fetchMyData { [weak self] models in
+        DispatchQueue.global(qos: .default).asyncAfter(deadline: delay + 1.0) {
+            self.fetchMyData { [weak self] coreDatas in
                 
                 guard self == self else { return }
                 
-                tabBarController.viewModel.myDatas = models
+                tabBarController.myViewModel.makeCoreDatas(with: coreDatas)
+                tabBarController.myViewModel.makeUserLocation(with: myLocation)
+                
+                tabBarController.viewModel.myDatas = coreDatas
                 tabBarController.viewModel.myLocation = myLocation
                 
                 DispatchQueue.main.async { window.rootViewController = tabBarController }
@@ -137,3 +139,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
+extension SceneDelegate {
+    func loadingViewControllers() {
+        // 사용자 위치 권한 설정
+        
+    }
+}

@@ -5,17 +5,17 @@
 //  Created by 김은상 on 3/4/24.
 //
 
-
 /*
+ 
  런치스크린 로직 우선순위
+ 
  1. 사용자의 위치 설정이 되어 있는지 확인
   1.1 설정이 안되어있는 경우 설정에서 위치 설정할 수 있도록 화면 전환
   1.2 권한 설정이 되어있는 경우 2번으로
  2. CoreData로부터 사용자가 설정해놓은 지역 받아오기
  3. MainVC에 띄우기 위한 CurrentWeather 데이터 받아오기
+ 
  */
-
-
 
 import UIKit
 import CoreLocation
@@ -36,28 +36,42 @@ final class LaunchVC: UIViewController {
         $0.textColor = UIColor.white
     }
     
-    private lazy var loadingBar = UIView().then { $0.backgroundColor = .white }
+    private lazy var loadingBar = UIView().then {
+        $0.backgroundColor = .white
+    }
     
-    var locationViewModel: LocationViewModel! = LocationViewModel() {
+    var locationViewModel = LocationViewModel() {
         didSet {
+            // 앱 시작과 동시에 사용자 위치 받아오기
             self.locationViewModel.fetchLocation { [weak self] (location, error) in
-            self?.locationViewModel.loc = CLLocation(latitude: location?.latitude ?? 0.0, longitude: location?.longitude ?? 0.0)
+                guard let location = location else { return }
+                
+                // 받아온 위치를 마이 뷰보델에 저장
+                self?.myViewModel.makeUserLocation(with: location)
+                
+                // 받아온 위치를 로케이션 뷰모델에 저장
+                self?.locationViewModel.makeUserLocation(with: location)
+                
+                
             }
         }
     }
     
-    var viewModel: WeatherViewModel!
+    lazy var myViewModel = MyViewModel()
     
+    lazy var viewModel = WeatherViewModel()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.locationViewModel = LocationViewModel()
-        self.viewModel = WeatherViewModel()
         self.configureUI()
     }
     
     //MARK: - Helpers
+    
+}
+
+extension LaunchVC {
     private func configureUI() {
         self.view.backgroundColor = Constants.greenColor
         self.view.addSubviews(titleLabel, loadingBar, loadingLabel)
@@ -82,7 +96,6 @@ final class LaunchVC: UIViewController {
     }
     
     func configureLoadingBar() {
-        
         DispatchQueue.main.async {
             self.loadingLabel.text = "34%..."
         }
