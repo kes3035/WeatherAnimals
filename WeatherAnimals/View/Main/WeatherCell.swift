@@ -2,6 +2,7 @@ import UIKit
 import WeatherKit
 import SnapKit
 import Then
+import CoreLocation
 
 final class WeatherCell: UITableViewCell {
     static let identifier = "WeatherCell"
@@ -35,20 +36,22 @@ final class WeatherCell: UITableViewCell {
         $0.font = UIFont.neoDeungeul(size: 14)
     }
     
-    
     private lazy var animalImageView = UIImageView().then {
         $0.backgroundColor = .gray
     }
     
-    lazy var myViewModel = MyViewModel() {
+    lazy var indexPath: Int = 0 {
         didSet {
-            
+            let myData = self.myViewModel.getMyDatas()[indexPath]
+            self.configureUIWithData(myData)
         }
     }
     
+    lazy var myViewModel = MyViewModel()
+    
     lazy var weatherViewModel = WeatherViewModel() {
         didSet {
-            self.configureUIWithData(weatherViewModel.currentWeather)
+//            self.configureUIWithData(weatherViewModel.currentWeather)
         }
     }
     
@@ -113,13 +116,16 @@ final class WeatherCell: UITableViewCell {
     }
     
     // 데이터로 UI설정
-    private func configureUIWithData(_ weather: CurrentWeather?) {
-        guard let currentWeather = weather else { return }
-        guard let title = self.weatherViewModel.title else { return }
-        DispatchQueue.main.async {
-            self.tempLabel.text = String(round(currentWeather.temperature.value))
-            self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
-            self.addressLabel.text = title
+    private func configureUIWithData(_ myData: [String: CLLocation]) {
+        guard let location = myData.values.first,
+              let title = myData.keys.first else { return }
+        myViewModel.getCurrentWeather(location: location) { currentWeather in
+            DispatchQueue.main.async {
+                self.tempLabel.text = String(round(currentWeather.temperature.value))
+                self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
+                self.addressLabel.text = title
+            }
         }
+        
     }
 }

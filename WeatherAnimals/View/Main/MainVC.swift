@@ -51,11 +51,6 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     //테이블 뷰의 셀 갯수를 리턴하는 함수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        guard let myLocation = self.weatherViewModel.myLocation else { return 1 }
-        
-//        guard let myDatas = self.weatherViewModel.myDatas else { return 1 }
-//        
-//        return myDatas.count + 1
         return myViewModel.getWeatherCellCount()
     }
     
@@ -66,8 +61,8 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
         
-
-        
+        cell.indexPath = indexPath.row
+        cell.myViewModel = self.myViewModel
 //        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
 //        DispatchQueue.global(qos: .default).async {
 //            

@@ -118,6 +118,3 @@ extension CALayer {
     }
 }
 
-extension UITableView {
-    
-}

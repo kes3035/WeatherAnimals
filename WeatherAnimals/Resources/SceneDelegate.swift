@@ -13,54 +13,43 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        
         let window = UIWindow(windowScene: windowScene)
         
+        var myLocation: CLLocation?
         
-        var myLocation: CLLocation? = CLLocation(latitude: 0.0, longitude: 0.0)
         let launchVC = LaunchVC()
+        
         let tabBarController = TabBC()
         
         let delay = DispatchTime.now()
+        
+        DispatchQueue.main.async { window.rootViewController = launchVC }
         
         DispatchQueue.global().async {
             launchVC.locationViewModel.fetchLocation { latestLocation, error in
                 if let error = error { print(error.localizedDescription) }
                 myLocation = latestLocation
-                DispatchQueue.main.async {
-                    window.rootViewController = launchVC
-                }
             }
-        }
-        
-        DispatchQueue.global(qos: .default).asyncAfter(deadline: delay + 1.0) {
             self.fetchMyData { [weak self] coreDatas in
                 
                 guard self == self else { return }
-                
-                tabBarController.myViewModel.makeCoreDatas(with: coreDatas)
                 tabBarController.myViewModel.makeUserLocation(with: myLocation)
+                tabBarController.myViewModel.makeCoreDatas(with: coreDatas)
                 
                 tabBarController.viewModel.myDatas = coreDatas
                 tabBarController.viewModel.myLocation = myLocation
                 
-                DispatchQueue.main.async { window.rootViewController = tabBarController }
+                DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
+                    window.rootViewController = tabBarController
+                }
             }
         }
-       
-//        let detail = DetailVC()
-//        window.rootViewController = detail
         window.makeKeyAndVisible()
         self.window = window
     }
-
-
-    func fetchLocalWeatherData() async throws -> [MyData] {
-        let context = self.persistentContainer.viewContext
-        let myData = try context.fetch(MyData.fetchRequest()) as! [MyData]
-        return myData
-    }
-    
     
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

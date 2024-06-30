@@ -36,22 +36,23 @@ final class LaunchVC: UIViewController {
         $0.textColor = UIColor.white
     }
     
-    var locationViewModel = LocationViewModel() {
-        didSet {
-            // 앱 시작과 동시에 사용자 위치 받아오기
-            self.locationViewModel.fetchLocation { [weak self] (location, error) in
-                guard let location = location else { return }
-                
-                // 받아온 위치를 마이 뷰보델에 저장
-                self?.myViewModel.makeUserLocation(with: location)
-                
-                // 받아온 위치를 로케이션 뷰모델에 저장
-                self?.locationViewModel.makeUserLocation(with: location)
-                
-                
-            }
-        }
-    }
+    var locationViewModel = LocationViewModel()
+    //    {
+    //        didSet {
+    //            // 앱 시작과 동시에 사용자 위치 받아오기
+    //            self.locationViewModel.fetchLocation { [weak self] (location, error) in
+    //                guard let location = location else { return }
+    //
+    //                // 받아온 위치를 마이 뷰보델에 저장
+    //                self?.myViewModel.makeUserLocation(with: location)
+    //
+    //                // 받아온 위치를 로케이션 뷰모델에 저장
+    //                self?.locationViewModel.makeUserLocation(with: location)
+    //
+    //
+    //            }
+    //        }
+    //}
     
     lazy var myViewModel = MyViewModel()
     
@@ -63,9 +64,6 @@ final class LaunchVC: UIViewController {
         self.configureUI()
         self.animateLoadingLabel()
     }
-    
-    //MARK: - Helpers
-    
 }
 
 extension LaunchVC {
