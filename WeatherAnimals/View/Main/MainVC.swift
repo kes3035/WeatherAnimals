@@ -66,7 +66,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
         
-        
+
         
 //        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
 //        DispatchQueue.global(qos: .default).async {
@@ -113,19 +113,20 @@ extension MainVC {
     // NavigationController 설정
     private func settingNav() {
 
-        let attributes = [ NSAttributedString.Key.font:
-                            UIFont(name: "NeoDunggeunmoPro-Regular",
-                            size: 34.0)!]
-        let attributedString = NSAttributedString(string: "날씨보개", 
-                                                  attributes: attributes)
+        let navTitleAttributes = [ NSAttributedString.Key.font: UIFont(name: "NeoDunggeunmoPro-Regular", size: 34.0)!]
+        let navTitleAttributedStr = NSAttributedString(string: "날씨보개", attributes: navTitleAttributes)
         
-        let titleLabel = UILabel()
-        titleLabel.textAlignment = .left
-        titleLabel.attributedText = attributedString
-        titleLabel.sizeToFit()
+        let navTitleLabel = UILabel().then {
+            $0.textAlignment = .left
+            $0.attributedText = navTitleAttributedStr
+            $0.sizeToFit()
+        }
+//        navTitleLabel.textAlignment = .left
+//        navTitleLabel.attributedText = navTitleAttributedStr
+//        navTitleLabel.sizeToFit()
         
-        let leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
-        navigationItem.leftBarButtonItem = leftBarButtonItem
+        let mainVCNavLeftBarButtonItem = UIBarButtonItem(customView: navTitleLabel)
+        navigationItem.leftBarButtonItem = mainVCNavLeftBarButtonItem
 
         self.plusImage.frame = CGRect(x: 0, y: 0, width: 26, height: 26)
         let rightBarButtonItem = UIBarButtonItem(customView: plusImage)
@@ -143,13 +144,13 @@ extension MainVC {
     }
     
     // 위치 설정
-    private func settingLocation() {
-        self.locationViewModel.fetchLocation { [weak self] (location, error) in
-            guard let location = location,
-                  let self = self else { return }
-        
-            self.locationViewModel.userLocation = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-            
-        }
-    }
+//    private func settingLocation() {
+//        self.locationViewModel.fetchLocation { [weak self] (location, error) in
+//            guard let location = location,
+//                  let self = self else { return }
+//        
+//            self.locationViewModel.userLocation = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+//            
+//        }
+//    }
 }

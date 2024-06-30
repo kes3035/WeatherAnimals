@@ -12,8 +12,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
-    
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
@@ -30,14 +28,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 if let error = error { print(error.localizedDescription) }
                 myLocation = latestLocation
                 DispatchQueue.main.async {
-                    launchVC.configureLoadingBar()
                     window.rootViewController = launchVC
                 }
             }
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: delay + 0.5) {
-            launchVC.configureLoadingBar2()
         }
         
         DispatchQueue.global(qos: .default).asyncAfter(deadline: delay + 1.0) {
@@ -62,6 +55,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 
+    func fetchLocalWeatherData() async throws -> [MyData] {
+        let context = self.persistentContainer.viewContext
+        let myData = try context.fetch(MyData.fetchRequest()) as! [MyData]
+        return myData
+    }
+    
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

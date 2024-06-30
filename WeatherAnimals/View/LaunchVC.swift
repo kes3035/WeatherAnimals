@@ -31,13 +31,9 @@ final class LaunchVC: UIViewController {
     }
     
     private let loadingLabel = UILabel().then {
-        $0.text = "Loading..."
+        $0.text = ""
         $0.font = UIFont.neoDeungeul(size: 24)
         $0.textColor = UIColor.white
-    }
-    
-    private lazy var loadingBar = UIView().then {
-        $0.backgroundColor = .white
     }
     
     var locationViewModel = LocationViewModel() {
@@ -65,6 +61,7 @@ final class LaunchVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureUI()
+        self.animateLoadingLabel()
     }
     
     //MARK: - Helpers
@@ -74,7 +71,7 @@ final class LaunchVC: UIViewController {
 extension LaunchVC {
     private func configureUI() {
         self.view.backgroundColor = Constants.greenColor
-        self.view.addSubviews(titleLabel, loadingBar, loadingLabel)
+        self.view.addSubviews(titleLabel, loadingLabel)
         
         self.titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(150)
@@ -82,29 +79,23 @@ extension LaunchVC {
             $0.height.equalTo(50)
         }
         
-        self.loadingBar.snp.makeConstraints {
-            $0.top.equalTo(self.view.snp.centerY).offset(30)
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(self.view.frame.size.width*3/4)
-            $0.height.equalTo(12)
-        }
-        
         self.loadingLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(self.loadingBar.snp.top).offset(-10)
+            $0.top.equalTo(self.view.snp.centerY).offset(30)
         }
     }
     
-    func configureLoadingBar() {
-        DispatchQueue.main.async {
-            self.loadingLabel.text = "34%..."
-        }
-    }
-    
-    func configureLoadingBar2() {
-        
-        DispatchQueue.main.async {
-            self.loadingLabel.text = "68%..."
+    private func animateLoadingLabel() {
+        loadingLabel.text = ""
+        var charIndex = 0.0
+        let titleText = "Loading..."
+        for letter in titleText {
+            Timer.scheduledTimer(withTimeInterval: 0.2 * charIndex, repeats: false) { timer in
+                DispatchQueue.main.async {
+                    self.loadingLabel.text?.append(letter)
+                }
+            }
+            charIndex += 1
         }
     }
 }

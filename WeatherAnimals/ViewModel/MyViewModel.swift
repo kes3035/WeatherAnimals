@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import WeatherKit
 import CoreLocation
 
 // 통합 뷰모델
@@ -48,6 +49,23 @@ final class MyViewModel {
         return myDatas.count + 1
     }
     
+    func getWeatherCellData(forRowAt indexPath: Int) -> [String: CLLocation] {
+        guard let myDatas = self.myDatas else { return ["":CLLocation()] }
+        return myDatas[indexPath]
+    }
+    
+    func getCurrentWeather(location: CLLocation, completion: @escaping(CurrentWeather)->()) {
+        Task {
+            do {
+                let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
+                completion(currentWeather)
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }
+        
+        
+    }
     
     func makeCoreDatas(with coreDatas: [MyData]?) {
         self.myCoreDatas = coreDatas
@@ -59,7 +77,8 @@ final class MyViewModel {
         self.userLocation = location
     }
     
-    func configureWeatherCell(with: UITableViewCell) {
+    func configureWeatherCell(with: MyData) {
+        
         
     }
     
