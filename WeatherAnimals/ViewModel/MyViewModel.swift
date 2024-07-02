@@ -13,18 +13,25 @@ import CoreLocation
 final class MyViewModel {
     
     // 코어데이터 저장하는 변수
-    private var myCoreDatas: [MyData]?
+    private var myCoreDatas: [MyData]? {
+        didSet {
+            print("myCoreDatas: [MyData] count == \(myCoreDatas?.count)")
+        }
+    }
     
     private lazy var myDatas: [[String: CLLocation]] = [] {
         didSet {
-            print(myDatas.count)
+            print("myDatas: [[String: CLLocation]] count == \(myDatas.count)")
         }
     }
     
     // 사용자의 위치를 저장하는 변수
     private var userLocation: CLLocation? {
         didSet {
-            guard let userLocation = self.userLocation else { return }
+            guard let userLocation = self.userLocation else { 
+                print("Debug : Failed to unwrap userLocation ")
+                return
+            }
             self.getMyLocationTitle(location: userLocation) { title in
                 let userData = [title: userLocation]
                 self.myDatas.append(userData)

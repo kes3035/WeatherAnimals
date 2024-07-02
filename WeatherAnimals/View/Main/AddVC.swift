@@ -14,17 +14,17 @@ final class AddVC: UIViewController {
     private var searchResults = [MKLocalSearchCompletion]()
     
     //검색된 결과를 표시할 테이블뷰
-    private var resultTableView = UITableView()
+    private var searchResultTableView = UITableView()
         
     private var searchController = UISearchController(searchResultsController: nil)
     
     //서치바에 검색할 때마다 장소를 가져와서 테이블뷰 업데이트
-    private var places: MKMapItem? { didSet { resultTableView.reloadData() } }
+    private var searchedPlace: MKMapItem? { didSet { searchResultTableView.reloadData() } }
     
     private var localSearch: MKLocalSearch? {
         willSet {
             // 검색창에 들어오기 전 검색 결과 초기화
-            places = nil
+            searchedPlace = nil
             localSearch?.cancel()
         }
     }
@@ -36,7 +36,7 @@ final class AddVC: UIViewController {
         super.viewDidLoad()
         configureUI()
         settingNav()
-        settingTableView()
+        settingSearchResultTableView()
         settingSearchCompleter()
         settingSearchController()
     }
@@ -49,33 +49,33 @@ final class AddVC: UIViewController {
     //MARK: - Helpers
     private func configureUI() {
         self.view.backgroundColor = .white
-        self.view.addSubview(resultTableView)
-        resultTableView.snp.makeConstraints {
+        self.view.addSubview(self.searchResultTableView)
+        self.searchResultTableView.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     
     private func settingSearchController() {
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "도시 검색"
-        searchController.searchBar.searchTextField.font = UIFont.neoDeungeul(size: 15)
+        self.searchController.searchResultsUpdater = self
+        self.searchController.obscuresBackgroundDuringPresentation = false
+        self.searchController.searchBar.placeholder = "도시 검색"
+        self.searchController.searchBar.searchTextField.font = UIFont.neoDeungeul(size: 15)
     
-        navigationItem.searchController = searchController
+        navigationItem.searchController = self.searchController
         definesPresentationContext = true
     }
     
-    private func settingTableView() {
-        resultTableView.delegate = self
-        resultTableView.dataSource = self
-        resultTableView.rowHeight = 60
-        resultTableView.register(AddCell.self, forCellReuseIdentifier: "AddCell")
+    private func settingSearchResultTableView() {
+        self.searchResultTableView.delegate = self
+        self.searchResultTableView.dataSource = self
+        self.searchResultTableView.rowHeight = 60
+        self.searchResultTableView.register(AddCell.self, forCellReuseIdentifier: "AddCell")
     }
     private func settingSearchCompleter() {
-        searchCompleter.delegate = self
-        searchCompleter.resultTypes = .address
-        searchCompleter.region = searchRegion
+        self.searchCompleter.delegate = self
+        self.searchCompleter.resultTypes = .address
+        self.searchCompleter.region = searchRegion
     }
     
     private func settingNav() {
@@ -148,7 +148,7 @@ extension AddVC: MKLocalSearchCompleterDelegate {
 
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         searchResults = completer.results
-        resultTableView.reloadData()
+        searchResultTableView.reloadData()
     }
 
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
@@ -168,8 +168,12 @@ extension AddVC: UISearchResultsUpdating {
         // resultTableView.reloadData() (테이블 뷰 다시 로드)
         if searchText.isEmpty {
             searchResults.removeAll()
-            resultTableView.reloadData()
+            searchResultTableView.reloadData()
         }
         searchCompleter.queryFragment = searchText
     }
+}
+
+extension AddVC {
+    
 }

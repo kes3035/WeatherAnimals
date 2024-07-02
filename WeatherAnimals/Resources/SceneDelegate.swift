@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
         
-        var myLocation: CLLocation?
+        var myLocation: CLLocation? = CLLocation()
         
         let launchVC = LaunchVC()
         
@@ -37,6 +37,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 guard self == self else { return }
                 tabBarController.myViewModel.makeUserLocation(with: myLocation)
+                
                 tabBarController.myViewModel.makeCoreDatas(with: coreDatas)
                 
                 tabBarController.viewModel.myDatas = coreDatas

@@ -61,16 +61,11 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
         
-        cell.indexPath = indexPath.row
         cell.myViewModel = self.myViewModel
-//        guard let myDatas = self.weatherViewModel.myDatas else { return cell }
-//        DispatchQueue.global(qos: .default).async {
-//            
-//            
-//            self.weatherViewModel.configureWeatherCell(with: myDatas, cellForRowAt: indexPath.row) { weatherData, locationTitle in
-//                cell.configureUIWithData(weatherData, locationTitle)
-//            }
-//        }
+
+        
+        cell.indexPath = indexPath.row
+
         
         return cell
     }
