@@ -141,9 +141,9 @@
 		216D32142B68F15100B1229C /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				21A439F62C2D5B7400C20A54 /* MyViewModel.swift */,
 				219937CC2AF1094900EC8518 /* WeatherViewModel.swift */,
 				21D4C6D92AF3DF100048CF65 /* LocationViewModel.swift */,
-				21A439F62C2D5B7400C20A54 /* MyViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";

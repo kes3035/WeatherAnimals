@@ -28,7 +28,7 @@ final class MyViewModel {
     // 사용자의 위치를 저장하는 변수
     private var userLocation: CLLocation? {
         didSet {
-            guard let userLocation = self.userLocation else { 
+            guard let userLocation = self.userLocation else {
                 print("Debug : Failed to unwrap userLocation ")
                 return
             }
@@ -39,9 +39,18 @@ final class MyViewModel {
         }
     }
     
+    private var currentWeather: CurrentWeather?
+    
+    private var hourlyWeathers: [HourWeather]?
+    
+    
+    var didFetchCurrentWeather: (()->())?
+    
+    
+    
     // 사용자의 위치 권한 승인 여부를 저장하는 변수
     var locationAuthState: Bool?
-
+    
     
     
     
@@ -53,7 +62,7 @@ final class MyViewModel {
         let emptyArr: [[String: CLLocation]] = Array(repeating: ["":CLLocation()], count: myCoreDatas.count)
         
         self.myDatas += emptyArr
-                
+        
         for data in myCoreDatas {
             let longitude = data.longitude
             let latitude = data.latitude
@@ -76,23 +85,50 @@ final class MyViewModel {
         return myDatas[indexPath]
     }
     
-    func getCurrentWeather(location: CLLocation, completion: @escaping(CurrentWeather)->()) {
+    func setCurrentWeather(location: CLLocation, completion: @escaping(CurrentWeather)->()) {
         Task {
             do {
                 let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
+                self.currentWeather = currentWeather
                 completion(currentWeather)
             } catch let error {
                 print(error.localizedDescription)
             }
         }
-        
-        
     }
+    
+    func getCurrentWeather() -> CurrentWeather? {
+        return self.currentWeather
+    }
+    
+    func setCurrentWeather(location: CLLocation) {
+        Task {
+            do {
+                let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
+                self.currentWeather = currentWeather
+                self.didFetchCurrentWeather?()
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+//    
+//    func getHourlyWeather(location: CLLocation, completion: @escaping(([HourWeather])->())) {
+//        do {
+//            let hourWeathers = try await WeatherService.shared.weather(for: location, including: .hourly)
+//            completion(hourWeathers.forecast)
+//        } catch let error {
+//            print(error.localizedDescription)
+//        }
+//    }
+//    
+    
     
     func getMyLocationTitle(location: CLLocation, completion: @escaping((String) -> ())) {
         let geocoder = CLGeocoder()
         let locale = Locale(identifier: "Ko-kr")
-            
+        
         geocoder.reverseGeocodeLocation(location, preferredLocale: locale, completionHandler: {(placemarks, error) in
             if let address: [CLPlacemark] = placemarks {
                 var myAdd: String = ""
@@ -108,6 +144,7 @@ final class MyViewModel {
         })
     }
     
+    
     func makeCoreDatas(with coreDatas: [MyData]?) {
         self.myCoreDatas = coreDatas
         makeMyDatas()
@@ -117,7 +154,4 @@ final class MyViewModel {
     func makeUserLocation(with location: CLLocation?) {
         self.userLocation = location
     }
-    
-    
-    
 }

@@ -49,25 +49,39 @@ final class WeatherCell: UITableViewCell {
     
     lazy var myViewModel = MyViewModel()
     
-    lazy var weatherViewModel = WeatherViewModel() {
-        didSet {
-//            self.configureUIWithData(weatherViewModel.currentWeather)
-        }
-    }
+    lazy var weatherViewModel = WeatherViewModel()
     
     
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         self.configureUI()
-        
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     
 //MARK: - Helpers
-    // UI설정
+    private func configureUIWithData(_ myData: [String: CLLocation]) {
+        
+        guard let location = myData.values.first,
+              let title = myData.keys.first else { return }
+        
+        myViewModel.setCurrentWeather(location: location)
+        
+        myViewModel.didFetchCurrentWeather = {
+            if let currentWeather = self.myViewModel.getCurrentWeather() {
+                DispatchQueue.main.async {
+                    self.tempLabel.text = String(round(currentWeather.temperature.value))
+                    self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
+                    self.addressLabel.text = title
+                }
+            }
+        }
+    }
+}
+
+extension WeatherCell {
     private func configureUI() {
         self.contentView.addSubview(self.baseView)
         self.contentView.snp.makeConstraints{$0.edges.equalToSuperview()}
@@ -113,19 +127,5 @@ final class WeatherCell: UITableViewCell {
             $0.trailing.equalToSuperview().inset(30)
             $0.width.height.equalTo(70)
         }
-    }
-    
-    // 데이터로 UI설정
-    private func configureUIWithData(_ myData: [String: CLLocation]) {
-        guard let location = myData.values.first,
-              let title = myData.keys.first else { return }
-        myViewModel.getCurrentWeather(location: location) { currentWeather in
-            DispatchQueue.main.async {
-                self.tempLabel.text = String(round(currentWeather.temperature.value))
-                self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
-                self.addressLabel.text = title
-            }
-        }
-        
     }
 }

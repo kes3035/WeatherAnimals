@@ -49,33 +49,28 @@ final class MainVC: UIViewController {
 //MARK: - UITableViewDataSource, UITableViewDelegate
 extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
-    //테이블 뷰의 셀 갯수를 리턴하는 함수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return myViewModel.getWeatherCellCount()
     }
     
     
-    //테이블 뷰의 셀을 리턴하는 함수
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
-        
-        cell.myViewModel = self.myViewModel
 
+        cell.myViewModel = self.myViewModel
         
         cell.indexPath = indexPath.row
 
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+
         let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
         
         DispatchQueue.global().async {
-            
             self.weatherViewModel.getDetailVCWeather(location: location) { [weak self] weatherViewModel in
                 DispatchQueue.main.async {
                     let detailVC = DetailVC()
