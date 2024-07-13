@@ -4,14 +4,12 @@ import WeatherKit
 final class DetailVC: UIViewController {
     //MARK: - Properties
     
-    // 콜렉션 뷰를 위한 FlowLayout
-    private let flowLayout = UICollectionViewFlowLayout()
+    private lazy var detailVCFlowLayout = UICollectionViewFlowLayout()
     
-    // 디테일VC의 최상단 화면을 구성하는 TopView
-    private let topView = DetailView()
+    private lazy var detailVCTopView = DetailView()
     
     // 콜렉션 뷰
-    private lazy var detailCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
+    private lazy var detailCollectionView = UICollectionView(frame: .zero, collectionViewLayout: detailVCFlowLayout).then {
         $0.delegate = self
         $0.dataSource = self
         $0.backgroundColor = .white
@@ -43,53 +41,18 @@ final class DetailVC: UIViewController {
         }
     }
     
-    
+    lazy var myViewModel = MyViewModel()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureUI()                  //UI결정
+        self.configureDetailVCUI()                  //UI결정
         self.settingFlowLayout()            //CollectionView FlowLayout세팅
         self.configureTopView()
     }
     
     //MARK: - Helpers
-    private func configureUI() {
-        //최초UI 구성
-        self.view.backgroundColor = .white
-        
-        self.view.addSubviews(detailCollectionView, topView)
-        
-        self.topView.snp.makeConstraints {
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(10)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(140)
-        }
-        
-        self.detailCollectionView.snp.makeConstraints{
-            $0.top.equalTo(self.topView.snp.bottom).offset(10)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
-    }
     
-    private func configureTopView() {
-        let (currentTemp, highTemp, lowTemp) = self.weatherViewModel.configureTopView()
-        DispatchQueue.main.async {
-            self.topView.tempLabel.text = currentTemp
-            self.topView.highestTempLabel.text = highTemp
-            self.topView.lowestTempLabel.text = lowTemp
-        }
-    }
-    
-    private func settingFlowLayout() {
-        self.flowLayout.scrollDirection = .vertical
-        self.flowLayout.sectionHeadersPinToVisibleBounds = true
-    }
-    
-    func configureNavButton() {
-        self.navigationItem.leftBarButtonItem = cancelButton
-        self.navigationItem.rightBarButtonItem = addButton
-    }
     
     @objc func buttonTapped(_ sender: UIBarButtonItem) {
         guard let titleLabel = sender.title else { return }
@@ -274,5 +237,44 @@ extension DetailVC: UIScrollViewDelegate {
     }
 }
 
-
+extension DetailVC {
+    private func configureDetailVCUI() {
+        //최초UI 구성
+        self.view.backgroundColor = .white
+        
+        self.view.addSubviews(self.detailCollectionView, self.detailVCTopView)
+        
+        self.detailVCTopView.snp.makeConstraints {
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(10)
+            $0.leading.trailing.equalToSuperview()
+            // ❗️비율로 수정해야 함❗️
+            $0.height.equalTo(140)
+        }
+        
+        self.detailCollectionView.snp.makeConstraints {
+            $0.top.equalTo(self.detailVCTopView.snp.bottom).offset(10)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+    }
+    
+    private func configureTopView() {
+        self.myViewModel.getDetailVCTopViewData { currentTemp, highTemp, lowTemp in
+            DispatchQueue.main.async {
+                self.detailVCTopView.tempLabel.text = currentTemp
+                self.detailVCTopView.highestTempLabel.text = highTemp
+                self.detailVCTopView.lowestTempLabel.text = lowTemp
+            }
+        }
+    }
+    
+    private func settingFlowLayout() {
+        self.detailVCFlowLayout.scrollDirection = .vertical
+        self.detailVCFlowLayout.sectionHeadersPinToVisibleBounds = true
+    }
+    
+    func configureNavButton() {
+        self.navigationItem.leftBarButtonItem = cancelButton
+        self.navigationItem.rightBarButtonItem = addButton
+    }
+}
 

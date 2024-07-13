@@ -20,7 +20,7 @@ final class WeatherCell: UITableViewCell {
         $0.contentMode = .scaleAspectFill
     }
     
-    private lazy var tempLabel = UILabel().then {
+    private lazy var currentTempLabel = UILabel().then {
         $0.numberOfLines = 0
         $0.text = "20"
         $0.font = UIFont.neoDeungeul(size: 47)
@@ -31,7 +31,7 @@ final class WeatherCell: UITableViewCell {
         $0.font = UIFont.neoDeungeul(size: 63)
     }
     
-    private lazy var addressLabel = UILabel().then {
+    private lazy var locationAddressLabel = UILabel().then {
         $0.text = "죽전동, 용인시, 대한민국"
         $0.font = UIFont.neoDeungeul(size: 14)
     }
@@ -43,7 +43,7 @@ final class WeatherCell: UITableViewCell {
     lazy var indexPath: Int = 0 {
         didSet {
             let myData = self.myViewModel.getMyDatas()[indexPath]
-            self.configureUIWithData(myData)
+            self.configureWeatherCellUIWithData(myData)
         }
     }
     
@@ -55,14 +55,14 @@ final class WeatherCell: UITableViewCell {
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        self.configureUI()
+        self.configureWeatherCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     
 //MARK: - Helpers
-    private func configureUIWithData(_ myData: [String: CLLocation]) {
+    private func configureWeatherCellUIWithData(_ myData: [String: CLLocation]) {
         
         guard let location = myData.values.first,
               let title = myData.keys.first else { return }
@@ -72,9 +72,9 @@ final class WeatherCell: UITableViewCell {
         myViewModel.didFetchCurrentWeather = {
             if let currentWeather = self.myViewModel.getCurrentWeather() {
                 DispatchQueue.main.async {
-                    self.tempLabel.text = String(round(currentWeather.temperature.value))
+                    self.currentTempLabel.text = String(round(currentWeather.temperature.value))
                     self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
-                    self.addressLabel.text = title
+                    self.locationAddressLabel.text = title
                 }
             }
         }
@@ -82,12 +82,12 @@ final class WeatherCell: UITableViewCell {
 }
 
 extension WeatherCell {
-    private func configureUI() {
+    private func configureWeatherCellUI() {
         self.contentView.addSubview(self.baseView)
         self.contentView.snp.makeConstraints{$0.edges.equalToSuperview()}
         
-        self.baseView.addSubviews(self.tempLabel,
-                                  self.addressLabel,
+        self.baseView.addSubviews(self.currentTempLabel,
+                                  self.locationAddressLabel,
                                   self.celsiusLabel,
                                   self.weatherImageView,
                                   self.animalImageView)
@@ -99,20 +99,20 @@ extension WeatherCell {
             $0.bottom.equalToSuperview().inset(15)
         }
         
-        self.tempLabel.snp.makeConstraints {
+        self.currentTempLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(30)
         }
         
-        self.addressLabel.snp.makeConstraints {
-            $0.leading.equalTo(tempLabel.snp.leading)
+        self.locationAddressLabel.snp.makeConstraints {
+            $0.leading.equalTo(currentTempLabel.snp.leading)
             $0.bottom.equalToSuperview().offset(-5)
             
         }
         
         self.celsiusLabel.snp.makeConstraints {
-            $0.top.equalTo(tempLabel.snp.top).offset(3)
-            $0.leading.equalTo(tempLabel.snp.trailing).inset(3)
+            $0.top.equalTo(currentTempLabel.snp.top).offset(3)
+            $0.leading.equalTo(currentTempLabel.snp.trailing).inset(3)
             
         }
         

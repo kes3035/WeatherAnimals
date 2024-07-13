@@ -27,8 +27,8 @@ final class MainVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.weatherViewModel.creatLocation()
-        self.configureUI()                              //UI결정
-        self.settingNav()                               //Nav세팅
+        self.configureMainVCUI()                              //UI결정
+        self.settingMainVCNav()                               //Nav세팅
         self.settingTV()                                //TableView세팅
 //        self.settingLocation()                          //사용자 위치 세팅
     }
@@ -85,18 +85,15 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
 }
 
 extension MainVC {
-    
     // UI설정
-    private func configureUI() {
+    private func configureMainVCUI() {
         self.view.backgroundColor = .white
-        self.view.addSubview(mainTableView)
-        self.mainTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
+        self.view.addSubview(self.mainTableView)
+        self.mainTableView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
     
     // NavigationController 설정
-    private func settingNav() {
+    private func settingMainVCNav() {
 
         let navTitleAttributes = [ NSAttributedString.Key.font: UIFont(name: "NeoDunggeunmoPro-Regular", size: 34.0)!]
         let navTitleAttributedStr = NSAttributedString(string: "날씨보개", attributes: navTitleAttributes)

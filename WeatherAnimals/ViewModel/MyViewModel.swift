@@ -8,6 +8,8 @@
 import UIKit
 import WeatherKit
 import CoreLocation
+import CoreData
+
 
 // 통합 뷰모델
 final class MyViewModel {
@@ -15,7 +17,7 @@ final class MyViewModel {
     // 코어데이터 저장하는 변수
     private var myCoreDatas: [MyData]? {
         didSet {
-            print("myCoreDatas: [MyData] count == \(myCoreDatas?.count)")
+            print("myCoreDatas: [MyData] count == \(String(describing: myCoreDatas?.count))")
         }
     }
     
@@ -40,6 +42,8 @@ final class MyViewModel {
     }
     
     private var currentWeather: CurrentWeather?
+    
+    private var dayWeathers: [DayWeather]?
     
     private var hourlyWeathers: [HourWeather]?
     
@@ -113,7 +117,33 @@ final class MyViewModel {
         }
     }
     
-//    
+    func setValue(_ viewModel: WeatherViewModel) {
+        DispatchQueue.main.async {
+            guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+            
+            let context = sceneDelegate.persistentContainer.viewContext
+            
+            let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context)
+            
+            if let entity = entity {
+                guard let title = viewModel.title else { return }
+                let myData = NSManagedObject(entity: entity, insertInto: context)
+                myData.setValue(viewModel.location?.coordinate.latitude, forKey: "latitude")
+                myData.setValue(viewModel.location?.coordinate.longitude, forKey: "longitude")
+                myData.setValue(title, forKey: "title")
+                do {
+                    try context.save()
+                } catch {
+                    print(error.localizedDescription)
+                }
+                
+            }
+        }
+    }
+    
+    
+    
+//
 //    func getHourlyWeather(location: CLLocation, completion: @escaping(([HourWeather])->())) {
 //        do {
 //            let hourWeathers = try await WeatherService.shared.weather(for: location, including: .hourly)
@@ -154,4 +184,15 @@ final class MyViewModel {
     func makeUserLocation(with location: CLLocation?) {
         self.userLocation = location
     }
+    
+    func getDetailVCTopViewData(completionHandler: @escaping((String, String, String)->())) {
+        guard let dayWeathers = self.dayWeathers,
+              let current = self.currentWeather else { completionHandler("0°", "최고 : 0°", "최저 : 0°"); return }
+        let currentTemp = String(round(current.temperature.value)) +  "°"
+        let highestTemp = "최고 : " + String(round(dayWeathers[0].highTemperature.value)) +  "°"
+        let lowestTemp = "최저 : " + String(round(dayWeathers[0].lowTemperature.value)) +  "°"
+        completionHandler(currentTemp, highestTemp, lowestTemp)
+    }
+    
+    
 }

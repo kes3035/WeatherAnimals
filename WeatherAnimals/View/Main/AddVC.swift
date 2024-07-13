@@ -8,10 +8,10 @@ final class AddVC: UIViewController {
     private var searchCompleter = MKLocalSearchCompleter()
     
     //특정 위도와 경도를 중심으로 한 직사각형 지리적 영역
-    private var searchRegion: MKCoordinateRegion = MKCoordinateRegion(MKMapRect.world)
+    private var searchRegionBasedLatLong: MKCoordinateRegion = MKCoordinateRegion(MKMapRect.world)
     
     //검색된 결과를 담는 배열
-    private var searchResults = [MKLocalSearchCompletion]()
+    private var searchResultsArr = [MKLocalSearchCompletion]()
     
     //검색된 결과를 표시할 테이블뷰
     private var searchResultTableView = UITableView()
@@ -31,10 +31,12 @@ final class AddVC: UIViewController {
     
     private lazy var weatherViewModel = WeatherViewModel()
     
+    private lazy var myViewModel = MyViewModel()
+    
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
+        configureAddVCUI()
         settingNav()
         settingSearchResultTableView()
         settingSearchCompleter()
@@ -45,53 +47,14 @@ final class AddVC: UIViewController {
 //         super.viewWillAppear(animated)
 //         self.navigationItem.hidesBackButton = true
 //    }
-    
-    //MARK: - Helpers
-    private func configureUI() {
-        self.view.backgroundColor = .white
-        self.view.addSubview(self.searchResultTableView)
-        self.searchResultTableView.snp.makeConstraints {
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
-    }
-    
-    private func settingSearchController() {
-        self.searchController.searchResultsUpdater = self
-        self.searchController.obscuresBackgroundDuringPresentation = false
-        self.searchController.searchBar.placeholder = "도시 검색"
-        self.searchController.searchBar.searchTextField.font = UIFont.neoDeungeul(size: 15)
-    
-        navigationItem.searchController = self.searchController
-        definesPresentationContext = true
-    }
-    
-    private func settingSearchResultTableView() {
-        self.searchResultTableView.delegate = self
-        self.searchResultTableView.dataSource = self
-        self.searchResultTableView.rowHeight = 60
-        self.searchResultTableView.register(AddCell.self, forCellReuseIdentifier: "AddCell")
-    }
-    private func settingSearchCompleter() {
-        self.searchCompleter.delegate = self
-        self.searchCompleter.resultTypes = .address
-        self.searchCompleter.region = searchRegion
-    }
-    
-    private func settingNav() {
-        self.navigationItem.title = "지역 검색/추가"
-        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.black, NSAttributedString.Key.font: UIFont.neoDeungeul(size: 32)]
-        self.navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        self.navigationController?.navigationBar.largeTitleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-    }
+        
 }
 
 //MARK: - UITableViewDelegate
 extension AddVC: UITableViewDelegate {
     //tableView의 셀이 선택되었을 때 실행되는 메서드
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedResult = searchResults[indexPath.row]
+        let selectedResult = searchResultsArr[indexPath.row]
         let searchRequest = MKLocalSearch.Request(completion: selectedResult)
         let search = MKLocalSearch(request: searchRequest)
         
@@ -125,12 +88,12 @@ extension AddVC: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        return searchResultsArr.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AddCell", for: indexPath) as! AddCell
-        let searchResult = searchResults[indexPath.row]
+        let searchResult = searchResultsArr[indexPath.row]
         cell.titleLabel.font = UIFont.neoDeungeul(size: 16)
         cell.titleLabel.textColor = .gray
         if let highlightText = searchController.searchBar.text {
@@ -147,7 +110,7 @@ extension AddVC: UITableViewDataSource {
 extension AddVC: MKLocalSearchCompleterDelegate {
 
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        searchResults = completer.results
+        searchResultsArr = completer.results
         searchResultTableView.reloadData()
     }
 
@@ -167,7 +130,7 @@ extension AddVC: UISearchResultsUpdating {
         // searchResults = ... (검색 결과 업데이트)
         // resultTableView.reloadData() (테이블 뷰 다시 로드)
         if searchText.isEmpty {
-            searchResults.removeAll()
+            searchResultsArr.removeAll()
             searchResultTableView.reloadData()
         }
         searchCompleter.queryFragment = searchText
@@ -175,5 +138,44 @@ extension AddVC: UISearchResultsUpdating {
 }
 
 extension AddVC {
+    private func configureAddVCUI() {
+        self.view.backgroundColor = .white
+        self.view.addSubview(self.searchResultTableView)
+        self.searchResultTableView.snp.makeConstraints {
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+    }
     
+    private func settingSearchController() {
+        self.searchController.searchResultsUpdater = self
+        self.searchController.obscuresBackgroundDuringPresentation = false
+        self.searchController.searchBar.placeholder = "도시 검색"
+        self.searchController.searchBar.searchTextField.font = UIFont.neoDeungeul(size: 15)
+    
+        navigationItem.searchController = self.searchController
+        definesPresentationContext = true
+    }
+    
+    private func settingSearchResultTableView() {
+        self.searchResultTableView.delegate = self
+        self.searchResultTableView.dataSource = self
+        self.searchResultTableView.rowHeight = 60
+        self.searchResultTableView.register(AddCell.self, forCellReuseIdentifier: "AddCell")
+    }
+    private func settingSearchCompleter() {
+        self.searchCompleter.delegate = self
+        self.searchCompleter.resultTypes = .address
+        self.searchCompleter.region = searchRegionBasedLatLong
+    }
+    
+    private func settingNav() {
+        self.navigationItem.title = "지역 검색/추가"
+        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.black, NSAttributedString.Key.font: UIFont.neoDeungeul(size: 32)]
+        self.navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
+        self.navigationController?.navigationBar.largeTitleTextAttributes = attributes as [NSAttributedString.Key : Any]
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+    }
 }
+
+
