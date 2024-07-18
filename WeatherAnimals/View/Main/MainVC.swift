@@ -68,6 +68,8 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
+        
+        
         let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
         
         DispatchQueue.global().async {

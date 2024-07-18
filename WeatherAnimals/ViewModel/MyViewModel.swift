@@ -41,6 +41,12 @@ final class MyViewModel {
         }
     }
     
+    private var selectedLocation: CLLocation? {
+        didSet {
+            
+        }
+    }
+    
     private var currentWeather: CurrentWeather?
     
     private var dayWeathers: [DayWeather]?
@@ -50,7 +56,8 @@ final class MyViewModel {
     
     var didFetchCurrentWeather: (()->())?
     
-    
+    // 날씨에 대한 데이터를 받아오는 것이 완료되면 실행되는 클로져
+    var didFetchWeather: (()->())?
     
     // 사용자의 위치 권한 승인 여부를 저장하는 변수
     var locationAuthState: Bool?
@@ -77,6 +84,11 @@ final class MyViewModel {
         }
     }
     
+    func setSelectedLocation(cellForRowAt index: Int) {
+        self.selectedLocation = self.myDatas[index].values.first!
+    }
+    
+    
     func getMyDatas() -> [[String: CLLocation]] {
         return myDatas
     }
@@ -95,6 +107,30 @@ final class MyViewModel {
                 let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
                 self.currentWeather = currentWeather
                 completion(currentWeather)
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func setDayWeathers(location: CLLocation) {
+        Task {
+            do {
+                let dayWeathers = try await WeatherService.shared.weather(for: location, including: .daily).forecast
+                self.dayWeathers = dayWeathers
+                
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func setHourlyWeathers(location: CLLocation) {
+        Task {
+            do {
+                let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly).forecast
+                self.hourlyWeathers = hourlyWeathers
+                
             } catch let error {
                 print(error.localizedDescription)
             }
