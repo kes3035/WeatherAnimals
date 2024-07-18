@@ -47,11 +47,23 @@ final class MyViewModel {
         }
     }
     
-    private var currentWeather: CurrentWeather?
+    private var currentWeather: CurrentWeather? {
+        didSet {
+            print("Debug: CurrentWeather Changed")
+        }
+    }
     
-    private var dayWeathers: [DayWeather]?
+    private var dayWeathers: [DayWeather]? {
+        didSet {
+            print("Debug: DayWeathers Changed")
+        }
+    }
     
-    private var hourlyWeathers: [HourWeather]?
+    private var hourlyWeathers: [HourWeather]? {
+        didSet {
+            print("Debug: HourlyWeathers Changed")
+        }
+    }
     
     
     var didFetchCurrentWeather: (()->())?
@@ -62,12 +74,57 @@ final class MyViewModel {
     // 사용자의 위치 권한 승인 여부를 저장하는 변수
     var locationAuthState: Bool?
     
+    //MARK: - Logics
     
     
+    //MARK: - Getter
+    func getMyDatas() -> [[String: CLLocation]] {
+        return myDatas
+    }
     
+    func getWeatherCellCount() -> Int {
+        return myDatas.count
+    }
     
+    func getWeatherCellData(forRowAt indexPath: Int) -> [String: CLLocation] {
+        return myDatas[indexPath]
+    }
+    
+    func getCurrentWeather() -> CurrentWeather? {
+        return self.currentWeather
+    }
+    
+    func getDataForDetailVCTopView(completionHandler: @escaping((String, String, String)->())) {
+        guard let dayWeathers = self.dayWeathers,
+              let current = self.currentWeather else { completionHandler("", "", ""); return }
+        let currentTemp = String(round(current.temperature.value)) +  "°"
+        let highestTemp = "최고 : " + String(round(dayWeathers[0].highTemperature.value)) +  "°"
+        let lowestTemp = "최저 : " + String(round(dayWeathers[0].lowTemperature.value)) +  "°"
+        completionHandler(currentTemp, highestTemp, lowestTemp)
+    }
+    
+    func getMyLocationTitle(location: CLLocation, completion: @escaping((String) -> ())) {
+        let geocoder = CLGeocoder()
+        let locale = Locale(identifier: "Ko-kr")
+        
+        geocoder.reverseGeocodeLocation(location, preferredLocale: locale, completionHandler: {(placemarks, error) in
+            if let address: [CLPlacemark] = placemarks {
+                var myAdd: String = ""
+                if let area: String = address.last?.locality{
+                    myAdd += area
+                }
+                if let country: String = address.last?.country {
+                    myAdd += ", "
+                    myAdd += country
+                }
+                completion(myAdd)
+            }
+        })
+    }
+    
+    //MARK: - Setter
     // 사용할 데이터(지역명, 위치)를 인덱스에 따라 배열로 생성하는 함수
-    func makeMyDatas() {
+    func setMyDatas() {
         guard let myCoreDatas = self.myCoreDatas else { return }
         
         let emptyArr: [[String: CLLocation]] = Array(repeating: ["":CLLocation()], count: myCoreDatas.count)
@@ -84,21 +141,27 @@ final class MyViewModel {
         }
     }
     
+    
     func setSelectedLocation(cellForRowAt index: Int) {
         self.selectedLocation = self.myDatas[index].values.first!
     }
     
-    
-    func getMyDatas() -> [[String: CLLocation]] {
-        return myDatas
-    }
-    
-    func getWeatherCellCount() -> Int {
-        return myDatas.count
-    }
-    
-    func getWeatherCellData(forRowAt indexPath: Int) -> [String: CLLocation] {
-        return myDatas[indexPath]
+    func setWeatherDataForDetailVC() {
+        guard let selectedLocation = self.selectedLocation else { 
+            print("Failed: setWeatherDataForDetailVC, Failed to unwrap selectedLocation")
+            return
+        }
+        Task {
+            do {
+                let weatherDataForDetailVC = try await WeatherService.shared.weather(for: selectedLocation, including: .current, .daily, .hourly)
+                self.currentWeather = weatherDataForDetailVC.0
+                self.dayWeathers = weatherDataForDetailVC.1.forecast
+                self.hourlyWeathers = weatherDataForDetailVC.2.forecast
+                self.didFetchWeather?()
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }
     }
     
     func setCurrentWeather(location: CLLocation, completion: @escaping(CurrentWeather)->()) {
@@ -107,6 +170,17 @@ final class MyViewModel {
                 let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
                 self.currentWeather = currentWeather
                 completion(currentWeather)
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func setCurrentWeather(location: CLLocation) {
+        Task {
+            do {
+                let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
+                self.currentWeather = currentWeather
             } catch let error {
                 print(error.localizedDescription)
             }
@@ -137,21 +211,6 @@ final class MyViewModel {
         }
     }
     
-    func getCurrentWeather() -> CurrentWeather? {
-        return self.currentWeather
-    }
-    
-    func setCurrentWeather(location: CLLocation) {
-        Task {
-            do {
-                let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
-                self.currentWeather = currentWeather
-                self.didFetchCurrentWeather?()
-            } catch let error {
-                print(error.localizedDescription)
-            }
-        }
-    }
     
     func setValue(_ viewModel: WeatherViewModel) {
         DispatchQueue.main.async {
@@ -191,43 +250,17 @@ final class MyViewModel {
 //    
     
     
-    func getMyLocationTitle(location: CLLocation, completion: @escaping((String) -> ())) {
-        let geocoder = CLGeocoder()
-        let locale = Locale(identifier: "Ko-kr")
-        
-        geocoder.reverseGeocodeLocation(location, preferredLocale: locale, completionHandler: {(placemarks, error) in
-            if let address: [CLPlacemark] = placemarks {
-                var myAdd: String = ""
-                if let area: String = address.last?.locality{
-                    myAdd += area
-                }
-                if let country: String = address.last?.country {
-                    myAdd += ", "
-                    myAdd += country
-                }
-                completion(myAdd)
-            }
-        })
-    }
+    
     
     
     func makeCoreDatas(with coreDatas: [MyData]?) {
         self.myCoreDatas = coreDatas
-        makeMyDatas()
+        setMyDatas()
     }
     
     
     func makeUserLocation(with location: CLLocation?) {
         self.userLocation = location
-    }
-    
-    func getDetailVCTopViewData(completionHandler: @escaping((String, String, String)->())) {
-        guard let dayWeathers = self.dayWeathers,
-              let current = self.currentWeather else { completionHandler("0°", "최고 : 0°", "최저 : 0°"); return }
-        let currentTemp = String(round(current.temperature.value)) +  "°"
-        let highestTemp = "최고 : " + String(round(dayWeathers[0].highTemperature.value)) +  "°"
-        let lowestTemp = "최저 : " + String(round(dayWeathers[0].lowTemperature.value)) +  "°"
-        completionHandler(currentTemp, highestTemp, lowestTemp)
     }
     
     

@@ -68,21 +68,30 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
+        self.myViewModel.setSelectedLocation(cellForRowAt: indexPath.row)
+        self.myViewModel.setWeatherDataForDetailVC()
         
+//        let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
         
-        let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
-        
-        DispatchQueue.global().async {
-            self.weatherViewModel.getDetailVCWeather(location: location) { [weak self] weatherViewModel in
-                DispatchQueue.main.async {
-                    let detailVC = DetailVC()
-                    detailVC.weatherViewModel = weatherViewModel
-                    detailVC.hidesBottomBarWhenPushed = true
-                    self?.navigationController?.pushViewController(detailVC, animated: true)
-                }
+        self.myViewModel.didFetchWeather = {
+            DispatchQueue.main.async {
+                let detailVC = DetailVC()
+                detailVC.myViewModel = self.myViewModel
+                detailVC.hidesBottomBarWhenPushed = true
+                self.navigationController?.pushViewController(detailVC, animated: true)
             }
-            
         }
+//        DispatchQueue.global().async {
+//            self.weatherViewModel.getDetailVCWeather(location: location) { [weak self] weatherViewModel in
+//                DispatchQueue.main.async {
+//                    let detailVC = DetailVC()
+//                    detailVC.weatherViewModel = weatherViewModel
+//                    detailVC.hidesBottomBarWhenPushed = true
+//                    self?.navigationController?.pushViewController(detailVC, animated: true)
+//                }
+//            }
+//            
+//        }
     }
 }
 
