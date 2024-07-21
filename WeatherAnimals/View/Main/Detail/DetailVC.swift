@@ -27,12 +27,17 @@ final class DetailVC: UIViewController {
         
     }
     
-    private lazy var cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(buttonTapped(_:)))
+    private lazy var cancelButton = UIBarButtonItem(title: "취소", 
+                                                    style: .plain,
+                                                    target: self,
+                                                    action: #selector(buttonTapped(_:)))
     
-    private lazy var addButton = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(buttonTapped(_:)))
+    private lazy var addButton = UIBarButtonItem(title: "추가", 
+                                                 style: .plain,
+                                                 target: self,
+                                                 action: #selector(buttonTapped(_:)))
     
     
-    // 뷰모델
     lazy var weatherViewModel = WeatherViewModel() {
         didSet {
             DispatchQueue.main.async {
@@ -65,8 +70,6 @@ final class DetailVC: UIViewController {
         case "취소":
             self.dismiss(animated: true)
         case "추가":
-            //self.weatherViewModel.setValue(self.weatherViewModel)
-//            self.myViewModel.addWeatherModelIntoLocal(self.weatherViewModel)
             self.myViewModel.addWeatherModelIntoLocal()
             self.dismiss(animated: true)
         default:
@@ -96,40 +99,31 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         switch indexPath.section {
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
-            
             cell.weatherViewModel = self.weatherViewModel
-            
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
-            
             cell.weatherViewModel = self.weatherViewModel
-            
             cell.tenDaysTempView.rowHeight = self.detailCollectionView.frame.height/14.5
             return cell
         case 2:
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
-                
                 cell.weatherViewModel = self.weatherViewModel
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
-                
                 cell.weatherViewModel = self.weatherViewModel
                 return cell
             }
         case 3:
             if indexPath.row == 0 {
-                
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
                 cell.weatherViewModel = self.weatherViewModel
-                
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
                 cell.weatherViewModel = self.weatherViewModel
-                
                 return cell
             }
         case 4:

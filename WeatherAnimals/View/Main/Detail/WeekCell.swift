@@ -8,17 +8,24 @@ import WeatherKit
 final class WeekCell: UICollectionViewCell {
     static let identifier = "WeekCell"
     //MARK: - Properties
-    lazy var tenDaysTempView = UITableView().then {
+    private lazy var tenDaysTempView = UITableView().then {
         $0.delegate = self
         $0.dataSource = self
         $0.isScrollEnabled = false
         $0.register(WeekWeatherCell.self, forCellReuseIdentifier: WeekWeatherCell.identifier)
         $0.backgroundColor = UIColor(named: "background")
         $0.separatorStyle = .none
-        
     }
     
     var weatherViewModel = WeatherViewModel() {
+        didSet {
+            DispatchQueue.main.async {
+                self.tenDaysTempView.reloadData()
+            }
+        }
+    }
+    
+    lazy var myViewModel = MyViewModel() {
         didSet {
             DispatchQueue.main.async {
                 self.tenDaysTempView.reloadData()
@@ -30,17 +37,17 @@ final class WeekCell: UICollectionViewCell {
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.configureUI()
+        self.configureWeekCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     //MARK: - Helpers
     
-    private func configureUI() {
+    private func configureWeekCellUI() {
         self.backgroundColor = .white
-        self.contentView.addSubview(tenDaysTempView)
-        self.tenDaysTempView.snp.makeConstraints { 
+        self.contentView.addSubview(self.tenDaysTempView)
+        self.tenDaysTempView.snp.makeConstraints {
             $0.leading.equalToSuperview()
             $0.trailing.bottom.equalToSuperview()
             $0.top.equalToSuperview()
@@ -58,9 +65,7 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeekWeatherCell.identifier, for: indexPath) as! WeekWeatherCell
-        
-//        guard let dayWeathers = self.weatherViewModel.dayWeathers else { return cell }
-        
+                
         self.weatherViewModel.getTempViewConstraints(row: indexPath.row)
         
         cell.configureUIWithData(row: indexPath.row, viewModel: self.weatherViewModel)

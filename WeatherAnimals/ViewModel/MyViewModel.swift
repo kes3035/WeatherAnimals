@@ -96,6 +96,14 @@ final class MyViewModel {
         return self.currentWeather
     }
     
+    func getHourlyWeathers() -> [HourWeather]? {
+        return self.hourlyWeathers
+    }
+    
+    func getDailyWeathers() -> [DayWeather]? {
+        return self.dayWeathers
+    }
+    
     func getDataForDetailVCTopView(completionHandler: @escaping((String, String, String)->())) {
         guard let dayWeathers = self.dayWeathers,
               let current = self.currentWeather else { completionHandler("", "", ""); return }
@@ -217,27 +225,6 @@ final class MyViewModel {
     }
     
     
-    func addWeatherModelIntoLocal(_ viewModel: WeatherViewModel) {
-        DispatchQueue.main.async {
-            guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
-            let context = sceneDelegate.persistentContainer.viewContext
-            guard let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context) else { return }
-            
-            guard let title = viewModel.title else { return }
-            let myData = NSManagedObject(entity: entity, insertInto: context)
-            myData.setValue(viewModel.location?.coordinate.latitude, forKey: "latitude")
-            myData.setValue(viewModel.location?.coordinate.longitude, forKey: "longitude")
-            myData.setValue(title, forKey: "title")
-            do {
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
-            
-            
-        }
-    }
-    
     func addWeatherModelIntoLocal() {
         DispatchQueue.main.async {
             guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
@@ -251,7 +238,7 @@ final class MyViewModel {
             myData.setValue(location.coordinate.latitude, forKey: "latitude")
             myData.setValue(location.coordinate.longitude, forKey: "longitude")
             myData.setValue(locationTitle, forKey: "title")
-            myData.setValue(indexOfSelectedCell, forKey: "index")
+            myData.setValue(Int16(indexOfSelectedCell), forKey: "index")
             do {
                 try context.save()
             } catch {

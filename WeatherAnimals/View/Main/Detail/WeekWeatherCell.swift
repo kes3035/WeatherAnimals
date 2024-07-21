@@ -62,14 +62,42 @@ final class WeekWeatherCell: UITableViewCell {
     //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        self.configureUI()
+        self.configureWeekWeatherCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-    
-    
     //MARK: - Helpers
-    private func configureUI() {
+    func configureUIWithData(row: Int, viewModel: WeatherViewModel) {
+
+        guard let dayWeathers = viewModel.dayWeathers,
+        let tempViewConstraints = viewModel.tempViewConstraints else { return }
+        
+        let dayWeather = dayWeathers[row]
+        
+        
+        DispatchQueue.main.async {
+            
+            self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
+            self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
+            self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
+            
+            if dayWeather.precipitationChance.magnitude >= 2.0  {
+                self.rainFall.text = String(Int(round(dayWeather.precipitationChance.magnitude))) + "%"
+            }
+            
+            self.tempView.snp.remakeConstraints {
+                $0.top.bottom.equalToSuperview()
+                $0.leading.equalToSuperview().offset(tempViewConstraints[0]*86.333333)
+                $0.width.equalTo(tempViewConstraints[1]*86.333333)
+            }
+        }
+    }
+}
+
+
+
+extension WeekWeatherCell {
+    private func configureWeekWeatherCellUI() {
         
         self.contentView.backgroundColor = UIColor(named: "background")
         
@@ -125,33 +153,4 @@ final class WeekWeatherCell: UITableViewCell {
         }
             
     }
-    
-    func configureUIWithData(row: Int, viewModel: WeatherViewModel) {
-
-        guard let dayWeathers = viewModel.dayWeathers,
-        let tempViewConstraints = viewModel.tempViewConstraints else { return }
-        
-        let dayWeather = dayWeathers[row]
-        
-        
-        DispatchQueue.main.async {
-            
-            self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
-            self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
-            self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
-            
-            if dayWeather.precipitationChance.magnitude >= 2.0  {
-                self.rainFall.text = String(Int(round(dayWeather.precipitationChance.magnitude))) + "%"
-            }
-            
-            self.tempView.snp.remakeConstraints {
-                $0.top.bottom.equalToSuperview()
-                $0.leading.equalToSuperview().offset(tempViewConstraints[0]*86.333333)
-                $0.width.equalTo(tempViewConstraints[1]*86.333333)
-            }
-        }
-    }
 }
-
-
-

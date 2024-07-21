@@ -4,9 +4,9 @@ import WeatherKit
 final class HourCell: UICollectionViewCell {
     static let identifier = "HourCell"
     //MARK: - Properties
-    private let flowLayout = UICollectionViewFlowLayout()
+    private let hourCellCVFlowLayout = UICollectionViewFlowLayout()
 
-    private lazy var hourCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout).then {
+    private lazy var hourCellCV = UICollectionView(frame: .zero, collectionViewLayout: hourCellCVFlowLayout).then {
         $0.delegate = self
         $0.dataSource = self
         $0.backgroundColor = UIColor(named: "background")
@@ -18,10 +18,19 @@ final class HourCell: UICollectionViewCell {
     lazy var weatherViewModel = WeatherViewModel() {
         didSet {
             DispatchQueue.main.async {
-                self.hourCollectionView.reloadData()
+                self.hourCellCV.reloadData()
             }
         }
     }
+    
+    lazy var myViewModel = MyViewModel() {
+        didSet {
+            DispatchQueue.main.async {
+                self.hourCellCV.reloadData()
+            }
+        }
+    }
+    
  
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -35,9 +44,9 @@ final class HourCell: UICollectionViewCell {
     //MARK: - Helpers
     private func configureUI() {
         self.contentView.backgroundColor = .clear
-        self.contentView.addSubview(hourCollectionView)
+        self.contentView.addSubview(hourCellCV)
         self.contentView.snp.makeConstraints { $0.edges.equalToSuperview() }
-        self.hourCollectionView.snp.makeConstraints {
+        self.hourCellCV.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().inset(5)
             $0.leading.equalToSuperview()
@@ -46,8 +55,8 @@ final class HourCell: UICollectionViewCell {
     }
     
     private func settingFlowLayout() {
-        self.flowLayout.scrollDirection = .horizontal
-        self.flowLayout.sectionHeadersPinToVisibleBounds = true
+        self.hourCellCVFlowLayout.scrollDirection = .horizontal
+        self.hourCellCVFlowLayout.sectionHeadersPinToVisibleBounds = true
     }
 }
 
@@ -55,7 +64,6 @@ final class HourCell: UICollectionViewCell {
 //MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-
         return 10
     }
     
@@ -63,15 +71,12 @@ extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
         return 1
     }
     
-    
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourWeatherCell.identifier, for: indexPath) as! HourWeatherCell
         
-        guard let hourWeathers = self.weatherViewModel.hourWeathers else { return cell }
+        guard let hourlyWeathers = self.myViewModel.getHourlyWeathers() else { return cell }
         
-        
-        cell.hourWeather = hourWeathers[indexPath.row]
+        cell.hourWeather = hourlyWeathers[indexPath.row]
         
         return cell
     }
