@@ -58,8 +58,6 @@ final class DetailVC: UIViewController {
     }
     
     //MARK: - Helpers
-    
-    
     @objc func buttonTapped(_ sender: UIBarButtonItem) {
         guard let titleLabel = sender.title else { return }
         
@@ -67,7 +65,9 @@ final class DetailVC: UIViewController {
         case "취소":
             self.dismiss(animated: true)
         case "추가":
-            self.weatherViewModel.setValue(self.weatherViewModel)
+            //self.weatherViewModel.setValue(self.weatherViewModel)
+//            self.myViewModel.addWeatherModelIntoLocal(self.weatherViewModel)
+            self.myViewModel.addWeatherModelIntoLocal()
             self.dismiss(animated: true)
         default:
             break

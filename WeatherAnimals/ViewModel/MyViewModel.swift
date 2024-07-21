@@ -41,6 +41,8 @@ final class MyViewModel {
         }
     }
     
+    private var indexOfSelectedCell: Int?
+    
     private var selectedLocation: CLLocation? {
         didSet {
             
@@ -141,9 +143,12 @@ final class MyViewModel {
         }
     }
     
+    func setSelectedCellIndex(cellForRowAt indexPath: IndexPath) {
+        self.indexOfSelectedCell = indexPath.row
+    }
     
-    func setSelectedLocation(cellForRowAt index: Int) {
-        self.selectedLocation = self.myDatas[index].values.first!
+    func setSelectedLocation(cellForRowAt indexPath: IndexPath) {
+        self.selectedLocation = self.myDatas[indexPath.row].values.first!
     }
     
     func setWeatherDataForDetailVC() {
@@ -212,27 +217,48 @@ final class MyViewModel {
     }
     
     
-    func setValue(_ viewModel: WeatherViewModel) {
+    func addWeatherModelIntoLocal(_ viewModel: WeatherViewModel) {
         DispatchQueue.main.async {
             guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
-            
             let context = sceneDelegate.persistentContainer.viewContext
+            guard let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context) else { return }
             
-            let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context)
-            
-            if let entity = entity {
-                guard let title = viewModel.title else { return }
-                let myData = NSManagedObject(entity: entity, insertInto: context)
-                myData.setValue(viewModel.location?.coordinate.latitude, forKey: "latitude")
-                myData.setValue(viewModel.location?.coordinate.longitude, forKey: "longitude")
-                myData.setValue(title, forKey: "title")
-                do {
-                    try context.save()
-                } catch {
-                    print(error.localizedDescription)
-                }
-                
+            guard let title = viewModel.title else { return }
+            let myData = NSManagedObject(entity: entity, insertInto: context)
+            myData.setValue(viewModel.location?.coordinate.latitude, forKey: "latitude")
+            myData.setValue(viewModel.location?.coordinate.longitude, forKey: "longitude")
+            myData.setValue(title, forKey: "title")
+            do {
+                try context.save()
+            } catch {
+                print(error.localizedDescription)
             }
+            
+            
+        }
+    }
+    
+    func addWeatherModelIntoLocal() {
+        DispatchQueue.main.async {
+            guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+            let context = sceneDelegate.persistentContainer.viewContext
+            guard let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context),
+                  let indexOfSelectedCell = self.indexOfSelectedCell,
+                  let locationTitle = self.myDatas[indexOfSelectedCell].keys.first,
+                  let location = self.myDatas[indexOfSelectedCell].values.first else { return }
+            
+            let myData = NSManagedObject(entity: entity, insertInto: context)
+            myData.setValue(location.coordinate.latitude, forKey: "latitude")
+            myData.setValue(location.coordinate.longitude, forKey: "longitude")
+            myData.setValue(locationTitle, forKey: "title")
+            myData.setValue(indexOfSelectedCell, forKey: "index")
+            do {
+                try context.save()
+            } catch {
+                print(error.localizedDescription)
+            }
+            
+            
         }
     }
     

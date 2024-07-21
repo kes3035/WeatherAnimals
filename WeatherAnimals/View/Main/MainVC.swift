@@ -68,10 +68,12 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        self.myViewModel.setSelectedLocation(cellForRowAt: indexPath.row)
+        self.myViewModel.setSelectedCellIndex(cellForRowAt: indexPath)
+        
+        self.myViewModel.setSelectedLocation(cellForRowAt: indexPath)
+        
         self.myViewModel.setWeatherDataForDetailVC()
         
-//        let location = self.weatherViewModel.creatLocation(cellForRowAt: indexPath.row)
         
         self.myViewModel.didFetchWeather = {
             DispatchQueue.main.async {
