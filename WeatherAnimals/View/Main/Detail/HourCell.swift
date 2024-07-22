@@ -14,14 +14,7 @@ final class HourCell: UICollectionViewCell {
         $0.showsHorizontalScrollIndicator = false
         $0.register(HourWeatherCell.self, forCellWithReuseIdentifier: HourWeatherCell.identifier)
     }
-    
-    lazy var weatherViewModel = WeatherViewModel() {
-        didSet {
-            DispatchQueue.main.async {
-                self.hourCellCV.reloadData()
-            }
-        }
-    }
+ 
     
     lazy var myViewModel = MyViewModel() {
         didSet {

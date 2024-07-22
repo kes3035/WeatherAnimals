@@ -8,7 +8,7 @@ import WeatherKit
 final class WeekCell: UICollectionViewCell {
     static let identifier = "WeekCell"
     //MARK: - Properties
-    private lazy var tenDaysTempView = UITableView().then {
+    lazy var tenDaysTempView = UITableView().then {
         $0.delegate = self
         $0.dataSource = self
         $0.isScrollEnabled = false
@@ -17,13 +17,13 @@ final class WeekCell: UICollectionViewCell {
         $0.separatorStyle = .none
     }
     
-    var weatherViewModel = WeatherViewModel() {
-        didSet {
-            DispatchQueue.main.async {
-                self.tenDaysTempView.reloadData()
-            }
-        }
-    }
+//    var weatherViewModel = WeatherViewModel() {
+//        didSet {
+//            DispatchQueue.main.async {
+//                self.tenDaysTempView.reloadData()
+//            }
+//        }
+//    }
     
     lazy var myViewModel = MyViewModel() {
         didSet {
@@ -54,6 +54,37 @@ final class WeekCell: UICollectionViewCell {
         }
     }
     
+    private func getTempViewConstraints(index: Int) -> (Double, Double) {
+        guard let dayWeathers = self.myViewModel.getDailyWeathers() else { return (0.0, 0.0) }
+        let maxTemp = dayWeathers.map { round($0.highTemperature.value) }.max() ?? 0.0
+        let minTemp = dayWeathers.map { round($0.lowTemperature.value) }.min() ?? 0.0
+        
+        let myLow = round(dayWeathers[index].lowTemperature.value)
+        let myHigh = round(dayWeathers[index].highTemperature.value)
+
+        let leading = (myLow-minTemp)/(maxTemp-minTemp)
+        let width = (myHigh-myLow)/(maxTemp-minTemp)
+        
+        return (leading, width)
+    }
+    
+    private func getDayOfWeeks(from startDate: Date = Date(), to endDate: Date? = nil) -> [String] {
+        let calendar = Calendar.current
+        var currentDate = startDate
+        var dayOfWeeks: [String] = []
+        
+        while currentDate <= (endDate ?? calendar.date(byAdding: .day, value: 9, to: startDate)!) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEEEEE"
+            formatter.locale = Locale(identifier: "ko_KR")
+            let dayOfWeek = formatter.string(from: currentDate)
+            dayOfWeeks.append(dayOfWeek)
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+        }
+        
+        return dayOfWeeks
+    }
+    
 }
 
 
@@ -65,21 +96,17 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeekWeatherCell.identifier, for: indexPath) as! WeekWeatherCell
-                
-        self.weatherViewModel.getTempViewConstraints(row: indexPath.row)
         
-        cell.configureUIWithData(row: indexPath.row, viewModel: self.weatherViewModel)
+        guard let dayWeathers = self.myViewModel.getDailyWeathers() else { return cell }
         
-//        cell.dayWeather = dayWeathers[indexPath.row]
+        cell.tempViewConstraints = self.getTempViewConstraints(index: indexPath.row)
+        
+        cell.dayWeather = dayWeathers[indexPath.row]
 
         if indexPath.row == 0 {
-            
             cell.weekdaysTitleLabel.text = "오늘"
-            
         } else {
-            
-            cell.weekdaysTitleLabel.text = self.weatherViewModel.getDayOfWeeks(from: Date())[indexPath.row]
-            
+            cell.weekdaysTitleLabel.text = self.getDayOfWeeks(from: Date())[indexPath.row]
         }
         
         return cell

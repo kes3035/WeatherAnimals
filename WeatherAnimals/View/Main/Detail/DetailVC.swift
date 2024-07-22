@@ -99,11 +99,11 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         switch indexPath.section {
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
-            cell.weatherViewModel = self.weatherViewModel
+            cell.myViewModel = self.myViewModel
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
-            cell.weatherViewModel = self.weatherViewModel
+            cell.myViewModel = self.myViewModel
             cell.tenDaysTempView.rowHeight = self.detailCollectionView.frame.height/14.5
             return cell
         case 2:

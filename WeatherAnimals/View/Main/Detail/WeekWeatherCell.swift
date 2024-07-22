@@ -8,7 +8,6 @@
 import UIKit
 import WeatherKit
 
-
 final class WeekWeatherCell: UITableViewCell {
     static let identifier = "WeekWeatherCell"
     //MARK: - Properties
@@ -52,10 +51,14 @@ final class WeekWeatherCell: UITableViewCell {
     private lazy var customSeparator = UIView().then {
         $0.backgroundColor = UIColor(named: "black")
     }
+        
+    var tempViewConstraints: (Double, Double)?
     
-    var tempViewConstraints: [Double]?
-    
-    var dayWeather: DayWeather?
+    var dayWeather: DayWeather? {
+        didSet {
+            self.configureUIWithData()
+        }
+    }
     
     
     
@@ -67,16 +70,11 @@ final class WeekWeatherCell: UITableViewCell {
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
-    func configureUIWithData(row: Int, viewModel: WeatherViewModel) {
-
-        guard let dayWeathers = viewModel.dayWeathers,
-        let tempViewConstraints = viewModel.tempViewConstraints else { return }
-        
-        let dayWeather = dayWeathers[row]
-        
+    func configureUIWithData() {
+        guard let dayWeather = self.dayWeather,
+              let (leading, width) = self.tempViewConstraints else { return }
         
         DispatchQueue.main.async {
-            
             self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
             self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
             self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
@@ -87,8 +85,8 @@ final class WeekWeatherCell: UITableViewCell {
             
             self.tempView.snp.remakeConstraints {
                 $0.top.bottom.equalToSuperview()
-                $0.leading.equalToSuperview().offset(tempViewConstraints[0]*86.333333)
-                $0.width.equalTo(tempViewConstraints[1]*86.333333)
+                $0.leading.equalToSuperview().offset(leading*86.333333)
+                $0.width.equalTo(width*86.333333)
             }
         }
     }
