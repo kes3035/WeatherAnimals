@@ -15,17 +15,9 @@ import CoreData
 final class MyViewModel {
     
     // 코어데이터 저장하는 변수
-    private var myCoreDatas: [MyData]? {
-        didSet {
-            print("myCoreDatas: [MyData] count == \(String(describing: myCoreDatas?.count))")
-        }
-    }
+    private var myCoreDatas: [MyData]?
     
-    private lazy var myDatas: [[String: CLLocation]] = [] {
-        didSet {
-            print("myDatas: [[String: CLLocation]] count == \(myDatas.count)")
-        }
-    }
+    private lazy var myDatas: [[String: CLLocation]] = []
     
     // 사용자의 위치를 저장하는 변수
     private var userLocation: CLLocation? {
@@ -43,29 +35,15 @@ final class MyViewModel {
     
     private var indexOfSelectedCell: Int?
     
-    private var selectedLocation: CLLocation? {
-        didSet {
-            
-        }
-    }
+    private var selectedLocation: CLLocation?
     
-    private var currentWeather: CurrentWeather? {
-        didSet {
-            print("Debug: CurrentWeather Changed")
-        }
-    }
+    private var currentWeather: CurrentWeather?
     
-    private var dayWeathers: [DayWeather]? {
-        didSet {
-            print("Debug: DayWeathers Changed")
-        }
-    }
+    private var dayWeathers: [DayWeather]?
     
-    private var hourlyWeathers: [HourWeather]? {
-        didSet {
-            print("Debug: HourlyWeathers Changed")
-        }
-    }
+    private var hourlyWeathers: [HourWeather]?
+    
+    private var airQuality: AirQuality?
     
     
     var didFetchCurrentWeather: (()->())?
@@ -130,6 +108,14 @@ final class MyViewModel {
                 completion(myAdd)
             }
         })
+    }
+    
+    func getAirQualityCondition() -> AirQuality? {
+        return self.airQuality
+    }
+    
+    func getSelectedLocation() -> CLLocation? {
+        return self.selectedLocation
     }
     
     //MARK: - Setter
@@ -222,6 +208,47 @@ final class MyViewModel {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    func setAirQualityCondition(location: CLLocation) {
+        let lat = location.coordinate.latitude.magnitude
+        let lng = location.coordinate.longitude.magnitude
+        
+        guard let url = URL(string: "https://api.waqi.info/feed/geo:\(lat);\(lng)/?token=\(APIKey.aqicn_key)")
+        else { return }
+        
+        let request = URLRequest(url: url)
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid HTTP Response")
+                return
+            }
+
+            guard let responseData = data else {
+                print("No data received")
+                return
+            }
+            
+            do {
+                let airQualityResponse = try JSONDecoder().decode(AirQualityResponse.self, from: responseData)
+                let aqi = airQualityResponse.data
+                // 여기서 필요한 정보를 사용하여 AirQuality 구조체를 생성하거나 다른 작업을 수행할 수 있습니다.
+                let airQuality = AirQuality(aqi: aqi.aqi) // 여기서 최대, 최소 AQI 값은 API 응답에서 가져와야 합니다.
+                
+                self.airQuality = airQuality
+                // 이후에 필요한 처리를 진행합니다.
+            } catch {
+                print("Error decoding JSON: \(error.localizedDescription)")
+            }
+            
+        }
+        task.resume()
     }
     
     

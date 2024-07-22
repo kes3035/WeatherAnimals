@@ -56,7 +56,7 @@ final class WeekWeatherCell: UITableViewCell {
     
     var dayWeather: DayWeather? {
         didSet {
-            self.configureUIWithData()
+            self.configureWeekWeatherCellUIWithData()
         }
     }
     
@@ -70,7 +70,7 @@ final class WeekWeatherCell: UITableViewCell {
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
-    func configureUIWithData() {
+    private func configureWeekWeatherCellUIWithData() {
         guard let dayWeather = self.dayWeather,
               let (leading, width) = self.tempViewConstraints else { return }
         

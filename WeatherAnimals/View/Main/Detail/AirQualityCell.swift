@@ -31,9 +31,10 @@ final class AirQualityCell: UICollectionViewCell {
     }
  
     
-    var weatherViewModel: WeatherViewModel! {
+    lazy var myViewModel = MyViewModel() {
         didSet {
-            self.configureUIWithData()
+            self.configureAirQualityCellUIWithData()
+            
         }
     }
     
@@ -41,16 +42,49 @@ final class AirQualityCell: UICollectionViewCell {
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.weatherViewModel = WeatherViewModel()
-        self.configureUI()
-        guard let location = self.weatherViewModel.location else { return }
-        self.weatherViewModel.getAirQualityCondition(location: location)
-        
+        self.configureAirQualityCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
-    private func configureUI() {
+    private func configureAirQualityCellUIWithData() {
+        guard let selectedLocation = self.myViewModel.getSelectedLocation() else { return }
+        
+        self.myViewModel.setAirQualityCondition(location: selectedLocation)
+        
+        guard let aqi = self.myViewModel.getAirQualityCondition() else { return }
+        
+        let (text, color) = self.convertAQIIndex(value: aqi.aqi)
+        DispatchQueue.main.async {
+            self.airQualityValueLabel.text = String(aqi.aqi)
+            self.airQualityLabel.text = text
+            self.airQualityLabel.textColor = color
+            self.airQualityValueLabel.textColor = color
+        }
+    }
+    
+    private func convertAQIIndex(value: Int) -> (String, UIColor) {
+        switch value {
+        case 0...50:
+            return ("좋음", Constants.greenColor)
+        case 51...100:
+            return ("보통", UIColor.yellow)
+        case 101...150:
+            return ("민감군영향", UIColor.orange)
+        case 151...200:
+            return ("나쁨", UIColor.systemRed)
+        case 201...300:
+            return ("매우 나쁨", UIColor.purple)
+        case 301...:
+            return ("위험", UIColor.darkGray)
+        default:
+            return ("로딩중", UIColor(named: "black") ?? UIColor.black)
+        }
+    }
+}
+
+extension AirQualityCell {
+    private func configureAirQualityCellUI() {
         
         self.backgroundColor = .clear
         
@@ -73,19 +107,4 @@ final class AirQualityCell: UICollectionViewCell {
             $0.top.equalTo(airQualityValueLabel.snp.bottom).offset(5)
         }
     }
-    
-    private func configureUIWithData() {
-        guard let aqi = self.weatherViewModel.airQuality else { return }
-        
-        let (text, color) = self.weatherViewModel.convertAQIIndex(value: aqi.aqi)
-        DispatchQueue.main.async {
-            self.airQualityValueLabel.text = String(aqi.aqi)
-            self.airQualityLabel.text = text
-            self.airQualityLabel.textColor = color
-            self.airQualityValueLabel.textColor = color
-            
-
-        }
-    }
-    
 }
