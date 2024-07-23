@@ -34,7 +34,6 @@ final class AirQualityCell: UICollectionViewCell {
     lazy var myViewModel = MyViewModel() {
         didSet {
             self.configureAirQualityCellUIWithData()
-            
         }
     }
     
@@ -88,9 +87,9 @@ extension AirQualityCell {
         
         self.backgroundColor = .clear
         
-        self.addSubview(baseView)
+        self.addSubview(self.baseView)
         
-        self.baseView.addSubviews(airQualityValueLabel, airQualityLabel)
+        self.baseView.addSubviews(self.airQualityValueLabel, self.airQualityLabel)
         
         self.baseView.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -104,7 +103,7 @@ extension AirQualityCell {
         
         self.airQualityLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(airQualityValueLabel.snp.bottom).offset(5)
+            $0.top.equalTo(self.airQualityValueLabel.snp.bottom).offset(5)
         }
     }
 }

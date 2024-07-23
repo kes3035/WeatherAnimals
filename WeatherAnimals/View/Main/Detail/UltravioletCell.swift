@@ -29,37 +29,66 @@ final class UltravioletCell: UICollectionViewCell {
         $0.font = UIFont.neoDeungeul(size: 25)
         $0.textColor = UIColor(named: "black")
     }
+
     
-//    var weather: CurrentWeather? {
-//        didSet {
-//            guard let weather = self.weather else { return }
-//            self.configureUIWithData(weather)
-//        }
-//    }
-    
-    var weatherViewModel: WeatherViewModel! {
+    lazy var myViewModel = MyViewModel() {
         didSet {
-            self.configureUIWithData()
+            configureUltravioletCellUIWithData()
         }
     }
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.configureUI()
+        self.configureUltravioletCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
-    
     //MARK: - Helpers
-    private func configureUI() {
+    private func convertUVIndex(category: UVIndex.ExposureCategory) -> (String, UIColor) {
+        switch category {
+        case .extreme:
+            return ("심각함", UIColor.purple)
+        case .high:
+            return ("높음", UIColor.systemOrange)
+        case .low:
+            return ("낮음", Constants.greenColor)
+        case .moderate:
+            return ("보통", UIColor(named: "black") ?? UIColor.black)
+        case .veryHigh:
+            return ("매우 높음", UIColor.systemRed)
+        }
+    }
+
+    private func configureUltravioletCellUIWithData() {
+        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return }
+        
+        let uvCategory = currentWeather.uvIndex.category
+        
+        let uvIndex = currentWeather.uvIndex.value
+        
+        let (category, color) = self.convertUVIndex(category: uvCategory)
+        
+        DispatchQueue.main.async {
+            self.uvValueLabel.text = String(uvIndex)
+            self.uvValueLabel.textColor = color
+            
+            self.uvDescriptionLabel.text = category
+            self.uvDescriptionLabel.textColor = color
+            
+        }
+    }
+}
+
+extension UltravioletCell {
+    private func configureUltravioletCellUI() {
         
         self.backgroundColor = .clear
         
         self.addSubview(baseView)
         
-        self.baseView.addSubviews(uvValueLabel, uvDescriptionLabel)
+        self.baseView.addSubviews(self.uvValueLabel, self.uvDescriptionLabel)
         
         self.baseView.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -73,24 +102,7 @@ final class UltravioletCell: UICollectionViewCell {
         
         self.uvDescriptionLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(uvValueLabel.snp.bottom).offset(5)
-        }
-    }
-    
-    
-    
-    private func configureUIWithData() {
-        guard let currentWeather = self.weatherViewModel.currentWeather else { return }
-        
-        let (category, color) = self.weatherViewModel.convertUVIndex(category: currentWeather.uvIndex.category)
-        
-        DispatchQueue.main.async {
-            self.uvValueLabel.text = String(currentWeather.uvIndex.value)
-            self.uvValueLabel.textColor = color
-            
-            self.uvDescriptionLabel.text = category
-            self.uvDescriptionLabel.textColor = color
-            
+            $0.top.equalTo(self.uvValueLabel.snp.bottom).offset(5)
         }
     }
 }

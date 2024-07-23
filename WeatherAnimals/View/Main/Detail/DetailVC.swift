@@ -109,11 +109,11 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
         case 2:
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
-                cell.weatherViewModel = self.weatherViewModel
+                cell.myViewModel = self.myViewModel
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
-                cell.weatherViewModel = self.weatherViewModel
+                cell.myViewModel = self.myViewModel
                 return cell
             }
         case 3:
