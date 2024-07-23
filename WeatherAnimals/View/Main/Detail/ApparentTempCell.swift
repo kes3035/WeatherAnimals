@@ -20,35 +20,43 @@ final class ApparentTempCell: UICollectionViewCell {
         $0.font = UIFont.neoDeungeul(size: 50)
         $0.textColor = .black
     }
+   
     
-    var weatherViewModel: WeatherViewModel! {
-        didSet { 
+    lazy var myViewModel = MyViewModel() {
+        didSet {
             self.configureUIWithData()
         }
     }
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.weatherViewModel = WeatherViewModel()
-        self.configureUI()
+        self.configureApparentTempCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
-    private func configureUI() {
+    private func configureUIWithData() {
+        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return }
+        let apparentTemp = String(currentWeather.apparentTemperature.value)
+        let apparentTempSymbol = currentWeather.apparentTemperature.unit.symbol
+        
+        DispatchQueue.main.async {
+            self.apparentTempLabel.text = apparentTemp + apparentTempSymbol
+        }
+    }
+}
+
+extension ApparentTempCell {
+    private func configureApparentTempCellUI() {
         
         self.backgroundColor = .white
         
         self.addSubview(baseView)
         
-        self.baseView.addSubviews(apparentTempLabel)
+        self.baseView.addSubviews(self.apparentTempLabel)
         
         self.baseView.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.leading.equalToSuperview().offset(10)
-//            $0.trailing.bottom.equalToSuperview().inset(10)
             $0.edges.equalToSuperview()
-
         }
         
         self.apparentTempLabel.snp.makeConstraints {
@@ -56,15 +64,4 @@ final class ApparentTempCell: UICollectionViewCell {
             $0.height.equalTo(40)
         }
     }
-    
-    private func configureUIWithData() {
-        guard let currentWeather = self.weatherViewModel.currentWeather else { return }
-
-        DispatchQueue.main.async {
-            self.apparentTempLabel.text = String(round(currentWeather.apparentTemperature.value)) + currentWeather.apparentTemperature.unit.symbol
-
-            
-        }
-    }
 }
-

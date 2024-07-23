@@ -27,17 +27,21 @@ final class SunsetCell: UICollectionViewCell {
         }
     }
     
+    lazy var myViewModel = MyViewModel() {
+        didSet {
+            self.configureUIWithData()
+        }
+    }
+    
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.configureUI()
+        self.configureSunsetCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-    
-    
     //MARK: - Helpers
-    private func configureUI() {
+    private func configureSunsetCellUI() {
         
         self.backgroundColor = .white
         
@@ -55,6 +59,7 @@ final class SunsetCell: UICollectionViewCell {
         }
     }
     
+    // Issue : 일몰시간 일출시간 현재 시각에 따라 조정하는 기능 만들기
     private func configureUIWithData() {
         guard let dayWeathers = self.weatherViewModel.dayWeathers else { return }
         let sunrise = dayWeathers[0].sun.sunrise

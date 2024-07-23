@@ -20,27 +20,39 @@ final class RainFallCell: UICollectionViewCell {
         $0.textColor = .black
     }
     
-    var weatherViewModel: WeatherViewModel! {
+    lazy var myViewModel = MyViewModel() {
         didSet {
-            self.configureUIWithData()
+            self.configureRainFallCellUIWithData()
         }
     }
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.weatherViewModel = WeatherViewModel()
-        self.configureUI()
+        self.configureRainFallCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
-    private func configureUI() {
+    private func configureRainFallCellUIWithData() {
+        
+        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return }
+        let precipitationIntensity = String(currentWeather.precipitationIntensity.value)
+        
+        DispatchQueue.main.async {
+            self.rainFallLabel.text = precipitationIntensity
+        }
+        
+    }
+}
+
+extension RainFallCell {
+    private func configureRainFallCellUI() {
         
         self.backgroundColor = .clear
         
-        self.addSubview(baseView)
+        self.addSubview(self.baseView)
         
-        self.baseView.addSubviews(rainFallLabel)
+        self.baseView.addSubviews(self.rainFallLabel)
         
         self.baseView.snp.makeConstraints { $0.edges.equalToSuperview() }
         
@@ -48,19 +60,5 @@ final class RainFallCell: UICollectionViewCell {
             $0.centerX.centerY.equalToSuperview().offset(5)
             $0.height.equalTo(60)
         }
-    }
-
-    private func configureUIWithData() {
-        
-        guard let currentWeather = self.weatherViewModel.currentWeather else { return }
-        
-        DispatchQueue.main.async {
-            
-            self.rainFallLabel.text = String(currentWeather.precipitationIntensity.value)
-            
-            
-            
-        }
-        
     }
 }

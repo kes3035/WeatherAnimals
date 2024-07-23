@@ -20,22 +20,32 @@ final class HumidityCell: UICollectionViewCell {
         $0.textColor = UIColor(named: "black")
     }
     
-    var weatherViewModel: WeatherViewModel! {
+    lazy var myViewModel = MyViewModel() {
         didSet {
-            self.configureUIWithData()
+            self.configureHumidityCellUIWithData()
         }
     }
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.weatherViewModel = WeatherViewModel()
-        self.configureUI()
+        self.configureHumidityCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     //MARK: - Helpers
-    private func configureUI() {
+    private func configureHumidityCellUIWithData() {
+        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return }
+        let humidity = String(round(currentWeather.humidity))
+        
+        DispatchQueue.main.async {
+            self.humidityLabel.text = humidity + "%"
+        }
+    }
+}
+
+extension HumidityCell {
+    private func configureHumidityCellUI() {
         
         self.backgroundColor = .clear
         
@@ -54,12 +64,4 @@ final class HumidityCell: UICollectionViewCell {
             $0.height.equalTo(60)
         }
     }
-    
-    private func configureUIWithData() {
-        guard let currentWeather = self.weatherViewModel.currentWeather else { return }
-        DispatchQueue.main.async {
-            self.humidityLabel.text = String(round(currentWeather.humidity)) + "%"
-        }
-    }
-    
 }
