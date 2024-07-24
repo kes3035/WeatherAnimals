@@ -155,18 +155,13 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         
         // 콜렉션뷰 너비, 높이(view너비, 높이)
         let width = collectionView.frame.width
-        let height = collectionView.frame.height
         
         // 행별로 존재하는 아이템 수
       
-        
-        
-        
         switch indexPath.section {
         case 0:
             // 시간별 날씨 셀
             let itemsPerRow: CGFloat = 1
-            let itemsPerColumn: CGFloat = 1
             let widthPadding = sectionInsets.left * (itemsPerRow + 1)
             
             let cellWidth = (width - widthPadding) / itemsPerRow
@@ -249,8 +244,7 @@ extension DetailVC {
         self.detailVCTopView.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(10)
             $0.leading.trailing.equalToSuperview()
-            // ❗️비율로 수정해야 함❗️
-            $0.height.equalTo(140)
+            $0.height.equalTo(self.view.frame.height/5.3)
         }
         
         self.detailCollectionView.snp.makeConstraints {
