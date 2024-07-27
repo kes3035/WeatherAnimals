@@ -44,7 +44,21 @@ final class SunsetCell: UICollectionViewCell {
     // Issue : 일몰시간 일출시간 현재 시각에 따라 조정하는 기능 만들기
     private func configureSunsetCellUIWithData() {
         guard let dayWeathers = self.myViewModel.getDailyWeathers(),
-              let timeZone = self.myViewModel.getTimeZone() else { return }
+              let dayWeather = dayWeathers.first,
+              let sunrise = dayWeather.sun.sunrise,
+              let sunset = dayWeather.sun.sunset else { return }
+        
+        let sunsetLabelText = self.compareTime(sunrise: sunrise, sunset: sunset)
+
+        DispatchQueue.main.async {
+            self.sunsetLabel.text = sunsetLabelText
+            
+        }
+    }
+    
+    private func compareTime(sunrise: Date, sunset: Date) -> String {
+        guard let selectedLocation = self.myViewModel.getSelectedLocation(),
+              let timeZone = self.myViewModel.getTimeZone() else { return "" }
         
         var calendar = Calendar.current
         calendar.timeZone = timeZone
@@ -54,64 +68,19 @@ final class SunsetCell: UICollectionViewCell {
         dateFormatter.timeZone = timeZone
         dateFormatter.dateFormat = "a h:mm"
         
-        let sunrise = dayWeathers[0].sun.sunrise
-        let sunset = dayWeathers[0].sun.sunset
+        let sunriseStr = dateFormatter.string(from: sunrise)
+        let sunsetStr = dateFormatter.string(from: sunset)
+        let currentDateStr = dateFormatter.string(from: Date())
         
-        
-        
-        
-        
-        let sunrisee = dateFormatter.string(from: dayWeathers[0].sun.sunset ?? Date())
-        
-/*
-24시 이후
-일출 전            : 일출시간
-일출 후 - 일몰 전    : 일몰시간
-일몰 후            :
- */
-        
-        
-        if isAfterSunrise() {
-            // 일출 시간보다 지난 시간이면 일몰 시간을 화면에 띄움
+        // 현재 시간을 sunrise와 sunset과 비교
+        if currentDateStr < sunriseStr {
+            return sunriseStr
+        } else if currentDateStr >= sunriseStr && currentDateStr < sunsetStr {
+            return sunsetStr
         } else {
-            // 일출 시간 전이면 일출 시간을 화면에 띄움
-        }
-        
-        DispatchQueue.main.async {
-            self.sunsetLabel.text = sunrisee
+            return sunsetStr
         }
     }
-    
-    private func isAfterSunrise() -> Bool {
-        guard let dayWeathers = self.myViewModel.getDailyWeathers(),
-              let sunrise = dayWeathers[0].sun.sunrise,
-              let sunset = dayWeathers[0].sun.sunset else { return false }
-
-        print(sunrise)
-        print(sunset)
-        print(Date())
-        
-        let result = sunset.compare(Date())
-            switch result {
-            case .orderedAscending:
-                // 테스트1
-                print("현재 시각이 비교대상보다 느립니다.")
-                break
-            case .orderedDescending:
-                // 테스트2
-                print("현재 시각이 비교대상보다 이릅니다.")
-                break
-            case .orderedSame:
-                // 테스트3
-                print("Debug: 동일한 시간")
-                break
-            default:
-                // 테스트4
-                print("Debug: Test4")
-                break
-            }
-            return true
-        }
 }
 
 extension SunsetCell {
@@ -132,4 +101,10 @@ extension SunsetCell {
             $0.height.equalTo(40)
         }
     }
+}
+
+enum DayTime {
+    case beforeSunrise
+    case afterSunriseBeforeSunset
+    case afterSunset
 }

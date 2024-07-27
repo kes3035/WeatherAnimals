@@ -240,7 +240,7 @@ final class CollectionHeader: UICollectionReusableView {
                 self.rightTitleLabel.text = "자외선 지수"
                 self.rightTitleImageView.image = UIImage(systemName: "sun.max")
             case 3:
-                self.leftTitleLabel.text = "일출"
+                self.leftTitleLabel.text = "일출/일몰"
                 self.leftTitleImageView.image = UIImage(systemName: "sunrise")
                 self.rightTitleLabel.text = "체감온도"
                 self.rightTitleImageView.image = UIImage(systemName: "thermometer")
