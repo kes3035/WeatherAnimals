@@ -33,9 +33,16 @@ final class MyViewModel {
         }
     }
     
+    private var timeZone: TimeZone?
+    
     private var indexOfSelectedCell: Int?
     
-    private var selectedLocation: CLLocation?
+    private var selectedLocation: CLLocation? {
+        didSet {
+            guard let selectedLocation = self.selectedLocation else { return }
+            self.setTimeZone(for: selectedLocation)
+        }
+    }
     
     private var currentWeather: CurrentWeather?
     
@@ -117,6 +124,11 @@ final class MyViewModel {
     func getSelectedLocation() -> CLLocation? {
         return self.selectedLocation
     }
+    
+    func getTimeZone() -> TimeZone? {
+        return self.timeZone
+    }
+
     
     //MARK: - Setter
     // 사용할 데이터(지역명, 위치)를 인덱스에 따라 배열로 생성하는 함수
@@ -276,6 +288,19 @@ final class MyViewModel {
         }
     }
     
+    func setTimeZone(for location: CLLocation) {
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+            if let error = error {
+                print("Geocoder failed with error: \(error.localizedDescription)")
+                return
+            }
+            
+            if let placemark = placemarks?.first, let timeZone = placemark.timeZone {
+                self.timeZone = timeZone
+            }
+        }
+    }
     
     
 //

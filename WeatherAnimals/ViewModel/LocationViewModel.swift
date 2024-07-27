@@ -100,6 +100,8 @@ extension LocationViewModel {
         default: break
         }
     }
+    
+   
 }
 
 

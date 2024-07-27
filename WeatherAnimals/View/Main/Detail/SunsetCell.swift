@@ -41,35 +41,25 @@ final class SunsetCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
-    private func configureSunsetCellUI() {
-        
-        self.backgroundColor = .white
-        
-        self.addSubview(baseView)
-        
-        self.baseView.addSubviews(sunsetLabel)
-        
-        self.baseView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        self.sunsetLabel.snp.makeConstraints {
-            $0.centerX.centerY.equalToSuperview()
-            $0.height.equalTo(40)
-        }
-    }
-    
     // Issue : 일몰시간 일출시간 현재 시각에 따라 조정하는 기능 만들기
     private func configureSunsetCellUIWithData() {
-        guard let dayWeathers = self.myViewModel.getDailyWeathers() else { return }
+        guard let dayWeathers = self.myViewModel.getDailyWeathers(),
+              let timeZone = self.myViewModel.getTimeZone() else { return }
+        
+        var calendar = Calendar.current
+        calendar.timeZone = timeZone
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.calendar = calendar
+        dateFormatter.timeZone = timeZone
+        dateFormatter.dateFormat = "a h:mm"
         
         let sunrise = dayWeathers[0].sun.sunrise
         let sunset = dayWeathers[0].sun.sunset
         
         
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "a h:mm"
+        
         
         let sunrisee = dateFormatter.string(from: dayWeathers[0].sun.sunset ?? Date())
         
@@ -125,5 +115,21 @@ final class SunsetCell: UICollectionViewCell {
 }
 
 extension SunsetCell {
-    
+    private func configureSunsetCellUI() {
+        
+        self.backgroundColor = .white
+        
+        self.addSubview(baseView)
+        
+        self.baseView.addSubviews(sunsetLabel)
+        
+        self.baseView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        self.sunsetLabel.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.height.equalTo(40)
+        }
+    }
 }
