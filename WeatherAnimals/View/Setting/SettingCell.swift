@@ -46,12 +46,9 @@ final class SettingCell: UITableViewCell {
         self.contentView.snp.makeConstraints {
             $0.leading.top.equalToSuperview().offset(10)
             $0.bottom.trailing.equalToSuperview().inset(10)
-
         }
         
         self.baseView.snp.makeConstraints {
-//            $0.top.leading.equalToSuperview().offset(10)
-//            $0.bottom.trailing.equalToSuperview().inset(10)
             $0.edges.equalToSuperview()
         }
         
@@ -59,8 +56,6 @@ final class SettingCell: UITableViewCell {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(10)
         }
-        
-        
         
     }
 }

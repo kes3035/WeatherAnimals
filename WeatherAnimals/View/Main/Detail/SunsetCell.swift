@@ -21,12 +21,6 @@ final class SunsetCell: UICollectionViewCell {
         $0.textColor = .black
     }
     
-    var weatherViewModel: WeatherViewModel! {
-        didSet {
-            self.configureSunsetCellUIWithData()
-        }
-    }
-    
     lazy var myViewModel = MyViewModel() {
         didSet {
             self.configureSunsetCellUIWithData()
@@ -41,7 +35,6 @@ final class SunsetCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
-    // Issue : 일몰시간 일출시간 현재 시각에 따라 조정하는 기능 만들기
     private func configureSunsetCellUIWithData() {
         guard let dayWeathers = self.myViewModel.getDailyWeathers(),
               let dayWeather = dayWeathers.first,
@@ -72,7 +65,6 @@ final class SunsetCell: UICollectionViewCell {
         let sunsetStr = dateFormatter.string(from: sunset)
         let currentDateStr = dateFormatter.string(from: Date())
         
-        // 현재 시간을 sunrise와 sunset과 비교
         if currentDateStr < sunriseStr {
             return sunriseStr
         } else if currentDateStr >= sunriseStr && currentDateStr < sunsetStr {
@@ -101,10 +93,4 @@ extension SunsetCell {
             $0.height.equalTo(40)
         }
     }
-}
-
-enum DayTime {
-    case beforeSunrise
-    case afterSunriseBeforeSunset
-    case afterSunset
 }

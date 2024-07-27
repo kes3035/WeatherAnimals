@@ -175,6 +175,21 @@ final class MyViewModel {
         }
     }
     
+    func setWeatherDataForDetailVC(for location: CLLocation) {
+        let selectedLocation = location
+        Task {
+            do {
+                let weatherDataForDetailVC = try await WeatherService.shared.weather(for: selectedLocation, including: .current, .daily, .hourly)
+                self.currentWeather = weatherDataForDetailVC.0
+                self.dayWeathers = weatherDataForDetailVC.1.forecast
+                self.hourlyWeathers = weatherDataForDetailVC.2.forecast
+                self.didFetchWeather?()
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     func setCurrentWeather(location: CLLocation, completion: @escaping(CurrentWeather)->()) {
         Task {
             do {
@@ -264,7 +279,9 @@ final class MyViewModel {
     }
     
     
+    // Issue: AddCoreData Logic should modify
     func addWeatherModelIntoLocal() {
+        
         DispatchQueue.main.async {
             guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
             let context = sceneDelegate.persistentContainer.viewContext

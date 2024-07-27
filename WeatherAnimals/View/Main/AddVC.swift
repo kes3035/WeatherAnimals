@@ -4,32 +4,24 @@ import MapKit
 
 final class AddVC: UIViewController {
     //MARK: - Properties
-    //사용자가 제공한 부분 검색 문자열을 기반으로 완료 문자열 목록을 생성하기 위한 객체
     private var searchCompleter = MKLocalSearchCompleter()
     
-    //특정 위도와 경도를 중심으로 한 직사각형 지리적 영역
     private var searchRegionBasedLatLong: MKCoordinateRegion = MKCoordinateRegion(MKMapRect.world)
     
-    //검색된 결과를 담는 배열
     private var searchResultsArr = [MKLocalSearchCompletion]()
     
-    //검색된 결과를 표시할 테이블뷰
     private var searchResultTableView = UITableView()
         
     private var searchController = UISearchController(searchResultsController: nil)
     
-    //서치바에 검색할 때마다 장소를 가져와서 테이블뷰 업데이트
     private var searchedPlace: MKMapItem? { didSet { searchResultTableView.reloadData() } }
     
     private var localSearch: MKLocalSearch? {
         willSet {
-            // 검색창에 들어오기 전 검색 결과 초기화
             searchedPlace = nil
             localSearch?.cancel()
         }
     }
-    
-    private lazy var weatherViewModel = WeatherViewModel()
     
     private lazy var myViewModel = MyViewModel()
     
@@ -42,12 +34,6 @@ final class AddVC: UIViewController {
         settingSearchCompleter()
         settingSearchController()
     }
-    
-//    override func viewWillAppear(_ animated: Bool) {
-//         super.viewWillAppear(animated)
-//         self.navigationItem.hidesBackButton = true
-//    }
-        
 }
 
 //MARK: - UITableViewDelegate
@@ -65,16 +51,17 @@ extension AddVC: UITableViewDelegate {
                 guard error == nil else { return }
                 guard let placemark = response?.mapItems[0].placemark else { return }
                 let location = CLLocation(latitude: placemark.coordinate.latitude, longitude: placemark.coordinate.longitude)
-                let placeMark = placemark.title
                 
-                self.weatherViewModel.getDetailVCWeather(location: location) { [weak self] weatherViewModel in
-                    let weatherViewModel = weatherViewModel
-                    weatherViewModel.location = location
-                    weatherViewModel.title = placeMark
-                    detailVC.weatherViewModel = weatherViewModel
+                
+                self.myViewModel.setWeatherDataForDetailVC(for: location)
+                
+                self.myViewModel.didFetchWeather = {
+                    detailVC.myViewModel = self.myViewModel
                     DispatchQueue.main.async {
-                        let nav = UINavigationController(rootViewController: detailVC)
-                        self?.present(nav, animated: true)
+                        DispatchQueue.main.async {
+                            let nav = UINavigationController(rootViewController: detailVC)
+                            self.present(nav, animated: true)
+                        }
                     }
                 }
             }

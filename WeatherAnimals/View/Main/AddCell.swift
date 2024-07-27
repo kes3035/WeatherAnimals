@@ -12,15 +12,14 @@ final class AddCell: UITableViewCell {
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        self.configureUI()
-        
+        self.configureAddCellUI()
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
  
 //MARK: - Helpers
-    private func configureUI() {
-        self.contentView.addSubviews(titleLabel)
+    private func configureAddCellUI() {
+        self.contentView.addSubview(self.titleLabel)
         titleLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(10)
