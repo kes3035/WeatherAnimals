@@ -34,10 +34,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 myLocation = latestLocation
             }
             self.fetchMyData { [weak self] coreDatas in
-                
+                print("Debug: fetchMyData, coreDatas are below here")
+                print(coreDatas)
                 guard self == self else { return }
-                tabBarController.myViewModel.makeUserLocation(with: myLocation)
                 
+                tabBarController.myViewModel.makeUserLocation(with: myLocation)
                 tabBarController.myViewModel.makeCoreDatas(with: coreDatas)
                 
                 tabBarController.viewModel.myDatas = coreDatas
@@ -111,21 +112,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             do {
                 try context.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
     }
     
-    func fetchMyData( completion: @escaping([MyData])->(Void)) {
+    private func fetchMyData(completion: @escaping([MyData])->(Void)) {
         let context = self.persistentContainer.viewContext
-        
         do {
             let myData = try context.fetch(MyData.fetchRequest()) as! [MyData]
             completion(myData)
-        } catch { print(error.localizedDescription) }
+        } catch { 
+            print(error.localizedDescription)
+        }
     }
 }
 

@@ -49,10 +49,13 @@ extension AddVC: UITableViewDelegate {
         DispatchQueue.global().async {
             search.start { response, error in
                 guard error == nil else { return }
-                guard let placemark = response?.mapItems[0].placemark else { return }
+                guard let placemark = response?.mapItems[0].placemark,
+                      let locationTitle = placemark.title else { return }
                 let location = CLLocation(latitude: placemark.coordinate.latitude, longitude: placemark.coordinate.longitude)
                 
+                let myData = [locationTitle: location]
                 
+                self.myViewModel.setMyData(with: myData)
                 self.myViewModel.setWeatherDataForDetailVC(for: location)
                 
                 self.myViewModel.didFetchWeather = {

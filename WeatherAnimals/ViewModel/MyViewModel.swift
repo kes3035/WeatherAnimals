@@ -13,9 +13,15 @@ import CoreData
 
 // 통합 뷰모델
 final class MyViewModel {
+    // 새롭게 저장할 데이터 저장하는 변수
+    private var myData: [String: CLLocation]?
     
     // 코어데이터 저장하는 변수
-    private var myCoreDatas: [MyData]?
+    private var myCoreDatas: [MyData]? {
+        didSet {
+            print(myCoreDatas)
+        }
+    }
     
     private lazy var myDatas: [[String: CLLocation]] = []
     
@@ -62,6 +68,9 @@ final class MyViewModel {
     var locationAuthState: Bool?
     
     //MARK: - Logics
+    func appendMyDatas(with myData: [String: CLLocation]) {
+        self.myDatas.append(myData)
+    }
     
     
     //MARK: - Getter
@@ -131,6 +140,11 @@ final class MyViewModel {
 
     
     //MARK: - Setter
+    
+    func setMyData(with data: [String:CLLocation]) {
+        self.myData = data
+    }
+    
     // 사용할 데이터(지역명, 위치)를 인덱스에 따라 배열로 생성하는 함수
     func setMyDatas() {
         guard let myCoreDatas = self.myCoreDatas else { return }
@@ -140,6 +154,7 @@ final class MyViewModel {
         self.myDatas += emptyArr
         
         for data in myCoreDatas {
+            
             let longitude = data.longitude
             let latitude = data.latitude
             let title = data.title ?? ""
@@ -280,21 +295,28 @@ final class MyViewModel {
     
     
     // Issue: AddCoreData Logic should modify
+    /*
+     현재 내가 가진 myDatas의 endIndex를 새롭게 저장할 데이터의 인덱스로 저장해야 함
+     */
+    
     func addWeatherModelIntoLocal() {
+        
         
         DispatchQueue.main.async {
             guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
             let context = sceneDelegate.persistentContainer.viewContext
-            guard let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context),
-                  let indexOfSelectedCell = self.indexOfSelectedCell,
-                  let locationTitle = self.myDatas[indexOfSelectedCell].keys.first,
-                  let location = self.myDatas[indexOfSelectedCell].values.first else { return }
-            
+            guard let entity = NSEntityDescription.entity(forEntityName: "MyData",
+                                                          in: context),
+                  let myNewData = self.myData else { return }
+            self.myDatas.append(myNewData)
+            let indexOfNewModel = self.myDatas.endIndex
+
             let myData = NSManagedObject(entity: entity, insertInto: context)
-            myData.setValue(location.coordinate.latitude, forKey: "latitude")
-            myData.setValue(location.coordinate.longitude, forKey: "longitude")
-            myData.setValue(locationTitle, forKey: "title")
-            myData.setValue(Int16(indexOfSelectedCell), forKey: "index")
+
+            myData.setValue(myNewData.values.first!.coordinate.latitude, forKey: "latitude")
+            myData.setValue(myNewData.values.first!.coordinate.longitude, forKey: "longitude")
+            myData.setValue(myNewData.keys.first!, forKey: "title")
+            myData.setValue(Int16(indexOfNewModel), forKey: "index")
             do {
                 try context.save()
             } catch {

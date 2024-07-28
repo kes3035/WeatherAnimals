@@ -54,10 +54,6 @@ final class WeatherViewModel {
     //MARK: - Inputs
     
     
-    
-    
-    
-    
     //MARK: - Outputs
     
     var didChangeWeather: ((WeatherViewModel) -> Void)?
