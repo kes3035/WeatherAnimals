@@ -2,9 +2,6 @@ import UIKit
 
 final class TabBC: UITabBarController {
     //MARK: - Properties
-    
-    lazy var viewModel = WeatherViewModel()
-    
     lazy var myViewModel = MyViewModel()
     
     //MARK: - LifeCycle
@@ -28,7 +25,6 @@ final class TabBC: UITabBarController {
         let mainVC = MainVC()
         let settingVC = SettingVC()
 
-        mainVC.weatherViewModel = self.viewModel
         mainVC.myViewModel = self.myViewModel
         
         

@@ -83,17 +83,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
                 self.navigationController?.pushViewController(detailVC, animated: true)
             }
         }
-//        DispatchQueue.global().async {
-//            self.weatherViewModel.getDetailVCWeather(location: location) { [weak self] weatherViewModel in
-//                DispatchQueue.main.async {
-//                    let detailVC = DetailVC()
-//                    detailVC.weatherViewModel = weatherViewModel
-//                    detailVC.hidesBottomBarWhenPushed = true
-//                    self?.navigationController?.pushViewController(detailVC, animated: true)
-//                }
-//            }
-//            
-//        }
+
     }
 }
 
@@ -116,9 +106,6 @@ extension MainVC {
             $0.attributedText = navTitleAttributedStr
             $0.sizeToFit()
         }
-//        navTitleLabel.textAlignment = .left
-//        navTitleLabel.attributedText = navTitleAttributedStr
-//        navTitleLabel.sizeToFit()
         
         let mainVCNavLeftBarButtonItem = UIBarButtonItem(customView: navTitleLabel)
         navigationItem.leftBarButtonItem = mainVCNavLeftBarButtonItem

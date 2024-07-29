@@ -19,22 +19,19 @@ final class MyViewModel {
     // 코어데이터 저장하는 변수
     private var myCoreDatas: [MyData]? {
         didSet {
-            print(myCoreDatas)
+            self.setMyDatas()
         }
     }
     
-    private lazy var myDatas: [[String: CLLocation]] = []
+    private var myDatas: [[String: CLLocation]]?
     
     // 사용자의 위치를 저장하는 변수
     private var userLocation: CLLocation? {
         didSet {
-            guard let userLocation = self.userLocation else {
-                print("Debug : Failed to unwrap userLocation ")
-                return
-            }
+            guard let userLocation = self.userLocation else { return }
             self.getMyLocationTitle(location: userLocation) { title in
-                let userData = [title: userLocation]
-                self.myDatas.append(userData)
+                let userData = [[title: userLocation]]
+                self.myDatas = userData
             }
         }
     }
@@ -69,20 +66,23 @@ final class MyViewModel {
     
     //MARK: - Logics
     func appendMyDatas(with myData: [String: CLLocation]) {
-        self.myDatas.append(myData)
+        self.myDatas?.append(myData)
     }
     
     
     //MARK: - Getter
     func getMyDatas() -> [[String: CLLocation]] {
+        guard let myDatas = self.myDatas else { return [] }
         return myDatas
     }
     
     func getWeatherCellCount() -> Int {
+        guard let myDatas = self.myDatas else { return 0 }
         return myDatas.count
     }
     
     func getWeatherCellData(forRowAt indexPath: Int) -> [String: CLLocation] {
+        guard let myDatas = self.myDatas else { return [:] }
         return myDatas[indexPath]
     }
     
@@ -148,20 +148,18 @@ final class MyViewModel {
     // 사용할 데이터(지역명, 위치)를 인덱스에 따라 배열로 생성하는 함수
     func setMyDatas() {
         guard let myCoreDatas = self.myCoreDatas else { return }
-        
-        let emptyArr: [[String: CLLocation]] = Array(repeating: ["":CLLocation()], count: myCoreDatas.count)
-        
-        self.myDatas += emptyArr
-        
+        var temporaryArr: [[String : CLLocation]] = Array(repeating: ["" : CLLocation()], count: myCoreDatas.count)
         for data in myCoreDatas {
-            
             let longitude = data.longitude
             let latitude = data.latitude
             let title = data.title ?? ""
             let index = Int(data.index)
             let location = CLLocation(latitude: latitude, longitude: longitude)
-            self.myDatas[index] = [title:location]
+            
+            temporaryArr[index-1] = [title:location]
+            
         }
+        self.myDatas? += temporaryArr
     }
     
     func setSelectedCellIndex(cellForRowAt indexPath: IndexPath) {
@@ -169,7 +167,7 @@ final class MyViewModel {
     }
     
     func setSelectedLocation(cellForRowAt indexPath: IndexPath) {
-        self.selectedLocation = self.myDatas[indexPath.row].values.first!
+        self.selectedLocation = self.myDatas?[indexPath.row].values.first!
     }
     
     func setWeatherDataForDetailVC() {
@@ -308,8 +306,8 @@ final class MyViewModel {
             guard let entity = NSEntityDescription.entity(forEntityName: "MyData",
                                                           in: context),
                   let myNewData = self.myData else { return }
-            self.myDatas.append(myNewData)
-            let indexOfNewModel = self.myDatas.endIndex
+            self.myDatas?.append(myNewData)
+            let indexOfNewModel = self.myDatas?.endIndex ?? 0
 
             let myData = NSManagedObject(entity: entity, insertInto: context)
 
@@ -359,7 +357,6 @@ final class MyViewModel {
     
     func makeCoreDatas(with coreDatas: [MyData]?) {
         self.myCoreDatas = coreDatas
-        setMyDatas()
     }
     
     

@@ -33,16 +33,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 if let error = error { print(error.localizedDescription) }
                 myLocation = latestLocation
             }
-            self.fetchMyData { [weak self] coreDatas in
-                print("Debug: fetchMyData, coreDatas are below here")
-                print(coreDatas)
-                guard self == self else { return }
+            self.fetchMyData { coreDatas in
                 
                 tabBarController.myViewModel.makeUserLocation(with: myLocation)
                 tabBarController.myViewModel.makeCoreDatas(with: coreDatas)
-                
-                tabBarController.viewModel.myDatas = coreDatas
-                tabBarController.viewModel.myLocation = myLocation
                 
                 DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
                     window.rootViewController = tabBarController
