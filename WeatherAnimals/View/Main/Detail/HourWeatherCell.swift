@@ -26,6 +26,8 @@ final class HourWeatherCell: UICollectionViewCell {
         }
     }
     
+    var timeZone: TimeZone?
+    
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,10 +39,16 @@ final class HourWeatherCell: UICollectionViewCell {
     //MARK: - Helpers
 
     private func configureUIWithData() {
-        guard let hourWeather = self.hourWeather else { return }
+        guard let hourWeather = self.hourWeather,
+        let timeZone = self.timeZone else { return }
 
+        var calendar = Calendar.current
+        calendar.timeZone = timeZone
+        
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "a h:mm"
+        dateFormatter.calendar = calendar
         dateFormatter.locale = Locale(identifier:"ko_KR")
         let dateString = dateFormatter.string(from: hourWeather.date)
         

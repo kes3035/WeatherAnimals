@@ -229,7 +229,12 @@ final class MyViewModel {
     func setDayWeathers(location: CLLocation) {
         Task {
             do {
-                let dayWeathers = try await WeatherService.shared.weather(for: location, including: .daily).forecast
+                let currentDate = Date()
+
+                guard let tenDaysLater = Calendar.current.date(byAdding: .day, value: 10, to: currentDate) else { return }
+                
+                let dayWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
+                
                 self.dayWeathers = dayWeathers
                 
             } catch let error {
@@ -241,8 +246,14 @@ final class MyViewModel {
     func setHourlyWeathers(location: CLLocation) {
         Task {
             do {
-                let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly).forecast
+                let currentDate = Date()
+                
+                guard let tenHoursLater = Calendar.current.date(byAdding: .hour, value: 10, to: currentDate) else { return }
+                
+                let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
+                
                 self.hourlyWeathers = hourlyWeathers
+                
                 
             } catch let error {
                 print(error.localizedDescription)

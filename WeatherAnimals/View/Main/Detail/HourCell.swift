@@ -67,8 +67,10 @@ extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourWeatherCell.identifier, for: indexPath) as! HourWeatherCell
         
-        guard let hourlyWeathers = self.myViewModel.getHourlyWeathers() else { return cell }
+        guard let hourlyWeathers = self.myViewModel.getHourlyWeathers(),
+              let timeZone = self.myViewModel.getTimeZone() else { return cell }
         
+        cell.timeZone = timeZone
         cell.hourWeather = hourlyWeathers[indexPath.row]
         
         return cell
