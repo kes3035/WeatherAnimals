@@ -33,6 +33,7 @@ final class AddVC: UIViewController {
         settingSearchResultTableView()
         settingSearchCompleter()
         settingSearchController()
+        
     }
 }
 

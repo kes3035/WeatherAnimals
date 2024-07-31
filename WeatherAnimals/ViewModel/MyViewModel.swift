@@ -19,11 +19,18 @@ final class MyViewModel {
     // 코어데이터 저장하는 변수
     private var myCoreDatas: [MyData]? {
         didSet {
+            print("3️⃣Debug: will run setMyDatas")
+            print(myCoreDatas)
             self.setMyDatas()
         }
     }
     
-    private var myDatas: [[String: CLLocation]]?
+    private var myDatas: [[String: CLLocation]]? {
+        didSet {
+            print("4️⃣Debug: myDatas with userLocation/set MyDatas")
+            print("myDatas :\(myDatas)")
+        }
+    }
     
     // 사용자의 위치를 저장하는 변수
     private var userLocation: CLLocation? {
@@ -31,6 +38,7 @@ final class MyViewModel {
             guard let userLocation = self.userLocation else { return }
             self.getMyLocationTitle(location: userLocation) { title in
                 let userData = [[title: userLocation]]
+                print("Will set myDatas with userData initially")
                 self.myDatas = userData
             }
         }
@@ -140,6 +148,9 @@ final class MyViewModel {
 
     
     //MARK: - Setter
+    func setUserLocation(with userLocation: CLLocation?) {
+        self.userLocation = userLocation
+    }
     
     func setMyData(with data: [String:CLLocation]) {
         self.myData = data
@@ -148,6 +159,7 @@ final class MyViewModel {
     // 사용할 데이터(지역명, 위치)를 인덱스에 따라 배열로 생성하는 함수
     func setMyDatas() {
         guard let myCoreDatas = self.myCoreDatas else { return }
+        guard !myCoreDatas.isEmpty else { return }
         var temporaryArr: [[String : CLLocation]] = Array(repeating: ["" : CLLocation()], count: myCoreDatas.count)
         for data in myCoreDatas {
             let longitude = data.longitude
@@ -160,6 +172,7 @@ final class MyViewModel {
             
         }
         self.myDatas? += temporaryArr
+        print("5️⃣Debug: will make full data with coreData")
     }
     
     func setSelectedCellIndex(cellForRowAt indexPath: IndexPath) {
@@ -323,7 +336,6 @@ final class MyViewModel {
             guard let entity = NSEntityDescription.entity(forEntityName: "MyData",
                                                           in: context),
                   let myNewData = self.myData else { return }
-            self.myDatas?.append(myNewData)
             let indexOfNewModel = self.myDatas?.endIndex ?? 0
 
             let myData = NSManagedObject(entity: entity, insertInto: context)
@@ -332,6 +344,8 @@ final class MyViewModel {
             myData.setValue(myNewData.values.first!.coordinate.longitude, forKey: "longitude")
             myData.setValue(myNewData.keys.first!, forKey: "title")
             myData.setValue(Int16(indexOfNewModel), forKey: "index")
+            self.myDatas?.append(myNewData)
+
             do {
                 try context.save()
             } catch {
@@ -377,9 +391,7 @@ final class MyViewModel {
     }
     
     
-    func makeUserLocation(with location: CLLocation?) {
-        self.userLocation = location
-    }
+    
     
     
 }

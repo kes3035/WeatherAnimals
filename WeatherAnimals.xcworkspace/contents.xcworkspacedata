@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:MyData+CoreDataClass.swift">
+      location = "group:MyData+CoreDataProperties.swift">
    </FileRef>
    <FileRef
       location = "group:WeatherAnimals.xcodeproj">

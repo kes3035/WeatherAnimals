@@ -32,10 +32,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             launchVC.locationViewModel.fetchLocation { latestLocation, error in
                 if let error = error { print(error.localizedDescription) }
                 myLocation = latestLocation
+                tabBarController.myViewModel.setUserLocation(with: myLocation)
+                print("1️⃣Debug: FetchedMyLocation")
             }
             self.fetchMyData { coreDatas in
+                print("2️⃣Debug: Fetched CoreDatas")
+
                 
-                tabBarController.myViewModel.makeUserLocation(with: myLocation)
                 tabBarController.myViewModel.makeCoreDatas(with: coreDatas)
                 
                 DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
