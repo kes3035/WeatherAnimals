@@ -177,10 +177,22 @@ final class MyViewModel {
         }
         Task {
             do {
-                let weatherDataForDetailVC = try await WeatherService.shared.weather(for: selectedLocation, including: .current, .daily, .hourly)
-                self.currentWeather = weatherDataForDetailVC.0
-                self.dayWeathers = weatherDataForDetailVC.1.forecast
-                self.hourlyWeathers = weatherDataForDetailVC.2.forecast
+                guard let timeZone = self.getTimeZone() else { return }
+                var calendar = Calendar.current
+                calendar.timeZone = timeZone
+                
+                let currentDate = Date()
+
+                guard let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate),
+                      let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else { return }
+                
+                let currentWeather = try await WeatherService.shared.weather(for: selectedLocation, including: .current)
+                let dayWeathers = try await WeatherService.shared.weather(for: selectedLocation, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
+                let hourlyWeathers = try await WeatherService.shared.weather(for: selectedLocation, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
+                self.currentWeather = currentWeather
+                self.dayWeathers = dayWeathers
+                self.hourlyWeathers = hourlyWeathers
+                print("Debug: will run DidFetchWeather")
                 self.didFetchWeather?()
             } catch let error {
                 print(error.localizedDescription)
@@ -202,18 +214,7 @@ final class MyViewModel {
             }
         }
     }
-    
-    func setCurrentWeather(location: CLLocation, completion: @escaping(CurrentWeather)->()) {
-        Task {
-            do {
-                let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
-                self.currentWeather = currentWeather
-                completion(currentWeather)
-            } catch let error {
-                print(error.localizedDescription)
-            }
-        }
-    }
+
     
     func setCurrentWeather(location: CLLocation) {
         Task {
@@ -229,12 +230,14 @@ final class MyViewModel {
     func setDayWeathers(location: CLLocation) {
         Task {
             do {
+                guard let timeZone = self.getTimeZone() else { return }
+                var calendar = Calendar.current
+                calendar.timeZone = timeZone
+                
                 let currentDate = Date()
-
-                guard let tenDaysLater = Calendar.current.date(byAdding: .day, value: 10, to: currentDate) else { return }
+                guard let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate) else { return }
                 
                 let dayWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
-                
                 self.dayWeathers = dayWeathers
                 
             } catch let error {
@@ -246,9 +249,12 @@ final class MyViewModel {
     func setHourlyWeathers(location: CLLocation) {
         Task {
             do {
-                let currentDate = Date()
+                guard let timeZone = self.getTimeZone() else { return }
+                var calendar = Calendar.current
+                calendar.timeZone = timeZone
                 
-                guard let tenHoursLater = Calendar.current.date(byAdding: .hour, value: 10, to: currentDate) else { return }
+                let currentDate = Date()
+                guard let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else { return }
                 
                 let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
                 

@@ -60,6 +60,8 @@ final class WeekWeatherCell: UITableViewCell {
         }
     }
     
+    var timeZone: TimeZone?
+    
     
     
     //MARK: - LifeCycle

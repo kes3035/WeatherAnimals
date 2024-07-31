@@ -96,10 +96,11 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeekWeatherCell.identifier, for: indexPath) as! WeekWeatherCell
-        guard let dayWeathers = self.myViewModel.getDailyWeathers() else { return cell }
+        guard let dayWeathers = self.myViewModel.getDailyWeathers(),
+              let timeZone = self.myViewModel.getTimeZone() else { return cell }
         
         cell.tempViewConstraints = self.getTempViewConstraints(index: indexPath.row)
-        
+        cell.timeZone = timeZone
         cell.dayWeather = dayWeathers[indexPath.row]
 
         if indexPath.row == 0 {
