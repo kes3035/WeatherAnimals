@@ -18,27 +18,22 @@ final class MainVC: UIViewController {
     }
     
     lazy var myViewModel = MyViewModel()
-    
-    lazy var weatherViewModel = WeatherViewModel()
-    
+        
     private lazy var locationViewModel = LocationViewModel()
     
     //MARK: - LifeCycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.weatherViewModel.creatLocation()
         self.configureMainVCUI()                              //UI결정
         self.settingMainVCNav()                               //Nav세팅
         self.settingTV()                                //TableView세팅
-//        self.settingLocation()                          //사용자 위치 세팅
     }
-    
-    //MARK: - Helpers
     
     
     //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
         let addVC = AddVC()
+        addVC.myViewModel = self.myViewModel
         addVC.hidesBottomBarWhenPushed = true
         DispatchQueue.main.async {
             self.navigationController?.pushViewController(addVC, animated: true)

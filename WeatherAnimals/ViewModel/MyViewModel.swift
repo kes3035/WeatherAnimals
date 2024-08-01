@@ -16,30 +16,29 @@ final class MyViewModel {
     // 새롭게 저장할 데이터 저장하는 변수
     private var myData: [String: CLLocation]?
     
-    // 코어데이터 저장하는 변수
-    private var myCoreDatas: [MyData]? {
+    private var myDatas: [[String: CLLocation]]? {
         didSet {
-            print("3️⃣Debug: will run setMyDatas")
-            print(myCoreDatas)
-            self.setMyDatas()
+            print("현재 마이 데이터의 갯수(셀의 갯수) == \(myDatas?.count)")
+            print(myDatas)
         }
     }
     
-    private var myDatas: [[String: CLLocation]]? {
+    // 코어데이터 저장하는 변수
+    private var myCoreDatas: [MyData]? {
         didSet {
-            print("4️⃣Debug: myDatas with userLocation/set MyDatas")
-            print("myDatas :\(myDatas)")
+            print(myCoreDatas?.count)
+            self.appendMyDatasMadeWithCoreDatas()
         }
     }
+    
     
     // 사용자의 위치를 저장하는 변수
     private var userLocation: CLLocation? {
         didSet {
             guard let userLocation = self.userLocation else { return }
             self.getMyLocationTitle(location: userLocation) { title in
-                let userData = [[title: userLocation]]
-                print("Will set myDatas with userData initially")
-                self.myDatas = userData
+                let dataBasedOnUserLocation = [[title: userLocation]]
+                self.setMyDatas(with: dataBasedOnUserLocation)
             }
         }
     }
@@ -77,6 +76,26 @@ final class MyViewModel {
         self.myDatas?.append(myData)
     }
     
+    func appendMyDatasMadeWithCoreDatas() {
+        guard let myCoreDatas = self.myCoreDatas else { return }
+        guard !myCoreDatas.isEmpty else { return }
+        var temporaryArr = Array(repeating: ["" : CLLocation()], count: myCoreDatas.count)
+        
+        for data in myCoreDatas {
+            let longitude = data.longitude
+            let latitude = data.latitude
+            let location = CLLocation(latitude: latitude,
+                                      longitude: longitude)
+            
+            let title = data.title ?? ""
+            let index = Int(data.index) - 1
+            
+            temporaryArr[index] = [title:location]
+        }
+        var myDatas = self.getMyDatas()
+        myDatas += temporaryArr
+        self.setMyDatas(with: myDatas)
+    }
     
     //MARK: - Getter
     func getMyDatas() -> [[String: CLLocation]] {
@@ -152,27 +171,17 @@ final class MyViewModel {
         self.userLocation = userLocation
     }
     
-    func setMyData(with data: [String:CLLocation]) {
-        self.myData = data
+    func setMyData(with myData: [String:CLLocation]?) {
+        self.myData = myData
     }
     
-    // 사용할 데이터(지역명, 위치)를 인덱스에 따라 배열로 생성하는 함수
-    func setMyDatas() {
-        guard let myCoreDatas = self.myCoreDatas else { return }
-        guard !myCoreDatas.isEmpty else { return }
-        var temporaryArr: [[String : CLLocation]] = Array(repeating: ["" : CLLocation()], count: myCoreDatas.count)
-        for data in myCoreDatas {
-            let longitude = data.longitude
-            let latitude = data.latitude
-            let title = data.title ?? ""
-            let index = Int(data.index)
-            let location = CLLocation(latitude: latitude, longitude: longitude)
-            
-            temporaryArr[index-1] = [title:location]
-            
-        }
-        self.myDatas? += temporaryArr
-        print("5️⃣Debug: will make full data with coreData")
+    
+    func setCoreDatas(with myCoreDatas: [MyData]?) {
+        self.myCoreDatas = myCoreDatas
+    }
+    
+    func setMyDatas(with myDatas: [[String:CLLocation]]?) {
+        self.myDatas = myDatas
     }
     
     func setSelectedCellIndex(cellForRowAt indexPath: IndexPath) {
@@ -184,10 +193,7 @@ final class MyViewModel {
     }
     
     func setWeatherDataForDetailVC() {
-        guard let selectedLocation = self.selectedLocation else { 
-            print("Failed: setWeatherDataForDetailVC, Failed to unwrap selectedLocation")
-            return
-        }
+        guard let selectedLocation = self.selectedLocation else { return }
         Task {
             do {
                 guard let timeZone = self.getTimeZone() else { return }
@@ -272,8 +278,6 @@ final class MyViewModel {
                 let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
                 
                 self.hourlyWeathers = hourlyWeathers
-                
-                
             } catch let error {
                 print(error.localizedDescription)
             }
@@ -328,23 +332,25 @@ final class MyViewModel {
      */
     
     func addWeatherModelIntoLocal() {
-        
-        
         DispatchQueue.main.async {
             guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
             let context = sceneDelegate.persistentContainer.viewContext
             guard let entity = NSEntityDescription.entity(forEntityName: "MyData",
                                                           in: context),
                   let myNewData = self.myData else { return }
-            let indexOfNewModel = self.myDatas?.endIndex ?? 0
+            let myDatas = self.getMyDatas()
+            
+            let indexOfNewModel = myDatas.endIndex
+            
 
             let myData = NSManagedObject(entity: entity, insertInto: context)
+            
 
             myData.setValue(myNewData.values.first!.coordinate.latitude, forKey: "latitude")
             myData.setValue(myNewData.values.first!.coordinate.longitude, forKey: "longitude")
             myData.setValue(myNewData.keys.first!, forKey: "title")
             myData.setValue(Int16(indexOfNewModel), forKey: "index")
-            self.myDatas?.append(myNewData)
+//            self.myDatas?.append(myNewData)
 
             do {
                 try context.save()
@@ -380,18 +386,5 @@ final class MyViewModel {
 //            print(error.localizedDescription)
 //        }
 //    }
-//    
-    
-    
-    
-    
-    
-    func makeCoreDatas(with coreDatas: [MyData]?) {
-        self.myCoreDatas = coreDatas
-    }
-    
-    
-    
-    
-    
+
 }

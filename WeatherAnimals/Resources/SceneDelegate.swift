@@ -18,7 +18,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
         
-        var myLocation: CLLocation? = CLLocation()
         
         let launchVC = LaunchVC()
         
@@ -29,20 +28,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         DispatchQueue.main.async { window.rootViewController = launchVC }
         
         DispatchQueue.global().async {
-            launchVC.locationViewModel.fetchLocation { latestLocation, error in
+            launchVC.locationViewModel.fetchLocation { userLocation, error in
                 if let error = error { print(error.localizedDescription) }
-                myLocation = latestLocation
-                tabBarController.myViewModel.setUserLocation(with: myLocation)
-                print("1️⃣Debug: FetchedMyLocation")
-            }
-            self.fetchMyData { coreDatas in
-                print("2️⃣Debug: Fetched CoreDatas")
+               
+                tabBarController.myViewModel.setUserLocation(with: userLocation)
+                self.fetchMyData { coreDatas in
 
-                
-                tabBarController.myViewModel.makeCoreDatas(with: coreDatas)
-                
-                DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
-                    window.rootViewController = tabBarController
+                    tabBarController.myViewModel.setCoreDatas(with: coreDatas)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
+                        window.rootViewController = tabBarController
+                    }
                 }
             }
         }
