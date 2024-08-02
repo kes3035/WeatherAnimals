@@ -53,8 +53,12 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
+        
+        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return cell }
 
-        cell.myViewModel = self.myViewModel
+        //cell.myViewModel = self.myViewModel
+        
+        cell.currentWeather = currentWeather
         
         cell.indexPath = indexPath.row
 

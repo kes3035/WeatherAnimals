@@ -22,7 +22,7 @@ final class WeatherCell: UITableViewCell {
     
     private lazy var currentTempLabel = UILabel().then {
         $0.numberOfLines = 0
-        $0.text = "20"
+        $0.text = "현재 온도.."
         $0.font = UIFont.neoDeungeul(size: 47)
     }
     
@@ -32,7 +32,7 @@ final class WeatherCell: UITableViewCell {
     }
     
     private lazy var locationAddressLabel = UILabel().then {
-        $0.text = "죽전동, 용인시, 대한민국"
+        $0.text = "주소를 로딩중입니다.."
         $0.font = UIFont.neoDeungeul(size: 14)
     }
     
@@ -47,10 +47,14 @@ final class WeatherCell: UITableViewCell {
         }
     }
     
+    var currentWeather: CurrentWeather? {
+        didSet {
+            
+        }
+    }
+    
     lazy var myViewModel = MyViewModel()
-    
-    lazy var weatherViewModel = WeatherViewModel()
-    
+        
     
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -67,9 +71,9 @@ final class WeatherCell: UITableViewCell {
         guard let location = myData.values.first,
               let title = myData.keys.first else { return }
         
-        myViewModel.setCurrentWeather(location: location)
+        self.myViewModel.setCurrentWeather(location: location)
         
-        myViewModel.didFetchCurrentWeather = {
+        self.myViewModel.didFetchWeather = {
             if let currentWeather = self.myViewModel.getCurrentWeather() {
                 DispatchQueue.main.async {
                     self.currentTempLabel.text = String(round(currentWeather.temperature.value))

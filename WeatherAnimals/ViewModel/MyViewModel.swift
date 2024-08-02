@@ -13,26 +13,17 @@ import CoreData
 
 // 통합 뷰모델
 final class MyViewModel {
-    // 새롭게 저장할 데이터 저장하는 변수
+
     private var myData: [String: CLLocation]?
     
-    private var myDatas: [[String: CLLocation]]? {
-        didSet {
-            print("현재 마이 데이터의 갯수(셀의 갯수) == \(myDatas?.count)")
-            print(myDatas)
-        }
-    }
+    private var myDatas: [[String: CLLocation]]?
     
-    // 코어데이터 저장하는 변수
     private var myCoreDatas: [MyData]? {
         didSet {
-            print(myCoreDatas?.count)
             self.appendMyDatasMadeWithCoreDatas()
         }
     }
     
-    
-    // 사용자의 위치를 저장하는 변수
     private var userLocation: CLLocation? {
         didSet {
             guard let userLocation = self.userLocation else { return }
@@ -56,6 +47,8 @@ final class MyViewModel {
     
     private var currentWeather: CurrentWeather?
     
+    private var currentWeathers: [CurrentWeather]?
+    
     private var dayWeathers: [DayWeather]?
     
     private var hourlyWeathers: [HourWeather]?
@@ -63,12 +56,9 @@ final class MyViewModel {
     private var airQuality: AirQuality?
     
     
-    var didFetchCurrentWeather: (()->())?
     
-    // 날씨에 대한 데이터를 받아오는 것이 완료되면 실행되는 클로져
     var didFetchWeather: (()->())?
     
-    // 사용자의 위치 권한 승인 여부를 저장하는 변수
     var locationAuthState: Bool?
     
     //MARK: - Logics
@@ -240,10 +230,16 @@ final class MyViewModel {
             do {
                 let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
                 self.currentWeather = currentWeather
+                self.didFetchWeather?()
             } catch let error {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    func setCurrentWeathers() {
+        let myDatas = self.getMyDatas()
+        
     }
     
     func setDayWeathers(location: CLLocation) {
