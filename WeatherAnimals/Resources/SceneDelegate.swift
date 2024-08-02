@@ -20,28 +20,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
         let launchVC = LaunchVC()
-        
-        let tabBarController = TabBC()
-        
+        let tabBC = TabBC()
         let delay = DispatchTime.now()
         
         DispatchQueue.main.async { window.rootViewController = launchVC }
         
-        DispatchQueue.global().async {
-            launchVC.locationViewModel.fetchLocation { userLocation, error in
-                if let error = error { print(error.localizedDescription) }
-               
-                tabBarController.myViewModel.setUserLocation(with: userLocation)
-                self.fetchMyData { coreDatas in
-
-                    tabBarController.myViewModel.setCoreDatas(with: coreDatas)
-                    
-                    DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
-                        window.rootViewController = tabBarController
+        Task {
+            do {
+                let myData = try await self.fetchMyData()
+                tabBC.locationViewModel.fetchLocation { userLocation, error in
+                    if let error = error {
+                        print(error.localizedDescription)
+                    }
+                    tabBC.myViewModel.setUserLocation(with: userLocation) {
+                        tabBC.myViewModel.setCoreDatas(with: myData)
+                        DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
+                            window.rootViewController = tabBC
+                        }
                     }
                 }
+            } catch {
+                print(error.localizedDescription)
             }
         }
+        
+        
+            
+            
+            
         window.makeKeyAndVisible()
         self.window = window
     }
@@ -118,6 +124,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             completion(myData)
         } catch { 
             print(error.localizedDescription)
+        }
+    }
+    
+    func fetchMyData() async throws -> [MyData] {
+        let context = self.persistentContainer.viewContext
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            context.perform {
+                do {
+                    let myData = try context.fetch(MyData.fetchRequest()) as! [MyData]
+                    continuation.resume(returning: myData)
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
 }

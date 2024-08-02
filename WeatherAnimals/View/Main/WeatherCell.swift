@@ -22,7 +22,7 @@ final class WeatherCell: UITableViewCell {
     
     private lazy var currentTempLabel = UILabel().then {
         $0.numberOfLines = 0
-        $0.text = "현재 온도.."
+        $0.text = "로딩중.."
         $0.font = UIFont.neoDeungeul(size: 47)
     }
     

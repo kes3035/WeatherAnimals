@@ -4,6 +4,8 @@ final class TabBC: UITabBarController {
     //MARK: - Properties
     lazy var myViewModel = MyViewModel()
     
+    lazy var locationViewModel = LocationViewModel()
+    
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()

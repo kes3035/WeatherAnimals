@@ -16,20 +16,17 @@ final class MyViewModel {
 
     private var myData: [String: CLLocation]?
     
-    private var myDatas: [[String: CLLocation]]?
+    private var myUsableDatas: [[String: CLLocation]]?
     
-    private var myCoreDatas: [MyData]? {
-        didSet {
-            self.appendMyDatasMadeWithCoreDatas()
-        }
-    }
+    private var myDatas: [MyData]?
     
     private var userLocation: CLLocation? {
         didSet {
             guard let userLocation = self.userLocation else { return }
-            self.getMyLocationTitle(location: userLocation) { title in
-                let dataBasedOnUserLocation = [[title: userLocation]]
-                self.setMyDatas(with: dataBasedOnUserLocation)
+            self.getMyLocationTitle(location: userLocation) { locationTitle in
+                let currentDataOfUser: [[String : CLLocation]] = [[locationTitle : userLocation]]
+                self.myUsableDatas = currentDataOfUser
+                self.appendMyDatasMadeWithCoreDatas()
             }
         }
     }
@@ -55,51 +52,54 @@ final class MyViewModel {
     
     private var airQuality: AirQuality?
     
-    
-    
     var didFetchWeather: (()->())?
+    
+    var didFetchUserData: (()->())?
     
     var locationAuthState: Bool?
     
     //MARK: - Logics
     func appendMyDatas(with myData: [String: CLLocation]) {
-        self.myDatas?.append(myData)
+        self.myUsableDatas?.append(myData)
     }
     
     func appendMyDatasMadeWithCoreDatas() {
-        guard let myCoreDatas = self.myCoreDatas else { return }
-        guard !myCoreDatas.isEmpty else { return }
-        var temporaryArr = Array(repeating: ["" : CLLocation()], count: myCoreDatas.count)
+        guard let myDatas = self.myDatas else { return }
+        guard !myDatas.isEmpty else { return }
+        var temporaryArr = Array(repeating: ["" : CLLocation()], count: myDatas.count)
         
-        for data in myCoreDatas {
-            let longitude = data.longitude
-            let latitude = data.latitude
-            let location = CLLocation(latitude: latitude,
-                                      longitude: longitude)
+        for myData in myDatas {
+            let longitude = myData.longitude
+            let latitude = myData.latitude
+            let location = CLLocation(latitude: latitude, longitude: longitude)
             
-            let title = data.title ?? ""
-            let index = Int(data.index) - 1
+            let title = myData.title ?? "로딩중"
+            let index = Int(myData.index) - 1
             
             temporaryArr[index] = [title:location]
         }
-        var myDatas = self.getMyDatas()
-        myDatas += temporaryArr
-        self.setMyDatas(with: myDatas)
+        
+        var myUsableDatas = self.getMyDatas()
+        myUsableDatas += temporaryArr
+        self.setMyDatas(with: myUsableDatas)
     }
     
     //MARK: - Getter
     func getMyDatas() -> [[String: CLLocation]] {
-        guard let myDatas = self.myDatas else { return [] }
-        return myDatas
+        guard let myUsableDatas = self.myUsableDatas else {
+            print("Failed to Unwrapping myUsableDatas")
+            return []
+        }
+        return myUsableDatas
     }
     
     func getWeatherCellCount() -> Int {
-        guard let myDatas = self.myDatas else { return 0 }
+        guard let myDatas = self.myUsableDatas else { return 0 }
         return myDatas.count
     }
     
     func getWeatherCellData(forRowAt indexPath: Int) -> [String: CLLocation] {
-        guard let myDatas = self.myDatas else { return [:] }
+        guard let myDatas = self.myUsableDatas else { return [:] }
         return myDatas[indexPath]
     }
     
@@ -127,21 +127,24 @@ final class MyViewModel {
     func getMyLocationTitle(location: CLLocation, completion: @escaping((String) -> ())) {
         let geocoder = CLGeocoder()
         let locale = Locale(identifier: "Ko-kr")
-        
-        geocoder.reverseGeocodeLocation(location, preferredLocale: locale, completionHandler: {(placemarks, error) in
-            if let address: [CLPlacemark] = placemarks {
-                var myAdd: String = ""
-                if let area: String = address.last?.locality{
-                    myAdd += area
+        DispatchQueue.global().async {
+            geocoder.reverseGeocodeLocation(location, preferredLocale: locale, completionHandler: {(placemarks, error) in
+                if let address: [CLPlacemark] = placemarks {
+                    var myAdd: String = ""
+                    if let area: String = address.last?.locality{
+                        myAdd += area
+                    }
+                    if let country: String = address.last?.country {
+                        myAdd += ", "
+                        myAdd += country
+                    }
+                    completion(myAdd)
                 }
-                if let country: String = address.last?.country {
-                    myAdd += ", "
-                    myAdd += country
-                }
-                completion(myAdd)
-            }
-        })
+            })
+        }
     }
+    
+   
     
     func getAirQualityCondition() -> AirQuality? {
         return self.airQuality
@@ -157,8 +160,9 @@ final class MyViewModel {
 
     
     //MARK: - Setter
-    func setUserLocation(with userLocation: CLLocation?) {
+    func setUserLocation(with userLocation: CLLocation?, completion: @escaping( ()->() )) {
         self.userLocation = userLocation
+        completion()
     }
     
     func setMyData(with myData: [String:CLLocation]?) {
@@ -166,12 +170,12 @@ final class MyViewModel {
     }
     
     
-    func setCoreDatas(with myCoreDatas: [MyData]?) {
-        self.myCoreDatas = myCoreDatas
+    func setCoreDatas(with myDatas: [MyData]) {
+        self.myDatas = myDatas
     }
     
     func setMyDatas(with myDatas: [[String:CLLocation]]?) {
-        self.myDatas = myDatas
+        self.myUsableDatas = myDatas
     }
     
     func setSelectedCellIndex(cellForRowAt indexPath: IndexPath) {
@@ -179,7 +183,7 @@ final class MyViewModel {
     }
     
     func setSelectedLocation(cellForRowAt indexPath: IndexPath) {
-        self.selectedLocation = self.myDatas?[indexPath.row].values.first!
+        self.selectedLocation = self.myUsableDatas?[indexPath.row].values.first!
     }
     
     func setWeatherDataForDetailVC() {
@@ -237,10 +241,6 @@ final class MyViewModel {
         }
     }
     
-    func setCurrentWeathers() {
-        let myDatas = self.getMyDatas()
-        
-    }
     
     func setDayWeathers(location: CLLocation) {
         Task {

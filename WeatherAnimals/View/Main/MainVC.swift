@@ -17,6 +17,7 @@ final class MainVC: UIViewController {
         $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(plusButtonTapped(_:))))
     }
     
+    // 현재까지는 코어 데이터와 유저 데이터를 이용해서 만든 [지역명:위치] 배열만 존재함
     lazy var myViewModel = MyViewModel()
         
     private lazy var locationViewModel = LocationViewModel()
@@ -24,9 +25,9 @@ final class MainVC: UIViewController {
     //MARK: - LifeCycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureMainVCUI()                              //UI결정
-        self.settingMainVCNav()                               //Nav세팅
-        self.settingTV()                                //TableView세팅
+        self.configureMainVCUI()
+        self.settingMainVCNav()
+        self.settingTV()
     }
     
     
@@ -50,8 +51,8 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
+        
         cell.selectionStyle = .none
         
         guard let currentWeather = self.myViewModel.getCurrentWeather() else { return cell }
