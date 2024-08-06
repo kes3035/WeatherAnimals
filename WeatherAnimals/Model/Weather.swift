@@ -10,7 +10,7 @@ import WeatherKit
 
 
 struct Weather {
-    var currentWeather: CurrentWeather?
-    var hourlyWeathers: [HourWeather]?
-    var dailyWeathers: [DayWeather]?
+    var currentWeather: CurrentWeather
+    var hourlyWeathers: [HourWeather]
+    var dailyWeathers: [DayWeather]
 }

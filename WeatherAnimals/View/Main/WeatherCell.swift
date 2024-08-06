@@ -40,20 +40,17 @@ final class WeatherCell: UITableViewCell {
         $0.backgroundColor = .gray
     }
     
-    lazy var indexPath: Int = 0 {
-        didSet {
-            let myData = self.myViewModel.getMyDatas()[indexPath]
-            self.configureWeatherCellUIWithData(myData)
-        }
-    }
+   
+    
+    var title: String?
     
     var currentWeather: CurrentWeather? {
         didSet {
-            
+            self.configureWeatherCellUIWithData(self.currentWeather)
         }
     }
     
-    lazy var myViewModel = MyViewModel()
+    lazy var myViewModel = MyViewModel() 
         
     
 //MARK: - LifeCycle
@@ -66,21 +63,17 @@ final class WeatherCell: UITableViewCell {
     
     
 //MARK: - Helpers
-    private func configureWeatherCellUIWithData(_ myData: [String: CLLocation]) {
+    private func configureWeatherCellUIWithData(_ currentWeather: CurrentWeather?) {
         
-        guard let location = myData.values.first,
-              let title = myData.keys.first else { return }
+        guard let currentWeather = currentWeather,
+              let title = self.title else { return }
         
-        self.myViewModel.setCurrentWeather(location: location)
-        
-        self.myViewModel.didFetchWeather = {
-            if let currentWeather = self.myViewModel.getCurrentWeather() {
-                DispatchQueue.main.async {
-                    self.currentTempLabel.text = String(round(currentWeather.temperature.value))
-                    self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
-                    self.locationAddressLabel.text = title
-                }
-            }
+        DispatchQueue.main.async {
+            self.currentTempLabel.text = String(round(currentWeather.temperature.value))
+            self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
+            self.locationAddressLabel.text = title
+            
+            
         }
     }
 }

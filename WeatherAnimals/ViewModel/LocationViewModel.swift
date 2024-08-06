@@ -59,6 +59,22 @@ final class LocationViewModel: CLLocationManager, CLLocationManagerDelegate {
         // completion 동작을 didFetchLocation 동작에 담는다.
         self.fetchLocationCompletion = completion
     }
+    
+    func fetchLocation() async throws -> CLLocation {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.requestLocation()
+            self.fetchLocationCompletion = { location, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else if let location = location {
+                    continuation.resume(returning: location)
+                } else {
+                    continuation.resume(throwing: NSError(domain: "LocationError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown error occurred"]))
+                }
+            }
+        }
+    }
+    
 }
 extension LocationViewModel {
     

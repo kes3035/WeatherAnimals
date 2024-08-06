@@ -49,19 +49,37 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         return myViewModel.getWeatherCellCount()
     }
     
+    /*
+     ⭐️중요⭐️
+     최초 로딩 화면에서 데이터들에 대한 날씨 데이터를 모두 받아온 상태에서 시작하도록 로직 변경할 것.
+     */
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         
         cell.selectionStyle = .none
         
-        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return cell }
+        let myDatas = self.myViewModel.getMyDatas()
+        
+        guard let location = myDatas[indexPath.row].values.first,
+              let title = myDatas[indexPath.row].keys.first else { return cell }
+        
+        self.myViewModel.setWeather(for: location)
+        
+        self.myViewModel.didFetchWeather = {
+            guard let weather = self.myViewModel.getWeather() else { return }            
+            cell.title = title
+            cell.currentWeather = weather.currentWeather
+            DispatchQueue.main.async {
+                tableView.reloadData()
+            }
+        }
+        
+        //guard let currentWeather = self.myViewModel.getCurrentWeather() else { return cell }
 
-        //cell.myViewModel = self.myViewModel
         
-        cell.currentWeather = currentWeather
+        //cell.currentWeather = currentWeather
         
-        cell.indexPath = indexPath.row
 
         return cell
     }
@@ -123,6 +141,7 @@ extension MainVC {
         self.mainTableView.separatorStyle = .none
         self.mainTableView.register(WeatherCell.self, forCellReuseIdentifier: WeatherCell.identifier)
         self.mainTableView.rowHeight = self.view.frame.height/7
+        self.mainTableView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     // 위치 설정
