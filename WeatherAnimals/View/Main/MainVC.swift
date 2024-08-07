@@ -49,11 +49,6 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         return myViewModel.getWeatherCellCount()
     }
     
-    /*
-     ⭐️중요⭐️
-     최초 로딩 화면에서 데이터들에 대한 날씨 데이터를 모두 받아온 상태에서 시작하도록 로직 변경할 것.
-     */
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         

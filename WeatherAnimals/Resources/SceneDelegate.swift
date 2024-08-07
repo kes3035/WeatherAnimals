@@ -28,12 +28,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Task {
             do {
                 let userLocation = try await tabBC.locationViewModel.fetchLocation()
-                let myData = try await self.fetchMyData()
+                let userLocationTitle = try await tabBC.myViewModel.getLocationTitle(for: userLocation)
+                let myDatas = try await self.fetchMyData()
+                let locationByTitleWithoutUserData = try await tabBC.myViewModel.getCoreDataLocationByTitle(myDatas)
                 
+                let userDict: LocationByTitle = [userLocationTitle: userLocation]
+                let totalData = [userDict] + locationByTitleWithoutUserData
                 
                 tabBC.myViewModel.setUserLocation(with: userLocation)
-                tabBC.myViewModel.setCoreDatas(with: myData)
-                tabBC.myViewModel.makeLocationByTitleArr()
+                
+                tabBC.myViewModel.setLocationByTitle(totalData)
                 
                 DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
                     window.rootViewController = tabBC
