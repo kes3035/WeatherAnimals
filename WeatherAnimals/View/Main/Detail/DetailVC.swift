@@ -65,7 +65,6 @@ final class DetailVC: UIViewController {
     //MARK: - Helpers
     @objc func buttonTapped(_ sender: UIBarButtonItem) {
         guard let titleLabel = sender.title else { return }
-        print("Debug: Current Count of MyDatas is \(self.myViewModel.getMyDatas().count)")
         switch titleLabel {
         case "취소":
             self.dismiss(animated: true)

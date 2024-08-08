@@ -18,12 +18,7 @@ final class MyViewModel {
     private var myData: LocationByTitle?
     
    
-    private var locationByTitle: [LocationByTitle]? {
-        didSet {
-            guard let locationByTitle = self.locationByTitle else { return }
-            self.setWeathers(with: locationByTitle)
-        }
-    }
+    private var locationByTitle: [LocationByTitle]? 
     
     private var weathers: [Weather]?
     
@@ -31,7 +26,11 @@ final class MyViewModel {
     
     private var userLocation: CLLocation? 
     
-    private var timeZone: TimeZone?
+    private var timeZone: TimeZone? {
+        didSet {
+            print(self.timeZone)
+        }
+    }
     
     private var indexOfSelectedCell: Int?
     
@@ -86,14 +85,50 @@ final class MyViewModel {
     
     
     //MARK: - Getter
-    func getMyDatas() -> [[String: CLLocation]] {
-        guard let myUsableDatas = self.locationByTitle else {
-            print("Failed to Unwrapping myUsableDatas")
-            return []
-        }
-        return myUsableDatas
+    func getLocationByTitle() -> [LocationByTitle]? {
+        return self.locationByTitle
     }
     
+    func getWeathers() -> [Weather]? {
+        return self.weathers
+    }
+    
+//    private func getWeather(for location: CLLocation) async -> Weather {
+//        return await withCheckedContinuation { continuation in
+//            getWeather(for: location) { weather in
+//                continuation.resume(returning: weather)
+//            }
+//        }
+//    }
+    
+    func getWeather(for location: CLLocation) async throws -> Weather {
+        guard let timeZone = self.getTimeZone() else {
+            throw NSError(domain: "InvalidTimeZone", code: 0, userInfo: nil)
+        }
+        var calendar = Calendar.current
+        calendar.timeZone = timeZone
+        
+        let currentDate = Date()
+        guard let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate),
+              let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else {
+            throw NSError(domain: "DateCalculationError", code: 0, userInfo: nil)
+        }
+        
+        let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
+        let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
+        let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
+        
+        return Weather(currentWeather: currentWeather, hourlyWeathers: hourlyWeathers, dailyWeathers: dailyWeathers)
+    }
+    
+    func getWeathers(for locations: [CLLocation]) async throws -> [Weather] {
+        var weathers: [Weather] = []
+        for location in locations {
+            let weather = try await getWeather(for: location)
+            weathers.append(weather)
+        }
+        return weathers
+    }
    
     func getWeather(for location: CLLocation, completionHandler: @escaping((Weather)->())) {
         Task {
@@ -214,6 +249,24 @@ final class MyViewModel {
     func getTimeZone() -> TimeZone? {
         return self.timeZone
     }
+    
+    func getTimeZone(for location: CLLocation) async throws -> TimeZone {
+        return try await withCheckedThrowingContinuation { continuation in
+            let geocoder = CLGeocoder()
+            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                
+                if let placemark = placemarks?.first, let timeZone = placemark.timeZone {
+                    continuation.resume(returning: timeZone)
+                } else {
+                    continuation.resume(throwing: NSError(domain: "NoTimeZoneFound", code: 0, userInfo: nil))
+                }
+            }
+        }
+    }
 
     
     //MARK: - Setter
@@ -237,11 +290,31 @@ final class MyViewModel {
         self.locationByTitle = myDatas
     }
     
+//    func setWeathers(with locationByTitle: [LocationByTitle]) async {
+//        var weathers: [Weather] = []
+//
+//        for locByTitle in locationByTitle {
+//            guard let location = locByTitle.values.first else { continue }
+//
+//            let weather = await getWeather(for: location)
+//            weathers.append(weather)
+//        }
+//
+//        self.weathers = weathers
+//    }
+    
+    func setWeathers(with weathers: [Weather]) {
+        self.weathers = weathers
+    }
+    
     func setWeathers(with locationByTitle: [LocationByTitle]) {
         var weathers: [Weather] = []
         for locByTitle in locationByTitle {
+            
             guard let location = locByTitle.values.first else { continue }
+            
             self.getWeather(for: location) { weather in
+                print(weather)
                 weathers.append(weather)
             }
         }
@@ -427,10 +500,11 @@ final class MyViewModel {
             let context = sceneDelegate.persistentContainer.viewContext
             guard let entity = NSEntityDescription.entity(forEntityName: "MyData",
                                                           in: context),
-                  let myNewData = self.myData else { return }
-            let myDatas = self.getMyDatas()
+                  let myNewData = self.myData,
+            let locationByTitle = self.getLocationByTitle() else { return }
+           
             
-            let indexOfNewModel = myDatas.endIndex
+            let indexOfNewModel = locationByTitle.endIndex
             
 
             let myData = NSManagedObject(entity: entity, insertInto: context)
@@ -466,6 +540,9 @@ final class MyViewModel {
         }
     }
     
+    func setTimeZone(with timeZone: TimeZone) {
+        self.timeZone = timeZone
+    }
     
 //
 //    func getHourlyWeather(location: CLLocation, completion: @escaping(([HourWeather])->())) {

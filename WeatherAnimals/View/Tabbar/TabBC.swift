@@ -2,7 +2,7 @@ import UIKit
 
 final class TabBC: UITabBarController {
     //MARK: - Properties
-    lazy var myViewModel = MyViewModel()
+    lazy var myViewModel = MyViewModel() 
     
     lazy var locationViewModel = LocationViewModel()
     

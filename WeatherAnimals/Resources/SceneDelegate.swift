@@ -29,15 +29,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             do {
                 let userLocation = try await tabBC.locationViewModel.fetchLocation()
                 let userLocationTitle = try await tabBC.myViewModel.getLocationTitle(for: userLocation)
-                let myDatas = try await self.fetchMyData()
-                let locationByTitleWithoutUserData = try await tabBC.myViewModel.getCoreDataLocationByTitle(myDatas)
-                
-                let userDict: LocationByTitle = [userLocationTitle: userLocation]
-                let totalData = [userDict] + locationByTitleWithoutUserData
-                
+                let timeZone = try await tabBC.myViewModel.getTimeZone(for: userLocation)
                 tabBC.myViewModel.setUserLocation(with: userLocation)
-                
+                tabBC.myViewModel.setTimeZone(with: timeZone)
+                let userDict: LocationByTitle = [userLocationTitle: userLocation]
+
+                let myDatas = try await self.fetchMyData()
+                let coreDataLocationByTitle = try await tabBC.myViewModel.getCoreDataLocationByTitle(myDatas)
+                let totalData = [userDict] + coreDataLocationByTitle
                 tabBC.myViewModel.setLocationByTitle(totalData)
+
+                let locations: [CLLocation] = totalData.flatMap{$0.values}
+
+                let weathers = try await tabBC.myViewModel.getWeathers(for: locations)
+                
+                print(locations)
+                print(weathers)
+                tabBC.myViewModel.setWeathers(with: weathers)
                 
                 DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
                     window.rootViewController = tabBC

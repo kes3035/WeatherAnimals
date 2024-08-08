@@ -54,27 +54,16 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         
         cell.selectionStyle = .none
         
-        let myDatas = self.myViewModel.getMyDatas()
+        guard let locationByTitle = self.myViewModel.getLocationByTitle(),
+              let title = locationByTitle[indexPath.row].keys.first,
+              let weathers = self.myViewModel.getWeathers() else { return cell }
         
-        guard let location = myDatas[indexPath.row].values.first,
-              let title = myDatas[indexPath.row].keys.first else { return cell }
         
-        self.myViewModel.setWeather(for: location)
         
-        self.myViewModel.didFetchWeather = {
-            guard let weather = self.myViewModel.getWeather() else { return }            
-            cell.title = title
-            cell.currentWeather = weather.currentWeather
-            DispatchQueue.main.async {
-                tableView.reloadData()
-            }
-        }
         
-        //guard let currentWeather = self.myViewModel.getCurrentWeather() else { return cell }
-
-        
-        //cell.currentWeather = currentWeather
-        
+                
+        cell.title = title
+        cell.currentWeather = weathers[indexPath.row].currentWeather
 
         return cell
     }
