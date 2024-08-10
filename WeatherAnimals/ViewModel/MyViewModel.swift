@@ -26,11 +26,7 @@ final class MyViewModel {
     
     private var userLocation: CLLocation? 
     
-    private var timeZone: TimeZone? {
-        didSet {
-            print(self.timeZone)
-        }
-    }
+    private var timeZone: TimeZone?
     
     private var indexOfSelectedCell: Int?
     
@@ -79,7 +75,36 @@ final class MyViewModel {
         }
         
         return temporaryArr
+    }
+    
+    func getTenDaysLater(with timeZone: TimeZone) {
+        var calendar = Calendar.current
+        calendar.timeZone = timeZone
         
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = timeZone
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+ 
+        let currentDate = Date()
+        
+        let currentDateString = dateFormatter.string(from: currentDate)
+        
+        let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate)
+       
+
+    }
+    
+    func convert2UTC(from date: Date) -> Date {
+        guard let timeZone = self.getTimeZone() else { return Date() }
+        var calendar = Calendar.current
+        calendar.timeZone = timeZone
+        
+        let components = calendar.dateComponents(in: timeZone, from: date)
+        let utcTimeZone = TimeZone(abbreviation: "UTC")!
+        var utcCalendar = Calendar.current
+        utcCalendar.timeZone = utcTimeZone
+        
+        return utcCalendar.date(from: components) ?? Date()
     }
     
     
@@ -102,27 +127,27 @@ final class MyViewModel {
 //    }
     
     func getWeather(for location: CLLocation) async throws -> Weather {
-        guard let timeZone = self.getTimeZone() else {
-            throw NSError(domain: "InvalidTimeZone", code: 0, userInfo: nil)
-        }
-        var calendar = Calendar.current
-        calendar.timeZone = timeZone
-        
         let currentDate = Date()
-        guard let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate),
-              let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else {
-            throw NSError(domain: "DateCalculationError", code: 0, userInfo: nil)
+        let currentDate2UTC = convert2UTC(from: currentDate)
+        
+        let calendar = Calendar.current
+        
+        guard let tenDaysLaterInUTC = calendar.date(byAdding: .day, value: 9, to: currentDate2UTC),
+              let tenHoursLaterInUTC = calendar.date(byAdding: .hour, value: 9, to: currentDate2UTC) else {
+            throw NSError(domain: "DateConversionError", code: 0, userInfo: nil)
         }
+
         
         let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
-        let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
-        let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
-        
+        let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate2UTC, endDate: tenDaysLaterInUTC)).forecast
+        let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate2UTC, endDate: tenHoursLaterInUTC)).forecast
+
         return Weather(currentWeather: currentWeather, hourlyWeathers: hourlyWeathers, dailyWeathers: dailyWeathers)
     }
     
     func getWeathers(for locations: [CLLocation]) async throws -> [Weather] {
         var weathers: [Weather] = []
+        
         for location in locations {
             let weather = try await getWeather(for: location)
             weathers.append(weather)
@@ -142,6 +167,8 @@ final class MyViewModel {
                 guard let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate),
                       let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else { return }
                 
+                print(tenDaysLater)
+                print(tenHoursLater)
                 let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
                 let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
                 let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
