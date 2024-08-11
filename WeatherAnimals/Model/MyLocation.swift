@@ -9,11 +9,5 @@ import UIKit
 
 struct MyLocation {
     var latitude: Double
-    var longitude: Double
-//    var placeName: String
-    //var placeTime: Date
-    
-    
-    
-    
+    var longitude: Double    
 }

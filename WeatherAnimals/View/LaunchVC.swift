@@ -36,28 +36,10 @@ final class LaunchVC: UIViewController {
         $0.textColor = UIColor.white
     }
     
-    var locationViewModel = LocationViewModel()
-    //    {
-    //        didSet {
-    //            // 앱 시작과 동시에 사용자 위치 받아오기
-    //            self.locationViewModel.fetchLocation { [weak self] (location, error) in
-    //                guard let location = location else { return }
-    //
-    //                // 받아온 위치를 마이 뷰보델에 저장
-    //                self?.myViewModel.makeUserLocation(with: location)
-    //
-    //                // 받아온 위치를 로케이션 뷰모델에 저장
-    //                self?.locationViewModel.makeUserLocation(with: location)
-    //
-    //
-    //            }
-    //        }
-    //}
+    lazy var locationViewModel = LocationViewModel()
     
     lazy var myViewModel = MyViewModel()
-    
-    lazy var viewModel = WeatherViewModel()
-    
+        
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,18 +50,20 @@ final class LaunchVC: UIViewController {
 
 extension LaunchVC {
     private func configureUI() {
-        self.view.backgroundColor = Constants.greenColor
-        self.view.addSubviews(titleLabel, loadingLabel)
-        
-        self.titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(150)
-            $0.centerX.equalToSuperview()
-            $0.height.equalTo(50)
-        }
-        
-        self.loadingLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalTo(self.view.snp.centerY).offset(30)
+        DispatchQueue.main.async {
+            self.view.backgroundColor = Constants.greenColor
+            self.view.addSubviews(self.titleLabel, self.loadingLabel)
+            
+            self.titleLabel.snp.makeConstraints {
+                $0.top.equalToSuperview().offset(150)
+                $0.centerX.equalToSuperview()
+                $0.height.equalTo(50)
+            }
+            
+            self.loadingLabel.snp.makeConstraints {
+                $0.centerX.equalToSuperview()
+                $0.top.equalTo(self.view.snp.centerY).offset(30)
+            }
         }
     }
     

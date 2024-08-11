@@ -81,7 +81,6 @@ final class WeatherCell: UITableViewCell {
 extension WeatherCell {
     private func configureWeatherCellUI() {
         self.contentView.addSubview(self.baseView)
-        self.contentView.snp.makeConstraints{$0.edges.equalToSuperview()}
         
         self.baseView.addSubviews(self.currentTempLabel,
                                   self.locationAddressLabel,

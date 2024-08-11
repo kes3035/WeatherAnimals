@@ -54,6 +54,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         
         cell.selectionStyle = .none
         
+        
         guard let locationByTitle = self.myViewModel.getLocationByTitle(),
               let title = locationByTitle[indexPath.row].keys.first,
               let weathers = self.myViewModel.getWeathers() else { return cell }
@@ -61,7 +62,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         
         
         
-                
+        
         cell.title = title
         cell.currentWeather = weathers[indexPath.row].currentWeather
 

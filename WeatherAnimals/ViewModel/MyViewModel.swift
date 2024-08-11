@@ -118,14 +118,6 @@ final class MyViewModel {
         return self.weathers
     }
     
-//    private func getWeather(for location: CLLocation) async -> Weather {
-//        return await withCheckedContinuation { continuation in
-//            getWeather(for: location) { weather in
-//                continuation.resume(returning: weather)
-//            }
-//        }
-//    }
-    
     func getWeather(for location: CLLocation) async throws -> Weather {
         let currentDate = Date()
         let currentDate2UTC = convert2UTC(from: currentDate)
@@ -136,7 +128,6 @@ final class MyViewModel {
               let tenHoursLaterInUTC = calendar.date(byAdding: .hour, value: 9, to: currentDate2UTC) else {
             throw NSError(domain: "DateConversionError", code: 0, userInfo: nil)
         }
-
         
         let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
         let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate2UTC, endDate: tenDaysLaterInUTC)).forecast
