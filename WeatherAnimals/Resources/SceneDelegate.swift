@@ -13,52 +13,92 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
+
         let window = UIWindow(windowScene: windowScene)
-        
         
         let launchVC = LaunchVC()
         let tabBC = TabBC()
-        let delay = DispatchTime.now()
         
-        DispatchQueue.main.async { window.rootViewController = launchVC }
-        
-        DispatchQueue.global(qos: .background).async {
-            Task {
-                do {
-                    let userLocation = try await tabBC.locationViewModel.fetchLocation()
-                    let userLocationTitle = try await tabBC.myViewModel.getLocationTitle(for: userLocation)
-                    let timeZone = try await tabBC.myViewModel.getTimeZone(for: userLocation)
-                    let userDict: LocationByTitle = [userLocationTitle: userLocation]
-                    
-                    tabBC.myViewModel.setUserLocation(with: userLocation)
-                    tabBC.myViewModel.setTimeZone(with: timeZone)
-                    
-                    let myDatas = try await self.fetchMyData()
-                    let coreDataLocationByTitle = try await tabBC.myViewModel.getCoreDataLocationByTitle(myDatas)
-                    let totalData = [userDict] + coreDataLocationByTitle
-                    tabBC.myViewModel.setLocationByTitle(totalData)
-                    
-                    let locations: [CLLocation] = totalData.flatMap{$0.values}
-                    
-                    let weathers = try await tabBC.myViewModel.getWeathers(for: locations)
-                    
-                    tabBC.myViewModel.setWeathers(with: weathers)
-                    
-                    DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
-                        window.rootViewController = tabBC
-                    }
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-        }
-
+        window.rootViewController = launchVC
         window.makeKeyAndVisible()
         self.window = window
+
+        Task {
+            do {
+                let userLocation = try await tabBC.locationViewModel.fetchLocation()
+                let userLocationTitle = try await tabBC.myViewModel.getLocationTitle(for: userLocation)
+                let timeZone = try await tabBC.myViewModel.getTimeZone(for: userLocation)
+                let userDict: LocationByTitle = [userLocationTitle: userLocation]
+                
+                tabBC.myViewModel.setUserLocation(with: userLocation)
+                tabBC.myViewModel.setTimeZone(with: timeZone)
+                
+                let myDatas = try await self.fetchMyData()
+                let coreDataLocationByTitle = try await tabBC.myViewModel.getCoreDataLocationByTitle(myDatas)
+                let totalData = [userDict] + coreDataLocationByTitle
+                tabBC.myViewModel.setLocationByTitle(totalData)
+                
+                let locations: [CLLocation] = totalData.flatMap { $0.values }
+                let weathers = try await tabBC.myViewModel.getWeathers(for: locations)
+                
+                tabBC.myViewModel.setWeathers(with: weathers)
+                
+                try await Task.sleep(nanoseconds: 2_500_000_000)
+                window.rootViewController = tabBC
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
+
+    
+//    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+//        
+//        guard let windowScene = (scene as? UIWindowScene) else { return }
+//        
+//        let window = UIWindow(windowScene: windowScene)
+//        
+//        
+//        let launchVC = LaunchVC()
+//        let tabBC = TabBC()
+//        let delay = DispatchTime.now()
+//        
+//        DispatchQueue.main.async { window.rootViewController = launchVC }
+//        
+//        Task {
+//            do {
+//                let userLocation = try await tabBC.locationViewModel.fetchLocation()
+//                let userLocationTitle = try await tabBC.myViewModel.getLocationTitle(for: userLocation)
+//                let timeZone = try await tabBC.myViewModel.getTimeZone(for: userLocation)
+//                let userDict: LocationByTitle = [userLocationTitle: userLocation]
+//                
+//                tabBC.myViewModel.setUserLocation(with: userLocation)
+//                tabBC.myViewModel.setTimeZone(with: timeZone)
+//                
+//                let myDatas = try await self.fetchMyData()
+//                let coreDataLocationByTitle = try await tabBC.myViewModel.getCoreDataLocationByTitle(myDatas)
+//                let totalData = [userDict] + coreDataLocationByTitle
+//                tabBC.myViewModel.setLocationByTitle(totalData)
+//                
+//                let locations: [CLLocation] = totalData.flatMap{$0.values}
+//                
+//                let weathers = try await tabBC.myViewModel.getWeathers(for: locations)
+//                
+//                tabBC.myViewModel.setWeathers(with: weathers)
+//                
+//                DispatchQueue.main.asyncAfter(deadline: delay + 2.5) {
+//                    window.rootViewController = tabBC
+//                }
+//            } catch {
+//                print(error.localizedDescription)
+//            }
+//            
+//        }
+//
+//        window.makeKeyAndVisible()
+//        self.window = window
+//    }
     
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

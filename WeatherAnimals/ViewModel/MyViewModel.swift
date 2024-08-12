@@ -78,18 +78,18 @@ final class MyViewModel {
     }
     
     func getTenDaysLater(with timeZone: TimeZone) {
-        var calendar = Calendar.current
-        calendar.timeZone = timeZone
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = timeZone
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
- 
-        let currentDate = Date()
-        
-        let currentDateString = dateFormatter.string(from: currentDate)
-        
-        let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate)
+//        var calendar = Calendar.current
+//        calendar.timeZone = timeZone
+//        
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.timeZone = timeZone
+//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+// 
+//        let currentDate = Date()
+//        
+//        let currentDateString = dateFormatter.string(from: currentDate)
+//        
+//        let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate)
        
 
     }

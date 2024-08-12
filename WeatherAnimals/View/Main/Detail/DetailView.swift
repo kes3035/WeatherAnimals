@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import WeatherKit
 
 final class DetailView: UIView {
     //MARK: - Properties
@@ -58,6 +59,11 @@ final class DetailView: UIView {
         $0.spacing = 14
     }
     
+    lazy var myViewModel = MyViewModel() {
+        didSet {
+            guard let dayWeathers = self.myViewModel.getDailyWeathers()  else { return }
+        }
+    }
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {

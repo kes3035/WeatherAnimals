@@ -7,7 +7,6 @@ import CoreLocation
 final class WeatherCell: UITableViewCell {
     static let identifier = "WeatherCell"
 //MARK: - Properties
-    
     private lazy var baseView = UIView().then {
         $0.backgroundColor = .white
         $0.clipsToBounds = true
@@ -39,9 +38,7 @@ final class WeatherCell: UITableViewCell {
     private lazy var animalImageView = UIImageView().then {
         $0.backgroundColor = .gray
     }
-    
-   
-    
+
     var title: String?
     
     var currentWeather: CurrentWeather? {
@@ -50,9 +47,7 @@ final class WeatherCell: UITableViewCell {
         }
     }
     
-    lazy var myViewModel = MyViewModel() 
-        
-    
+    lazy var myViewModel = MyViewModel()         
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
@@ -64,17 +59,12 @@ final class WeatherCell: UITableViewCell {
     
 //MARK: - Helpers
     private func configureWeatherCellUIWithData(_ currentWeather: CurrentWeather?) {
-        
         guard let currentWeather = currentWeather,
               let title = self.title else { return }
         
-        DispatchQueue.main.async {
-            self.currentTempLabel.text = String(round(currentWeather.temperature.value))
-            self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
-            self.locationAddressLabel.text = title
-            
-            
-        }
+        self.currentTempLabel.text = String(round(currentWeather.temperature.value))
+        self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
+        self.locationAddressLabel.text = title
     }
 }
 

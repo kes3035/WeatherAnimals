@@ -22,14 +22,12 @@ final class TabBC: UITabBarController {
         self.tabBar.scrollEdgeAppearance = appearance
         self.tabBar.isTranslucent = false
         self.tabBar.tintColor = .white
-        
+        let mainVC = MainVC()
+        let settingVC = SettingVC()
+        mainVC.myViewModel = self.myViewModel
+
         DispatchQueue.main.async {
-            let mainVC = MainVC()
-            let settingVC = SettingVC()
-            
-            mainVC.myViewModel = self.myViewModel
-            
-            
+
             mainVC.tabBarItem = UITabBarItem(title: "홈",
                                              image: UIImage(systemName: "person"),
                                              selectedImage: UIImage(systemName: "person.fill"))

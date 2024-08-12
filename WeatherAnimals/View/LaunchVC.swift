@@ -5,18 +5,6 @@
 //  Created by 김은상 on 3/4/24.
 //
 
-/*
- 
- 런치스크린 로직 우선순위
- 
- 1. 사용자의 위치 설정이 되어 있는지 확인
-  1.1 설정이 안되어있는 경우 설정에서 위치 설정할 수 있도록 화면 전환
-  1.2 권한 설정이 되어있는 경우 2번으로
- 2. CoreData로부터 사용자가 설정해놓은 지역 받아오기
- 3. MainVC에 띄우기 위한 CurrentWeather 데이터 받아오기
- 
- */
-
 import UIKit
 import CoreLocation
 import CoreData
@@ -50,27 +38,26 @@ final class LaunchVC: UIViewController {
 
 extension LaunchVC {
     private func configureUI() {
-        DispatchQueue.main.async {
-            self.view.backgroundColor = Constants.greenColor
-            self.view.addSubviews(self.titleLabel, self.loadingLabel)
-            
-            self.titleLabel.snp.makeConstraints {
-                $0.top.equalToSuperview().offset(150)
-                $0.centerX.equalToSuperview()
-                $0.height.equalTo(50)
-            }
-            
-            self.loadingLabel.snp.makeConstraints {
-                $0.centerX.equalToSuperview()
-                $0.top.equalTo(self.view.snp.centerY).offset(30)
-            }
+        self.view.backgroundColor = Constants.greenColor
+        self.view.addSubviews(self.titleLabel, self.loadingLabel)
+        
+        self.titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(150)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(50)
+        }
+        
+        self.loadingLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(self.view.snp.centerY).offset(30)
         }
     }
     
     private func animateLoadingLabel() {
-        loadingLabel.text = ""
         var charIndex = 0.0
         let titleText = "Loading..."
+        loadingLabel.text = ""
+
         for letter in titleText {
             Timer.scheduledTimer(withTimeInterval: 0.2 * charIndex, repeats: false) { timer in
                 DispatchQueue.main.async {

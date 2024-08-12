@@ -48,6 +48,7 @@ final class DetailVC: UIViewController {
     
     lazy var myViewModel = MyViewModel() {
         didSet {
+            self.detailVCTopView.myViewModel = self.myViewModel
             DispatchQueue.main.async {
                 self.detailCollectionView.reloadData()
             }
@@ -254,6 +255,9 @@ extension DetailVC {
     }
     
     private func configureTopView() {
+        
+        
+        
         self.myViewModel.getDataForDetailVCTopView { currentTemp, highTemp, lowTemp in
             DispatchQueue.main.async {
                 self.detailVCTopView.tempLabel.text = currentTemp
