@@ -82,9 +82,7 @@ extension DetailView {
                                             self.lowestTempLabel)
         self.topStack.addArrangedSubviews(self.animalImage, self.labelStack)
         
-        self.baseView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
+        self.baseView.snp.makeConstraints { $0.edges.equalToSuperview() }
         
         self.animalImage.snp.makeConstraints { $0.height.width.equalTo(140) }
         
@@ -101,8 +99,6 @@ extension DetailView {
             $0.height.equalTo(140)
         }
         
-        self.tempLabel.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
+        self.tempLabel.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
 }

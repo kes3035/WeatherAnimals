@@ -12,7 +12,7 @@ final class SunsetCell: UICollectionViewCell {
     //MARK: - Properties
     
     private lazy var baseView = UIView().then {
-        $0.backgroundColor = UIColor(named: "background")
+        $0.backgroundColor = UIColor(named: "myBackground")
     }
     
     private lazy var sunsetLabel = UILabel().then {
@@ -36,10 +36,16 @@ final class SunsetCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
     private func configureSunsetCellUIWithData() {
-        guard let dayWeathers = self.myViewModel.getDailyWeathers(),
-              let dayWeather = dayWeathers.first,
-              let sunrise = dayWeather.sun.sunrise,
-              let sunset = dayWeather.sun.sunset else { return }
+        guard let weathers = self.myViewModel.getWeathers(),
+              let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
+        
+        let weather = weathers[selectedIndex]
+        
+        let dailyWeather = weather.dailyWeathers
+        
+        guard let sunrise = dailyWeather[0].sun.sunrise,
+              let sunset = dailyWeather[0].sun.sunset else { return }
+      
         
         let sunsetLabelText = self.compareTime(sunrise: sunrise, sunset: sunset)
 

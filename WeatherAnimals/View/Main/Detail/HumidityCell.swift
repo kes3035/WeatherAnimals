@@ -17,7 +17,7 @@ final class HumidityCell: UICollectionViewCell {
     private lazy var humidityLabel = UILabel().then {
         $0.font = UIFont.neoDeungeul(size: 50)
         $0.text = "23%"
-        $0.textColor = UIColor(named: "black")
+        $0.textColor = UIColor(named: "myBlack")
     }
     
     lazy var myViewModel = MyViewModel() {
@@ -35,7 +35,12 @@ final class HumidityCell: UICollectionViewCell {
     
     //MARK: - Helpers
     private func configureHumidityCellUIWithData() {
-        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return }
+        guard let weathers = self.myViewModel.getWeathers(),
+              let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
+        
+        let weather = weathers[selectedIndex]
+        
+        let currentWeather = weather.currentWeather
         let humidity = String(round(currentWeather.humidity))
         
         DispatchQueue.main.async {

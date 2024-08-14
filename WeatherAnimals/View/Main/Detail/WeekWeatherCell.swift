@@ -36,7 +36,7 @@ final class WeekWeatherCell: UITableViewCell {
     }
     
     private lazy var tempColorView = UIView().then {
-        $0.backgroundColor = UIColor(named: "black")
+        $0.backgroundColor = UIColor(named: "myBlack")
     }
     
     private lazy var tempView = UIView().then {
@@ -49,7 +49,7 @@ final class WeekWeatherCell: UITableViewCell {
     }
     
     private lazy var customSeparator = UIView().then {
-        $0.backgroundColor = UIColor(named: "black")
+        $0.backgroundColor = UIColor(named: "myBlack")
     }
         
     var tempViewConstraints: (Double, Double)?

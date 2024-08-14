@@ -12,7 +12,7 @@ final class ApparentTempCell: UICollectionViewCell {
     //MARK: - Properties
     
     private lazy var baseView = UIView().then {
-        $0.backgroundColor = UIColor(named: "background")
+        $0.backgroundColor = UIColor(named: "myBackground")
     }
     
     private lazy var apparentTempLabel = UILabel().then {
@@ -36,7 +36,10 @@ final class ApparentTempCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
     private func configureUIWithData() {
-        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return }
+        guard let weathers = self.myViewModel.getWeathers(),
+              let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
+        let weather = weathers[selectedIndex]
+        let currentWeather = weather.currentWeather
         let apparentTemp = String(currentWeather.apparentTemperature.value)
         let apparentTempSymbol = currentWeather.apparentTemperature.unit.symbol
         

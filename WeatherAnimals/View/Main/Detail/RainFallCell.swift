@@ -11,7 +11,7 @@ final class RainFallCell: UICollectionViewCell {
     static let identifier = "RainFallCell"
     //MARK: - Properties
     private lazy var baseView = UIView().then {
-        $0.backgroundColor = UIColor(named: "background")
+        $0.backgroundColor = UIColor(named: "myBackground")
     }
     
     private lazy var rainFallLabel = UILabel().then {
@@ -34,8 +34,12 @@ final class RainFallCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
     private func configureRainFallCellUIWithData() {
+        guard let weathers = self.myViewModel.getWeathers(),
+              let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
         
-        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return }
+        let weather = weathers[selectedIndex]
+        
+        let currentWeather = weather.currentWeather
         let precipitationIntensity = String(currentWeather.precipitationIntensity.value)
         
         DispatchQueue.main.async {

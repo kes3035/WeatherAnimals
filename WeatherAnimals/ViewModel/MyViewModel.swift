@@ -17,7 +17,6 @@ final class MyViewModel {
 
     private var myData: LocationByTitle?
     
-   
     private var locationByTitle: [LocationByTitle]? 
     
     private var weathers: [Weather]?
@@ -36,14 +35,6 @@ final class MyViewModel {
             self.setTimeZone(for: selectedLocation)
         }
     }
-        
-    private var currentWeather: CurrentWeather?
-    
-    private var currentWeathers: [CurrentWeather]?
-    
-    private var dayWeathers: [DayWeather]?
-    
-    private var hourlyWeathers: [HourWeather]?
     
     private var airQuality: AirQuality?
     
@@ -76,23 +67,7 @@ final class MyViewModel {
         
         return temporaryArr
     }
-    
-    func getTenDaysLater(with timeZone: TimeZone) {
-//        var calendar = Calendar.current
-//        calendar.timeZone = timeZone
-//        
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.timeZone = timeZone
-//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-// 
-//        let currentDate = Date()
-//        
-//        let currentDateString = dateFormatter.string(from: currentDate)
-//        
-//        let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate)
-       
 
-    }
     
     func convert2UTC(from date: Date) -> Date {
         guard let timeZone = self.getTimeZone() else { return Date() }
@@ -119,19 +94,9 @@ final class MyViewModel {
     }
     
     func getWeather(for location: CLLocation) async throws -> Weather {
-        let currentDate = Date()
-        let currentDate2UTC = convert2UTC(from: currentDate)
-        
-        let calendar = Calendar.current
-        
-        guard let tenDaysLaterInUTC = calendar.date(byAdding: .day, value: 9, to: currentDate2UTC),
-              let tenHoursLaterInUTC = calendar.date(byAdding: .hour, value: 9, to: currentDate2UTC) else {
-            throw NSError(domain: "DateConversionError", code: 0, userInfo: nil)
-        }
-        
         let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
-        let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate2UTC, endDate: tenDaysLaterInUTC)).forecast
-        let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate2UTC, endDate: tenHoursLaterInUTC)).forecast
+        let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily).forecast
+        let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly).forecast
 
         return Weather(currentWeather: currentWeather, hourlyWeathers: hourlyWeathers, dailyWeathers: dailyWeathers)
     }
@@ -186,27 +151,7 @@ final class MyViewModel {
         guard let locationByTitle = self.locationByTitle else { return [:] }
         return locationByTitle[indexPath]
     }
-    
-    func getCurrentWeather() -> CurrentWeather? {
-        return self.currentWeather
-    }
-    
-    func getHourlyWeathers() -> [HourWeather]? {
-        return self.hourlyWeathers
-    }
-    
-    func getDailyWeathers() -> [DayWeather]? {
-        return self.dayWeathers
-    }
-    
-    func getDataForDetailVCTopView(completionHandler: @escaping((String, String, String)->())) {
-        guard let dayWeathers = self.dayWeathers,
-              let current = self.currentWeather else { completionHandler("", "", ""); return }
-        let currentTemp = String(round(current.temperature.value)) +  "°"
-        let highestTemp = "최고 : " + String(round(dayWeathers[0].highTemperature.value)) +  "°"
-        let lowestTemp = "최저 : " + String(round(dayWeathers[0].lowTemperature.value)) +  "°"
-        completionHandler(currentTemp, highestTemp, lowestTemp)
-    }
+
     
     func getMyLocationTitle(location: CLLocation, completion: @escaping((String) -> ())) {
         let geocoder = CLGeocoder()
@@ -370,50 +315,7 @@ final class MyViewModel {
                 let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
                 let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
                 let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
-                
-                let weather = Weather(currentWeather: currentWeather, hourlyWeathers: hourlyWeathers, dailyWeathers: dailyWeathers)
-                self.didFetchWeather?()
-            } catch let error {
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
-    func setWeatherDataForDetailVC() {
-        guard let selectedLocation = self.selectedLocation else { return }
-        Task {
-            do {
-                guard let timeZone = self.getTimeZone() else { return }
-                var calendar = Calendar.current
-                calendar.timeZone = timeZone
-                
-                let currentDate = Date()
 
-                guard let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate),
-                      let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else { return }
-                
-                let currentWeather = try await WeatherService.shared.weather(for: selectedLocation, including: .current)
-                let dayWeathers = try await WeatherService.shared.weather(for: selectedLocation, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
-                let hourlyWeathers = try await WeatherService.shared.weather(for: selectedLocation, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
-                self.currentWeather = currentWeather
-                self.dayWeathers = dayWeathers
-                self.hourlyWeathers = hourlyWeathers
-                print("Debug: will run DidFetchWeather")
-                self.didFetchWeather?()
-            } catch let error {
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
-    func setWeatherDataForDetailVC(for location: CLLocation) {
-        let selectedLocation = location
-        Task {
-            do {
-                let weatherDataForDetailVC = try await WeatherService.shared.weather(for: selectedLocation, including: .current, .daily, .hourly)
-                self.currentWeather = weatherDataForDetailVC.0
-                self.dayWeathers = weatherDataForDetailVC.1.forecast
-                self.hourlyWeathers = weatherDataForDetailVC.2.forecast
                 self.didFetchWeather?()
             } catch let error {
                 print(error.localizedDescription)
@@ -421,57 +323,6 @@ final class MyViewModel {
         }
     }
 
-    
-    func setCurrentWeather(location: CLLocation) {
-        Task {
-            do {
-                let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
-                self.currentWeather = currentWeather
-                self.didFetchWeather?()
-            } catch let error {
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
-    
-    func setDayWeathers(location: CLLocation) {
-        Task {
-            do {
-                guard let timeZone = self.getTimeZone() else { return }
-                var calendar = Calendar.current
-                calendar.timeZone = timeZone
-                
-                let currentDate = Date()
-                guard let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate) else { return }
-                
-                let dayWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
-                self.dayWeathers = dayWeathers
-                
-            } catch let error {
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
-    func setHourlyWeathers(location: CLLocation) {
-        Task {
-            do {
-                guard let timeZone = self.getTimeZone() else { return }
-                var calendar = Calendar.current
-                calendar.timeZone = timeZone
-                
-                let currentDate = Date()
-                guard let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else { return }
-                
-                let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
-                
-                self.hourlyWeathers = hourlyWeathers
-            } catch let error {
-                print(error.localizedDescription)
-            }
-        }
-    }
     
     func setAirQualityCondition(location: CLLocation) {
         let lat = location.coordinate.latitude.magnitude

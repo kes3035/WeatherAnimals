@@ -15,7 +15,7 @@ final class AirQualityCell: UICollectionViewCell {
     //MARK: - Properties
     
     private lazy var baseView = UIView().then {
-        $0.backgroundColor = UIColor(named: "background")
+        $0.backgroundColor = UIColor(named: "myBackground")
     }
     
     private lazy var airQualityValueLabel = UILabel().then {
@@ -77,7 +77,7 @@ final class AirQualityCell: UICollectionViewCell {
         case 301...:
             return ("위험", UIColor.darkGray)
         default:
-            return ("로딩중", UIColor(named: "black") ?? UIColor.black)
+            return ("로딩중", UIColor(named: "myBlack") ?? UIColor.black)
         }
     }
 }

@@ -57,7 +57,6 @@ extension AddVC: UITableViewDelegate {
                 let myData = [locationTitle: location]
                 
                 self.myViewModel.setMyData(with: myData)
-                self.myViewModel.setWeatherDataForDetailVC(for: location)
                 
                 self.myViewModel.didFetchWeather = {
                     detailVC.myViewModel = self.myViewModel

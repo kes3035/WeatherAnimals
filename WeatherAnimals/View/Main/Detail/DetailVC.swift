@@ -38,14 +38,6 @@ final class DetailVC: UIViewController {
                                                  action: #selector(buttonTapped(_:)))
     
     
-    lazy var weatherViewModel = WeatherViewModel() {
-        didSet {
-            DispatchQueue.main.async {
-                self.detailCollectionView.reloadData()
-            }
-        }
-    }
-    
     lazy var myViewModel = MyViewModel() {
         didSet {
             DispatchQueue.main.async {
@@ -69,7 +61,6 @@ final class DetailVC: UIViewController {
         case "취소":
             self.dismiss(animated: true)
         case "추가":
-            
             self.myViewModel.addWeatherModelIntoLocal()
             self.dismiss(animated: true)
         default:

@@ -13,17 +13,9 @@ final class WeekCell: UICollectionViewCell {
         $0.dataSource = self
         $0.isScrollEnabled = false
         $0.register(WeekWeatherCell.self, forCellReuseIdentifier: WeekWeatherCell.identifier)
-        $0.backgroundColor = UIColor(named: "background")
+        $0.backgroundColor = UIColor(named: "myBackground")
         $0.separatorStyle = .none
     }
-    
-//    var weatherViewModel = WeatherViewModel() {
-//        didSet {
-//            DispatchQueue.main.async {
-//                self.tenDaysTempView.reloadData()
-//            }
-//        }
-//    }
     
     lazy var myViewModel = MyViewModel() {
         didSet {
@@ -44,18 +36,9 @@ final class WeekCell: UICollectionViewCell {
     
     //MARK: - Helpers
     
-    private func configureWeekCellUI() {
-        self.backgroundColor = .white
-        self.contentView.addSubview(self.tenDaysTempView)
-        self.tenDaysTempView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.bottom.equalToSuperview()
-            $0.top.equalToSuperview()
-        }
-    }
+
     
-    private func getTempViewConstraints(index: Int) -> (Double, Double) {
-        guard let dayWeathers = self.myViewModel.getDailyWeathers() else { return (0.0, 0.0) }
+    private func getTempViewConstraints(dayWeathers: [DayWeather], index: Int) -> (Double, Double) {
         let maxTemp = dayWeathers.map { round($0.highTemperature.value) }.max() ?? 0.0
         let minTemp = dayWeathers.map { round($0.lowTemperature.value) }.min() ?? 0.0
         
@@ -81,10 +64,8 @@ final class WeekCell: UICollectionViewCell {
             dayOfWeeks.append(dayOfWeek)
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
         }
-        
         return dayOfWeeks
     }
-    
 }
 
 
@@ -96,12 +77,17 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeekWeatherCell.identifier, for: indexPath) as! WeekWeatherCell
-        guard let dayWeathers = self.myViewModel.getDailyWeathers(),
+        guard let weathers = self.myViewModel.getWeathers(),
+              let selectedIndex = self.myViewModel.getSelectedIndex(),
               let timeZone = self.myViewModel.getTimeZone() else { return cell }
         
-        cell.tempViewConstraints = self.getTempViewConstraints(index: indexPath.row)
+        let weather = weathers[selectedIndex]
+        let dailyWeather = weather.dailyWeathers
+        
+        
+        cell.tempViewConstraints = self.getTempViewConstraints(dayWeathers: dailyWeather, index: indexPath.row)
         cell.timeZone = timeZone
-        cell.dayWeather = dayWeathers[indexPath.row]
+        cell.dayWeather = dailyWeather[indexPath.row]
 
         if indexPath.row == 0 {
             cell.weekdaysTitleLabel.text = "오늘"
@@ -110,5 +96,17 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
         }
         
         return cell
+    }
+}
+
+extension WeekCell {
+    private func configureWeekCellUI() {
+        self.backgroundColor = .white
+        self.contentView.addSubview(self.tenDaysTempView)
+        self.tenDaysTempView.snp.makeConstraints {
+            $0.leading.equalToSuperview()
+            $0.trailing.bottom.equalToSuperview()
+            $0.top.equalToSuperview()
+        }
     }
 }

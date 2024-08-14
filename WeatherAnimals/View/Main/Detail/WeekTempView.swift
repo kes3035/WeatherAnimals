@@ -21,7 +21,7 @@ final class WeekTempView: UIView {
     
     override func draw(_ rect: CGRect) {
         // 전체 영역을 파란색으로 채웁니다.
-        UIColor(named: "black")?.setFill()
+        UIColor(named: "myBlack")?.setFill()
         UIRectFill(rect)
         
         

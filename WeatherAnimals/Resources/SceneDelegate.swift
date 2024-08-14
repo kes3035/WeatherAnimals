@@ -41,7 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 let locations: [CLLocation] = totalData.flatMap { $0.values }
                 let weathers = try await tabBC.myViewModel.getWeathers(for: locations)
-                
+
                 tabBC.myViewModel.setWeathers(with: weathers)
                 
                 try await Task.sleep(nanoseconds: 2_500_000_000)

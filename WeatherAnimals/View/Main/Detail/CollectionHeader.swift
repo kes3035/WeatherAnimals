@@ -83,8 +83,8 @@ final class CollectionHeader: UICollectionReusableView {
         self.leftBaseView.addSubviews(leftTitleLabel, leftTitleImageView, leftBottomBorder)
         self.addSubviews(leftBaseView, rightBaseView, baseView)
         
-        self.baseViews.forEach { $0.backgroundColor = UIColor(named: "background") }
-        self.borders.forEach { $0.backgroundColor = UIColor(named: "black") }
+        self.baseViews.forEach { $0.backgroundColor = UIColor(named: "myBackground") }
+        self.borders.forEach { $0.backgroundColor = UIColor(named: "myBlack") }
         
         self.baseView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(10)

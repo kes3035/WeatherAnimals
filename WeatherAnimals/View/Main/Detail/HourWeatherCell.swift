@@ -19,6 +19,8 @@ final class HourWeatherCell: UICollectionViewCell {
         $0.text = "로딩중"
         $0.font = UIFont.neoDeungeul(size: 12)
     }
+    
+    var timeZone: TimeZone?
 
     var hourWeather: HourWeather? {
         didSet {
@@ -26,7 +28,6 @@ final class HourWeatherCell: UICollectionViewCell {
         }
     }
     
-    var timeZone: TimeZone?
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {

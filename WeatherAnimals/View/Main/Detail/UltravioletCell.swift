@@ -55,14 +55,18 @@ final class UltravioletCell: UICollectionViewCell {
         case .low:
             return ("낮음", Constants.greenColor)
         case .moderate:
-            return ("보통", UIColor(named: "black") ?? UIColor.black)
+            return ("보통", UIColor(named: "myBlack") ?? UIColor.black)
         case .veryHigh:
             return ("매우 높음", UIColor.systemRed)
         }
     }
 
     private func configureUltravioletCellUIWithData() {
-        guard let currentWeather = self.myViewModel.getCurrentWeather() else { return }
+        guard let weathers = self.myViewModel.getWeathers(),
+        let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
+        
+        let weather = weathers[selectedIndex]
+        let currentWeather = weather.currentWeather
         
         let uvCategory = currentWeather.uvIndex.category
         
