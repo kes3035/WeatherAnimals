@@ -58,12 +58,7 @@ final class DetailView: UIView {
         $0.distribution = .fill
         $0.spacing = 14
     }
-    
-    lazy var myViewModel = MyViewModel() {
-        didSet {
-            guard let dayWeathers = self.myViewModel.getDailyWeathers()  else { return }
-        }
-    }
+
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -72,7 +67,6 @@ final class DetailView: UIView {
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-    //MARK: - Helpers
 }
 
 

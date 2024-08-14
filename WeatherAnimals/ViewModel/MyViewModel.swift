@@ -145,6 +145,10 @@ final class MyViewModel {
         }
         return weathers
     }
+    
+    func getWeathers(cellForRowAt indexPath: Int) -> Weather? {
+        return self.weathers?[indexPath]
+    }
    
     func getWeather(for location: CLLocation, completionHandler: @escaping((Weather)->())) {
         Task {
@@ -262,6 +266,10 @@ final class MyViewModel {
     
     func getSelectedLocation() -> CLLocation? {
         return self.selectedLocation
+    }
+    
+    func getSelectedIndex() -> Int? {
+        return self.indexOfSelectedCell
     }
     
     func getTimeZone() -> TimeZone? {

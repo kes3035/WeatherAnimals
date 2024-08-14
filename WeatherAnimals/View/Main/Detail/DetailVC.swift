@@ -48,7 +48,6 @@ final class DetailVC: UIViewController {
     
     lazy var myViewModel = MyViewModel() {
         didSet {
-            self.detailVCTopView.myViewModel = self.myViewModel
             DispatchQueue.main.async {
                 self.detailCollectionView.reloadData()
             }
@@ -255,15 +254,19 @@ extension DetailVC {
     }
     
     private func configureTopView() {
+        guard let weathers = self.myViewModel.getWeathers(),
+        let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
         
+        let weather = weathers[selectedIndex]
+        let currentTemp = String(round(weather.currentWeather.temperature.value)) +  "°"
+        let highTemp = "최고 : " + String(round(weather.dailyWeathers[0].highTemperature.value)) +  "°"
+        let lowTemp = "최저 : " + String(round(weather.dailyWeathers[0].lowTemperature.value)) +  "°"
         
-        
-        self.myViewModel.getDataForDetailVCTopView { currentTemp, highTemp, lowTemp in
-            DispatchQueue.main.async {
-                self.detailVCTopView.tempLabel.text = currentTemp
-                self.detailVCTopView.highestTempLabel.text = highTemp
-                self.detailVCTopView.lowestTempLabel.text = lowTemp
-            }
+        DispatchQueue.main.async {
+            self.detailVCTopView.tempLabel.text = currentTemp
+            self.detailVCTopView.highestTempLabel.text = highTemp
+            self.detailVCTopView.lowestTempLabel.text = lowTemp
+            
         }
     }
     
