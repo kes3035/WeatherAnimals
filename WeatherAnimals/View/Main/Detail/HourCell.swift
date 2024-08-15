@@ -18,6 +18,7 @@ final class HourCell: UICollectionViewCell {
     
     lazy var myViewModel = MyViewModel() {
         didSet {
+            
             DispatchQueue.main.async {
                 self.hourCellCV.reloadData()
             }
@@ -67,17 +68,14 @@ extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourWeatherCell.identifier, for: indexPath) as! HourWeatherCell
         
-        guard let weathers = self.myViewModel.getWeathers(),
-              let selectedIndex = self.myViewModel.getSelectedIndex(),
-              let timeZone = self.myViewModel.getTimeZone() else { return cell }
+        guard let timeZone = self.myViewModel.getTimeZone() else { return cell }
         
-        let weather = weathers[selectedIndex]
-        let hourlyWeather = weather.hourlyWeathers
-        
+        let hourlyWeathers = self.myViewModel.getHourlyWeathers()
         
         cell.timeZone = timeZone
-        cell.hourWeather = hourlyWeather[indexPath.section]
-        
+       
+        cell.hourWeather = hourlyWeathers[indexPath.row]
+                
         return cell
     }
     

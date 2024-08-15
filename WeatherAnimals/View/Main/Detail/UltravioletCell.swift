@@ -15,19 +15,19 @@ final class UltravioletCell: UICollectionViewCell {
     //MARK: - Properties
     
     private lazy var baseView = UIView().then {
-        $0.backgroundColor = UIColor(named: "background")
+        $0.backgroundColor = UIColor(named: "myBackground")
     }
     
     private lazy var uvValueLabel = UILabel().then {
         $0.text = "55"
         $0.font = UIFont.neoDeungeul(size: 50)
-        $0.textColor = UIColor(named: "black")
+        $0.textColor = UIColor(named: "myBlack")
     }
 
     private lazy var uvDescriptionLabel = UILabel().then {
         $0.text = "보통"
         $0.font = UIFont.neoDeungeul(size: 25)
-        $0.textColor = UIColor(named: "black")
+        $0.textColor = UIColor(named: "myBlack")
     }
 
     

@@ -26,7 +26,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         Task {
             do {
+                
+                
+                
                 let userLocation = try await tabBC.locationViewModel.fetchLocation()
+                //try await tabBC.myViewModel.testDateForWeather(location: userLocation)
+                
                 let userLocationTitle = try await tabBC.myViewModel.getLocationTitle(for: userLocation)
                 let timeZone = try await tabBC.myViewModel.getTimeZone(for: userLocation)
                 let userDict: LocationByTitle = [userLocationTitle: userLocation]
@@ -44,7 +49,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
                 tabBC.myViewModel.setWeathers(with: weathers)
                 
-                try await Task.sleep(nanoseconds: 2_500_000_000)
+                try await Task.sleep(nanoseconds: 1_500_000_000)
                 window.rootViewController = tabBC
             } catch {
                 print(error.localizedDescription)

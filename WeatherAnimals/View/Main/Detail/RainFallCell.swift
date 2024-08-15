@@ -40,7 +40,7 @@ final class RainFallCell: UICollectionViewCell {
         let weather = weathers[selectedIndex]
         
         let currentWeather = weather.currentWeather
-        let precipitationIntensity = String(currentWeather.precipitationIntensity.value)
+        let precipitationIntensity = String(round(currentWeather.precipitationIntensity.value))
         
         DispatchQueue.main.async {
             self.rainFallLabel.text = precipitationIntensity

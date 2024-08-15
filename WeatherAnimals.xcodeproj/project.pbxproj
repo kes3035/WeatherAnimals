@@ -24,10 +24,10 @@
 		216D32262B6B529400B1229C /* HourWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D32252B6B529300B1229C /* HourWeatherCell.swift */; };
 		2178D1222B8F489D001F8F67 /* AirQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2178D1212B8F489D001F8F67 /* AirQuality.swift */; };
 		2185388E2B9850E300337721 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2185388C2B9850E300337721 /* Model.xcdatamodeld */; };
+		218C0AEA2C6DCCCE00CA7576 /* MyWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218C0AE92C6DCCCE00CA7576 /* MyWeather.swift */; };
 		2191034F2B70E9BB007C5BF1 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2191034E2B70E9BB007C5BF1 /* Color.xcassets */; };
 		219103532B7228E6007C5BF1 /* HumidityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219103522B7228E6007C5BF1 /* HumidityCell.swift */; };
 		21937DE52B7CB3810088CE2C /* SettingHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21937DE42B7CB3810088CE2C /* SettingHeaderView.swift */; };
-		21937DE72B7CBB540088CE2C /* WeekTempView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21937DE62B7CBB540088CE2C /* WeekTempView.swift */; };
 		219937CD2AF1094900EC8518 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219937CC2AF1094900EC8518 /* WeatherViewModel.swift */; };
 		219937CF2AF10ECE00EC8518 /* WeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219937CE2AF10ECE00EC8518 /* WeatherCell.swift */; };
 		21A439F72C2D5B7400C20A54 /* MyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A439F62C2D5B7400C20A54 /* MyViewModel.swift */; };
@@ -70,10 +70,10 @@
 		216D32252B6B529300B1229C /* HourWeatherCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HourWeatherCell.swift; sourceTree = "<group>"; };
 		2178D1212B8F489D001F8F67 /* AirQuality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirQuality.swift; sourceTree = "<group>"; };
 		2185388D2B9850E300337721 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		218C0AE92C6DCCCE00CA7576 /* MyWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWeather.swift; sourceTree = "<group>"; };
 		2191034E2B70E9BB007C5BF1 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
 		219103522B7228E6007C5BF1 /* HumidityCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumidityCell.swift; sourceTree = "<group>"; };
 		21937DE42B7CB3810088CE2C /* SettingHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingHeaderView.swift; sourceTree = "<group>"; };
-		21937DE62B7CBB540088CE2C /* WeekTempView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekTempView.swift; sourceTree = "<group>"; };
 		219937CC2AF1094900EC8518 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		219937CE2AF10ECE00EC8518 /* WeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCell.swift; sourceTree = "<group>"; };
 		21A439F62C2D5B7400C20A54 /* MyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyViewModel.swift; sourceTree = "<group>"; };
@@ -134,6 +134,7 @@
 				216D32152B68F48000B1229C /* MyLocation.swift */,
 				2178D1212B8F489D001F8F67 /* AirQuality.swift */,
 				2185388C2B9850E300337721 /* Model.xcdatamodeld */,
+				218C0AE92C6DCCCE00CA7576 /* MyWeather.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -179,7 +180,6 @@
 				216D32252B6B529300B1229C /* HourWeatherCell.swift */,
 				212E38952B5BC80100F487B2 /* WeekCell.swift */,
 				21AA8CD82B494B68008AABC5 /* WeekWeatherCell.swift */,
-				21937DE62B7CBB540088CE2C /* WeekTempView.swift */,
 				216D321C2B68F62F00B1229C /* AirQualityCell.swift */,
 				21C292562B61196800312759 /* UltravioletCell.swift */,
 				216D321B2B68F62F00B1229C /* SunsetCell.swift */,
@@ -435,10 +435,10 @@
 				212E38892B5B9DBA00F487B2 /* CollectionHeader.swift in Sources */,
 				21F47D8F2B45463B0066F86E /* SettingVC.swift in Sources */,
 				21D4C6DA2AF3DF100048CF65 /* LocationViewModel.swift in Sources */,
-				21937DE72B7CBB540088CE2C /* WeekTempView.swift in Sources */,
 				216D320D2B68EFCA00B1229C /* Extensions.swift in Sources */,
 				219937CF2AF10ECE00EC8518 /* WeatherCell.swift in Sources */,
 				212E389B2B5E537400F487B2 /* HeaderView.swift in Sources */,
+				218C0AEA2C6DCCCE00CA7576 /* MyWeather.swift in Sources */,
 				216CA64F2B8A16F100A56C8D /* APIKey.swift in Sources */,
 				216D32262B6B529400B1229C /* HourWeatherCell.swift in Sources */,
 				21A439F72C2D5B7400C20A54 /* MyViewModel.swift in Sources */,

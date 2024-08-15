@@ -40,7 +40,7 @@ final class ApparentTempCell: UICollectionViewCell {
               let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
         let weather = weathers[selectedIndex]
         let currentWeather = weather.currentWeather
-        let apparentTemp = String(currentWeather.apparentTemperature.value)
+        let apparentTemp = String(round(currentWeather.apparentTemperature.value))
         let apparentTempSymbol = currentWeather.apparentTemperature.unit.symbol
         
         DispatchQueue.main.async {

@@ -54,7 +54,7 @@ extension HumidityCell {
         
         self.backgroundColor = .clear
         
-        self.baseView.backgroundColor = UIColor(named: "background")
+        self.baseView.backgroundColor = UIColor(named: "myBackground")
         
         self.baseView.addSubview(self.humidityLabel)
         

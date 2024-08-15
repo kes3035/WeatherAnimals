@@ -98,9 +98,8 @@ final class WeekWeatherCell: UITableViewCell {
 
 extension WeekWeatherCell {
     private func configureWeekWeatherCellUI() {
-        
-        self.contentView.backgroundColor = UIColor(named: "background")
-        
+        self.backgroundView?.backgroundColor = UIColor(named: "myBackground")
+                
         self.contentView.addSubviews(weekdaysTitleLabel, weatherImageView, rainFall, highTempLabel, lowTempLabel, tempColorView, customSeparator)
         
         self.tempColorView.addSubview(self.tempView)

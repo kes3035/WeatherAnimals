@@ -1,5 +1,6 @@
 import UIKit
 import WeatherKit
+import CoreLocation
 
 final class HourWeatherCell: UICollectionViewCell {
     static let identifier = "HourWeatherCell"
@@ -27,7 +28,7 @@ final class HourWeatherCell: UICollectionViewCell {
             self.configureUIWithData()
         }
     }
-    
+
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -42,17 +43,14 @@ final class HourWeatherCell: UICollectionViewCell {
     private func configureUIWithData() {
         guard let hourWeather = self.hourWeather,
         let timeZone = self.timeZone else { return }
-
-        var calendar = Calendar.current
-        calendar.timeZone = timeZone
-        
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "a h:mm"
-        dateFormatter.calendar = calendar
+        dateFormatter.timeZone = timeZone
         dateFormatter.locale = Locale(identifier:"ko_KR")
+        print(hourWeather.date)
         let dateString = dateFormatter.string(from: hourWeather.date)
-        
+        print(dateString)
         DispatchQueue.main.async {
             self.topLabel.text = dateString
             self.tempLabel.text = round(hourWeather.temperature.value).description + String(UnicodeScalar(0x00B0))
