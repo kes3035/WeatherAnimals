@@ -39,15 +39,12 @@ final class WeatherCell: UITableViewCell {
         $0.backgroundColor = .gray
     }
 
-    var title: String?
     
-    var currentWeather: CurrentWeather? {
+    lazy var myViewModel = MyViewModel() {
         didSet {
-            self.configureWeatherCellUIWithData(self.currentWeather)
+            self.configureWeatherCellUIWithData()
         }
     }
-    
-    lazy var myViewModel = MyViewModel()         
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
@@ -58,13 +55,17 @@ final class WeatherCell: UITableViewCell {
     
     
 //MARK: - Helpers
-    private func configureWeatherCellUIWithData(_ currentWeather: CurrentWeather?) {
-        guard let currentWeather = currentWeather,
-              let title = self.title else { return }
+    private func configureWeatherCellUIWithData() {
+        guard let weathers = self.myViewModel.getWeathers(),
+              let locationByTitle = self.myViewModel.getLocationByTitle(),
+              let selectedIndex = self.myViewModel.getSelectedIndex(),
+              let locationAddress = locationByTitle[selectedIndex].keys.first else { return }
+        
+        let currentWeather = weathers[selectedIndex].currentWeather
         
         self.currentTempLabel.text = String(round(currentWeather.temperature.value))
         self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
-        self.locationAddressLabel.text = title
+        self.locationAddressLabel.text = locationAddress
     }
 }
 

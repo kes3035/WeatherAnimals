@@ -23,6 +23,12 @@ final class WeekWeatherCell: UITableViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
+    private lazy var precipitationChanceLabel = UILabel().then {
+        $0.textColor = .blue
+        $0.text = ""
+        $0.font = UIFont.neoDeungeul(size: 16)
+    }
+    
     private lazy var highTempLabel = UILabel().then {
         $0.text = "20"
         $0.textAlignment = .right
@@ -42,12 +48,7 @@ final class WeekWeatherCell: UITableViewCell {
     private lazy var tempView = UIView().then {
         $0.backgroundColor = Constants.greenColor
     }
-    
-    private lazy var rainFall = UILabel().then {
-        $0.font = UIFont.neoDeungeul(size: 16)
-        $0.textColor = UIColor.systemBlue
-    }
-    
+
     private lazy var customSeparator = UIView().then {
         $0.backgroundColor = UIColor(named: "myBlack")
     }
@@ -75,22 +76,25 @@ final class WeekWeatherCell: UITableViewCell {
     private func configureWeekWeatherCellUIWithData() {
         guard let dayWeather = self.dayWeather,
               let (leading, width) = self.tempViewConstraints else { return }
-        
+
         DispatchQueue.main.async {
             self.highTempLabel.text = String(round(dayWeather.highTemperature.value)) + String(UnicodeScalar(0x00B0))
             self.lowTempLabel.text = String(round(dayWeather.lowTemperature.value)) + String(UnicodeScalar(0x00B0))
             self.weatherImageView.image = UIImage(named: dayWeather.symbolName)
-            
-            if dayWeather.precipitationChance.magnitude >= 2.0  {
-                self.rainFall.text = String(Int(round(dayWeather.precipitationChance.magnitude))) + "%"
-            }
-            
             self.tempView.snp.remakeConstraints {
                 $0.top.bottom.equalToSuperview()
                 $0.leading.equalToSuperview().offset(leading*86.333333)
                 $0.width.equalTo(width*86.333333)
             }
         }
+        let precipitationChance = Int(dayWeather.precipitationChance*100)
+
+
+        guard precipitationChance >= 20 && dayWeather.symbolName.contains("rain") else { return }
+        DispatchQueue.main.async {
+            self.precipitationChanceLabel.text = String(precipitationChance) + "%"
+        }
+        
     }
 }
 
@@ -98,9 +102,10 @@ final class WeekWeatherCell: UITableViewCell {
 
 extension WeekWeatherCell {
     private func configureWeekWeatherCellUI() {
-        self.backgroundView?.backgroundColor = UIColor(named: "myBackground")
-                
-        self.contentView.addSubviews(weekdaysTitleLabel, weatherImageView, rainFall, highTempLabel, lowTempLabel, tempColorView, customSeparator)
+        
+        self.contentView.backgroundColor = UIColor(named: "myBackground")
+        self.contentView.addSubviews(weekdaysTitleLabel, weatherImageView, precipitationChanceLabel,
+                                     highTempLabel, lowTempLabel, tempColorView, customSeparator)
         
         self.tempColorView.addSubview(self.tempView)
         
@@ -117,7 +122,7 @@ extension WeekWeatherCell {
             $0.height.width.equalTo(30)
         }
         
-        self.rainFall.snp.makeConstraints {
+        self.precipitationChanceLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(self.weatherImageView.snp.trailing).offset(10)
             $0.height.width.equalTo(30)

@@ -133,8 +133,8 @@
 			children = (
 				216D32152B68F48000B1229C /* MyLocation.swift */,
 				2178D1212B8F489D001F8F67 /* AirQuality.swift */,
-				2185388C2B9850E300337721 /* Model.xcdatamodeld */,
 				218C0AE92C6DCCCE00CA7576 /* MyWeather.swift */,
+				2185388C2B9850E300337721 /* Model.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";

@@ -48,9 +48,9 @@ final class HourWeatherCell: UICollectionViewCell {
         dateFormatter.dateFormat = "a h:mm"
         dateFormatter.timeZone = timeZone
         dateFormatter.locale = Locale(identifier:"ko_KR")
-        print(hourWeather.date)
+
         let dateString = dateFormatter.string(from: hourWeather.date)
-        print(dateString)
+
         DispatchQueue.main.async {
             self.topLabel.text = dateString
             self.tempLabel.text = round(hourWeather.temperature.value).description + String(UnicodeScalar(0x00B0))

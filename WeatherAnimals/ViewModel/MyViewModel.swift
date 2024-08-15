@@ -12,7 +12,6 @@ import CoreData
 
 typealias LocationByTitle = [String:CLLocation]
 
-// 통합 뷰모델
 final class MyViewModel {
 
     private var myData: LocationByTitle?
@@ -27,7 +26,7 @@ final class MyViewModel {
     
     private var timeZone: TimeZone?
     
-    private var indexOfSelectedCell: Int?
+    private var selectedIndex: Int?
     
     private var selectedLocation: CLLocation? {
         didSet {
@@ -49,7 +48,7 @@ final class MyViewModel {
         self.locationByTitle?.append(myData)
     }
     
-    func getCoreDataLocationByTitle(_ myDatas: [MyData]) async throws -> [LocationByTitle] {
+    func fetchCoreDataLocationByTitle(_ myDatas: [MyData]) async throws -> [LocationByTitle] {
         guard !myDatas.isEmpty else { return [] }
         
         let temporaryArr: [[String: CLLocation]] = myDatas.map { myData in
@@ -82,52 +81,40 @@ final class MyViewModel {
         return utcCalendar.date(from: components) ?? Date()
     }
     
+    func addWeatherModelIntoLocal() {
+        DispatchQueue.main.async {
+            guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+            let context = sceneDelegate.persistentContainer.viewContext
+            guard let entity = NSEntityDescription.entity(forEntityName: "MyData",
+                                                          in: context),
+                  let myNewData = self.myData,
+            let locationByTitle = self.getLocationByTitle() else { return }
+           
+            
+            let indexOfNewModel = locationByTitle.endIndex
+            
+
+            let myData = NSManagedObject(entity: entity, insertInto: context)
+            
+
+            myData.setValue(myNewData.values.first!.coordinate.latitude, forKey: "latitude")
+            myData.setValue(myNewData.values.first!.coordinate.longitude, forKey: "longitude")
+            myData.setValue(myNewData.keys.first!, forKey: "title")
+            myData.setValue(Int16(indexOfNewModel), forKey: "index")
+
+            do {
+                try context.save()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
     
+    //MARK: - Fetcher
     
-    //MARK: - Getter
-    func testDateForWeather(location: CLLocation) async throws {
-        let weather = try await WeatherService.shared.weather(for: location)
-        
-        print("Current Date = \(Date())")
-        
-        print("weather.currentWeather.date = \(weather.currentWeather.date)")
-        print("weather.dailyForecast.forecast.count = \(weather.dailyForecast.forecast.count)")
-        print("weather.dailyForecast.forecast.first?.date = \(String(describing: weather.dailyForecast.forecast.first?.date))")
-        print("weather.dailyForecast.forecast.last?.date = \(String(describing: weather.dailyForecast.forecast.last?.date))")
-        print("weather.hourlyForecast.forecast.count = \(weather.hourlyForecast.forecast.count)")
-        print("weather.hourlyForecast.forecast.first?.date = \(String(describing: weather.hourlyForecast.forecast.first?.date))")
-        print("weather.hourlyForecast.forecast.last?.date = \(String(describing: weather.hourlyForecast.forecast.last?.date))")
-        
+    func fetchWeather(for location: CLLocation) async throws -> MyWeather {
         let currentDate = Date()
         let calendar = Calendar.current
-        
-        guard let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else {
-            throw NSError(domain: "DateCalculationError", code: 0, userInfo: nil)
-        }
-        
-        print("------------------------------------------------------------------------------------")
-                
-        let currentWeather = weather.currentWeather
-        let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater))
-        print("currentWeather.date = \(currentWeather.date)")
-        print("hourlyWeathers.count = \(hourlyWeathers.count)")
-        print("hourlyWeathers.first?.date = \(String(describing: hourlyWeathers.first?.date))")
-        print("hourlyWeathers.last?.date = \(String(describing: hourlyWeathers.last?.date))")
-        
-    }
-    
-    
-    func getLocationByTitle() -> [LocationByTitle]? {
-        return self.locationByTitle
-    }
-    
-    func getWeathers() -> [MyWeather]? {
-        return self.weathers
-    }
-    
-    func getWeather(for location: CLLocation) async throws -> MyWeather {
-        let currentDate = Date()
-        var calendar = Calendar.current
         
         guard let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else {
             throw NSError(domain: "DateCalculationError", code: 0, userInfo: nil)
@@ -144,32 +131,17 @@ final class MyViewModel {
         return myWeather
     }
     
-    func getWeathers(for locations: [CLLocation]) async throws -> [MyWeather] {
+    func fetchWeathers(for locations: [CLLocation]) async throws -> [MyWeather] {
         var weathers: [MyWeather] = []
         
         for location in locations {
-            let weather = try await getWeather(for: location)
+            let weather = try await fetchWeather(for: location)
             weathers.append(weather)
         }
         return weathers
     }
     
-    func getWeathers(cellForRowAt indexPath: Int) -> MyWeather? {
-        return self.weathers?[indexPath]
-    }
-    
-    func getWeatherCellCount() -> Int {
-        guard let locationByTitle = self.locationByTitle else { return 0 }
-        return locationByTitle.count
-    }
-    
-    func getWeatherCellData(forRowAt indexPath: Int) -> [String: CLLocation] {
-        guard let locationByTitle = self.locationByTitle else { return [:] }
-        return locationByTitle[indexPath]
-    }
-
-    
-    func getMyLocationTitle(location: CLLocation, completion: @escaping((String) -> ())) {
+    func fetchMyLocationTitle(location: CLLocation, completion: @escaping((String) -> ())) {
         let geocoder = CLGeocoder()
         let locale = Locale(identifier: "Ko-kr")
         DispatchQueue.global().async {
@@ -189,7 +161,7 @@ final class MyViewModel {
         }
     }
     
-    func getLocationTitle(for location: CLLocation) async throws -> String {
+    func fetchLocationTitle(for location: CLLocation) async throws -> String {
         let geocoder = CLGeocoder()
         let locale = Locale(identifier: "Ko-kr")
         
@@ -219,37 +191,7 @@ final class MyViewModel {
         }
     }
     
-    func getHourlyWeathers() -> [HourWeather] {
-        guard let weathers = self.weathers,
-              let selectedIndex = self.indexOfSelectedCell else { return [] }
-        
-        return weathers[selectedIndex].hourlyWeathers
-    }
-    
-    func getDailyWeathers() -> [DayWeather] {
-        guard let weathers = self.weathers,
-              let selectedIndex = self.indexOfSelectedCell else { return [] }
-        
-        return weathers[selectedIndex].dailyWeathers
-    }
-    
-    func getAirQualityCondition() -> AirQuality? {
-        return self.airQuality
-    }
-    
-    func getSelectedLocation() -> CLLocation? {
-        return self.selectedLocation
-    }
-    
-    func getSelectedIndex() -> Int? {
-        return self.indexOfSelectedCell
-    }
-    
-    func getTimeZone() -> TimeZone? {
-        return self.timeZone
-    }
-    
-    func getTimeZone(for location: CLLocation) async throws -> TimeZone {
+    func fetchTimeZone(for location: CLLocation) async throws -> TimeZone {
         return try await withCheckedThrowingContinuation { continuation in
             let geocoder = CLGeocoder()
             geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
@@ -266,7 +208,56 @@ final class MyViewModel {
             }
         }
     }
-
+    
+    
+    //MARK: - Getter
+    func getLocationByTitle() -> [LocationByTitle]? {
+        return self.locationByTitle
+    }
+    
+    func getWeathers() -> [MyWeather]? {
+        return self.weathers
+    }
+    
+    
+    func getWeathers(cellForRowAt indexPath: Int) -> MyWeather? {
+        return self.weathers?[indexPath]
+    }
+    
+    func getWeatherCellCount() -> Int {
+        guard let locationByTitle = self.locationByTitle else { return 0 }
+        return locationByTitle.count
+    }
+    
+    func getHourlyWeathers() -> [HourWeather] {
+        guard let weathers = self.weathers,
+              let selectedIndex = self.selectedIndex else { return [] }
+        
+        return weathers[selectedIndex].hourlyWeathers
+    }
+    
+    func getDailyWeathers() -> [DayWeather] {
+        guard let weathers = self.weathers,
+              let selectedIndex = self.selectedIndex else { return [] }
+        
+        return weathers[selectedIndex].dailyWeathers
+    }
+    
+    func getAirQualityCondition() -> AirQuality? {
+        return self.airQuality
+    }
+    
+    func getSelectedLocation() -> CLLocation? {
+        return self.selectedLocation
+    }
+    
+    func getSelectedIndex() -> Int? {
+        return self.selectedIndex
+    }
+    
+    func getTimeZone() -> TimeZone? {
+        return self.timeZone
+    }
     
     //MARK: - Setter
     func setUserLocation(with userLocation: CLLocation?) {
@@ -288,19 +279,7 @@ final class MyViewModel {
     func setMyDatas(with myDatas: [[String:CLLocation]]?) {
         self.locationByTitle = myDatas
     }
-    
-//    func setWeathers(with locationByTitle: [LocationByTitle]) async {
-//        var weathers: [Weather] = []
-//
-//        for locByTitle in locationByTitle {
-//            guard let location = locByTitle.values.first else { continue }
-//
-//            let weather = await getWeather(for: location)
-//            weathers.append(weather)
-//        }
-//
-//        self.weathers = weathers
-//    }
+
     
     func setWeathers(with weathers: [MyWeather]) {
         self.weathers = weathers
@@ -308,34 +287,11 @@ final class MyViewModel {
     
     
     func setSelectedCellIndex(cellForRowAt indexPath: IndexPath) {
-        self.indexOfSelectedCell = indexPath.row
+        self.selectedIndex = indexPath.row
     }
     
     func setSelectedLocation(cellForRowAt indexPath: IndexPath) {
         self.selectedLocation = self.locationByTitle?[indexPath.row].values.first!
-    }
-    
-    func setWeather(for location: CLLocation) {
-        Task {
-            do {
-                guard let timeZone = self.getTimeZone() else { return }
-                var calendar = Calendar.current
-                calendar.timeZone = timeZone
-                
-                let currentDate = Date()
-
-                guard let tenDaysLater = calendar.date(byAdding: .day, value: 10, to: currentDate),
-                      let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else { return }
-                
-                let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
-                let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily(startDate: currentDate, endDate: tenDaysLater)).forecast
-                let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
-
-                self.didFetchWeather?()
-            } catch let error {
-                print(error.localizedDescription)
-            }
-        }
     }
 
     
@@ -379,44 +335,8 @@ final class MyViewModel {
         }
         task.resume()
     }
-    
-    
-    // Issue: AddCoreData Logic should modify
-    /*
-     현재 내가 가진 myDatas의 endIndex를 새롭게 저장할 데이터의 인덱스로 저장해야 함
-     */
-    
-    func addWeatherModelIntoLocal() {
-        DispatchQueue.main.async {
-            guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
-            let context = sceneDelegate.persistentContainer.viewContext
-            guard let entity = NSEntityDescription.entity(forEntityName: "MyData",
-                                                          in: context),
-                  let myNewData = self.myData,
-            let locationByTitle = self.getLocationByTitle() else { return }
-           
-            
-            let indexOfNewModel = locationByTitle.endIndex
-            
 
-            let myData = NSManagedObject(entity: entity, insertInto: context)
-            
-
-            myData.setValue(myNewData.values.first!.coordinate.latitude, forKey: "latitude")
-            myData.setValue(myNewData.values.first!.coordinate.longitude, forKey: "longitude")
-            myData.setValue(myNewData.keys.first!, forKey: "title")
-            myData.setValue(Int16(indexOfNewModel), forKey: "index")
-//            self.myDatas?.append(myNewData)
-
-            do {
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
-            
-            
-        }
-    }
+    
     
     func setTimeZone(for location: CLLocation) {
         let geocoder = CLGeocoder()
@@ -435,15 +355,37 @@ final class MyViewModel {
     func setTimeZone(with timeZone: TimeZone) {
         self.timeZone = timeZone
     }
-    
-//
-//    func getHourlyWeather(location: CLLocation, completion: @escaping(([HourWeather])->())) {
-//        do {
-//            let hourWeathers = try await WeatherService.shared.weather(for: location, including: .hourly)
-//            completion(hourWeathers.forecast)
-//        } catch let error {
-//            print(error.localizedDescription)
-//        }
-//    }
+}
 
+extension MyViewModel {
+    func testDateForWeather(location: CLLocation) async throws {
+        let weather = try await WeatherService.shared.weather(for: location)
+        
+        print("Current Date = \(Date())")
+        
+        print("weather.currentWeather.date = \(weather.currentWeather.date)")
+        print("weather.dailyForecast.forecast.count = \(weather.dailyForecast.forecast.count)")
+        print("weather.dailyForecast.forecast.first?.date = \(String(describing: weather.dailyForecast.forecast.first?.date))")
+        print("weather.dailyForecast.forecast.last?.date = \(String(describing: weather.dailyForecast.forecast.last?.date))")
+        print("weather.hourlyForecast.forecast.count = \(weather.hourlyForecast.forecast.count)")
+        print("weather.hourlyForecast.forecast.first?.date = \(String(describing: weather.hourlyForecast.forecast.first?.date))")
+        print("weather.hourlyForecast.forecast.last?.date = \(String(describing: weather.hourlyForecast.forecast.last?.date))")
+        
+        let currentDate = Date()
+        let calendar = Calendar.current
+        
+        guard let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else {
+            throw NSError(domain: "DateCalculationError", code: 0, userInfo: nil)
+        }
+        
+        print("------------------------------------------------------------------------------------")
+                
+        let currentWeather = weather.currentWeather
+        let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater))
+        print("currentWeather.date = \(currentWeather.date)")
+        print("hourlyWeathers.count = \(hourlyWeathers.count)")
+        print("hourlyWeathers.first?.date = \(String(describing: hourlyWeathers.first?.date))")
+        print("hourlyWeathers.last?.date = \(String(describing: hourlyWeathers.last?.date))")
+        
+    }
 }

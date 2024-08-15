@@ -17,7 +17,6 @@ final class MainVC: UIViewController {
         $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(plusButtonTapped(_:))))
     }
     
-    // 현재까지는 코어 데이터와 유저 데이터를 이용해서 만든 [지역명:위치] 배열만 존재함
     lazy var myViewModel = MyViewModel()
         
     private lazy var locationViewModel = LocationViewModel()
@@ -29,8 +28,6 @@ final class MainVC: UIViewController {
         self.settingMainVCNav()
         self.settingTV()
     }
-    
-    
     //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
         let addVC = AddVC()
@@ -50,23 +47,14 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
-        
-        guard let locationByTitle = self.myViewModel.getLocationByTitle(),
-              let title = locationByTitle[indexPath.row].keys.first,
-              let weathers = self.myViewModel.getWeathers() else { return cell }
-        
-        cell.title = title
-        cell.currentWeather = weathers[indexPath.row].currentWeather
 
+        self.myViewModel.setSelectedCellIndex(cellForRowAt: indexPath)
+        cell.myViewModel = self.myViewModel
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // totalData : [LocationByTitle]
-        // Weathers: [Weather]
-
         self.myViewModel.setSelectedCellIndex(cellForRowAt: indexPath)
-        
         self.myViewModel.setSelectedLocation(cellForRowAt: indexPath)
         
         let detailVC = DetailVC()

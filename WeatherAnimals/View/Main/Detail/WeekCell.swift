@@ -101,7 +101,7 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
 
 extension WeekCell {
     private func configureWeekCellUI() {
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor(named: "myBackground")
         self.contentView.addSubview(self.tenDaysTempView)
         self.tenDaysTempView.snp.makeConstraints {
             $0.leading.equalToSuperview()
