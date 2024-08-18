@@ -14,7 +14,6 @@ final class DetailVC: UIViewController {
         $0.dataSource = self
         $0.backgroundColor = .white
         $0.showsVerticalScrollIndicator = false
-        
         $0.register(HourCell.self, forCellWithReuseIdentifier: HourCell.identifier)
         $0.register(WeekCell.self, forCellWithReuseIdentifier: WeekCell.identifier)
         $0.register(AirQualityCell.self, forCellWithReuseIdentifier: AirQualityCell.identifier)

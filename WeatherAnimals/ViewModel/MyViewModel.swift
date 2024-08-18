@@ -119,16 +119,22 @@ final class MyViewModel {
         guard let tenHoursLater = calendar.date(byAdding: .hour, value: 10, to: currentDate) else {
             throw NSError(domain: "DateCalculationError", code: 0, userInfo: nil)
         }
-        
-        let weather = try await WeatherService.shared.weather(for: location)
-        
-        let currentWeather = weather.currentWeather
-        let dailyWeathers = weather.dailyForecast.forecast
-        let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
-        
-        let myWeather = MyWeather(currentWeather: currentWeather, dailyWeathers: dailyWeathers, hourlyWeathers: hourlyWeathers)
-        
-        return myWeather
+        do {
+            let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
+            let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily).forecast
+            let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
+            
+            guard !dailyWeathers.isEmpty, !hourlyWeathers.isEmpty else {
+                throw NSError(domain: "WeatherDataError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No weather data available"])
+            }
+            
+            let myWeather = MyWeather(currentWeather: currentWeather, dailyWeathers: dailyWeathers, hourlyWeathers: hourlyWeathers)
+            return myWeather
+            
+        } catch {
+            print("Failed to fetch weather: \(error.localizedDescription)")
+            throw error
+        }
     }
     
     func fetchWeathers(for locations: [CLLocation]) async throws -> [MyWeather] {
