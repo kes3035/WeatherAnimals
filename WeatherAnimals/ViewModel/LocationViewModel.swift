@@ -8,11 +8,6 @@ final class LocationViewModel: CLLocationManager, CLLocationManagerDelegate {
     private var userLocation: CLLocation?
     
     var authorizationStatusOfLocation: Bool?
-    
-    
-    //MARK: - Inputs
-    
-    
     //MARK: - Outpus
     // 동작을 담아주기 위해 클로저를 만들어 줌
     private var fetchLocationCompletion: FetchLocationCompletion?
@@ -61,9 +56,9 @@ final class LocationViewModel: CLLocationManager, CLLocationManagerDelegate {
     }
     
     func fetchLocation() async throws -> CLLocation {
-        return try await withCheckedThrowingContinuation { continuation in
-            self.requestLocation()
-            self.fetchLocationCompletion = { location, error in
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            self?.requestLocation()
+            self?.fetchLocationCompletion = { location, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else if let location = location {
@@ -85,9 +80,13 @@ extension LocationViewModel {
         let latestLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         self.userLocation = latestLocation
         // coordinate 값을 갖고 저장 한, 동작을 실행
-        self.fetchLocationCompletion?(latestLocation, nil)
-        // 위의 실행 후 클로저 초기화
-        self.fetchLocationCompletion = nil
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            self?.fetchLocationCompletion?(latestLocation, nil)
+            // 위의 실행 후 클로저 초기화
+            self?.fetchLocationCompletion = nil
+
+        }
+        
     }
     
     // 잠재적인 오류에 응답하기 위해서 생성
@@ -95,9 +94,12 @@ extension LocationViewModel {
         print("Unable to Fetch Location (\(error))")
         
         // 에러발생 시 저장된 값을 갖고 동작을 실행
-        self.fetchLocationCompletion?(nil, error)
-        // 위의 실행 후 클로저 초기화
-        self.fetchLocationCompletion = nil
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            self?.fetchLocationCompletion?(nil, error)
+            // 위의 실행 후 클로저 초기화
+            self?.fetchLocationCompletion = nil
+        }
+
     }
     
     // 현재 인증 상태 확인
@@ -116,8 +118,6 @@ extension LocationViewModel {
         default: break
         }
     }
-    
-   
 }
 
 

@@ -122,8 +122,8 @@ final class MyViewModel {
         do {
             let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
             let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily).forecast
-            let hourlyWeathers = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater)).forecast
-            
+            let hourlyForecasts = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater))
+            let hourlyWeathers = hourlyForecasts.forecast
             guard !dailyWeathers.isEmpty, !hourlyWeathers.isEmpty else {
                 throw NSError(domain: "WeatherDataError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No weather data available"])
             }
