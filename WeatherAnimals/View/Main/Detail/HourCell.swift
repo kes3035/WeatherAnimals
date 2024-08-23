@@ -42,7 +42,7 @@ final class HourCell: UICollectionViewCell {
         self.contentView.snp.makeConstraints { $0.edges.equalToSuperview() }
         self.hourCellCV.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(5)
+            $0.bottom.equalToSuperview()
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
         }

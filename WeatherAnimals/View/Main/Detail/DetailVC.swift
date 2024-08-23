@@ -36,7 +36,8 @@ final class DetailVC: UIViewController {
                                                  target: self,
                                                  action: #selector(buttonTapped(_:)))
     
-    
+    private let itemsInSection = [1, 1, 2, 2, 2]
+
     lazy var myViewModel = MyViewModel() {
         didSet {
             DispatchQueue.main.async {
@@ -44,9 +45,6 @@ final class DetailVC: UIViewController {
             }
         }
     }
-    
-    private let itemsInSection = [1, 1, 2, 2, 2]
-    
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -104,53 +102,45 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
 extension DetailVC: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
         // 양옆위아래에서 10만큼 유격
         let sectionInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         
         // 콜렉션뷰 너비, 높이(view너비, 높이)
         let width = collectionView.frame.width
+        let height = collectionView.frame.height
         
         // 행별로 존재하는 아이템 수
-        
         switch indexPath.section {
         case 0:
             // 시간별 날씨 셀
             let itemsPerRow: CGFloat = 1
-            let widthPadding = sectionInsets.left * (itemsPerRow + 1)
+            let widthPadding = sectionInsets.left * (itemsPerRow + 1) // 20
+            let cellWidth = (width - widthPadding) / itemsPerRow      // width-20
             
-            let cellWidth = (width - widthPadding) / itemsPerRow
-            return CGSize(width: cellWidth, height: collectionView.frame.height/7)
+            return CGSize(width: cellWidth, height: height/7)
         case 1:
             // 주간 날씨 셀
             let itemsPerRow: CGFloat = 1
-            let itemsPerColumn: CGFloat = 1
             let widthPadding = sectionInsets.left * (itemsPerRow + 1)
-            
             let cellWidth = (width - widthPadding) / itemsPerRow
-            return CGSize(width: cellWidth, height: collectionView.frame.height/1.45)
+            
+            return CGSize(width: cellWidth, height: height/1.45)
         case 2,3,4:
             // 2, 3, 4번 셀
-            // 양옆위아래에서 10만큼 유격
-            let sectionInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-            
-            // 콜렉션뷰 너비, 높이(view너비, 높이)
-            let width = collectionView.frame.width
-            let height = collectionView.frame.height
-            
             // 행별로 존재하는 아이템 수
             let itemsPerRow: CGFloat = 2
             let itemsPerColumn: CGFloat = 1
-            
+              
             let widthPadding = sectionInsets.left * (itemsPerRow + 1)
-            let heightPadding = sectionInsets.top * (itemsPerColumn + 1)
             
             let cellWidth = (width - widthPadding) / itemsPerRow
-            let cellHeight = (height - heightPadding) / itemsPerColumn
+//            let cellHeight = (height - heightPadding) / itemsPerColumn
             
             let size = CGSize(width: cellWidth, height: cellWidth - 30)
             return size
         default:
-            return CGSize(width: collectionView.frame.width, height: 100)
+            return CGSize(width: width, height: 100)
         }
     }
     
@@ -178,6 +168,7 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         
         return firstHeader
     }
+    
 }
 
 
