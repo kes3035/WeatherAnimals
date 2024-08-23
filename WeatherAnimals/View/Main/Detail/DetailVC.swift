@@ -22,16 +22,16 @@ final class DetailVC: UIViewController {
         $0.register(ApparentTempCell.self, forCellWithReuseIdentifier: ApparentTempCell.identifier)
         $0.register(RainFallCell.self, forCellWithReuseIdentifier: RainFallCell.identifier)
         $0.register(HumidityCell.self, forCellWithReuseIdentifier: HumidityCell.identifier)
-        $0.register(CollectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionHeader.identifier) 
+        $0.register(CollectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionHeader.identifier)
         
     }
     
-    private lazy var cancelButton = UIBarButtonItem(title: "취소", 
+    private lazy var cancelButton = UIBarButtonItem(title: "취소",
                                                     style: .plain,
                                                     target: self,
                                                     action: #selector(buttonTapped(_:)))
     
-    private lazy var addButton = UIBarButtonItem(title: "추가", 
+    private lazy var addButton = UIBarButtonItem(title: "추가",
                                                  style: .plain,
                                                  target: self,
                                                  action: #selector(buttonTapped(_:)))
@@ -44,6 +44,9 @@ final class DetailVC: UIViewController {
             }
         }
     }
+    
+    private let itemsInSection = [1, 1, 2, 2, 2]
+    
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -73,65 +76,26 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int { return 5 }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0, 1:
-            return 1
-        case 2,3,4:
-            return 2
-        default:
-            return 1
-        }
+        return self.itemsInSection[section]
     }
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        switch indexPath.section {
-        case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
-            cell.myViewModel = self.myViewModel
-            return cell
-        case 1:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
-            cell.myViewModel = self.myViewModel
-            cell.tenDaysTempView.rowHeight = self.detailCollectionView.frame.height/14.5
-            return cell
-        case 2:
-            if indexPath.row == 0 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
-                cell.myViewModel = self.myViewModel
-                return cell
-            } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
-                cell.myViewModel = self.myViewModel
-                return cell
-            }
-        case 3:
-            if indexPath.row == 0 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
-                cell.myViewModel = self.myViewModel
-
-                return cell
-            } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
-                cell.myViewModel = self.myViewModel
-
-                return cell
-            }
-        case 4:
-            if indexPath.row == 0 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RainFallCell.identifier, for: indexPath) as! RainFallCell
-                cell.myViewModel = self.myViewModel
-
-                return cell
-            } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HumidityCell.identifier, for: indexPath) as! HumidityCell
-                cell.myViewModel = self.myViewModel
-                return cell
-            }
-        
-        default:
+        guard let section = SectionType.section(for: indexPath.section) else {
             return UICollectionViewCell()
+        }
+        
+        switch section {
+        case .hour:
+            return configureHourCell(collectionView, indexPath)
+        case .week:
+            return configureWeekCell(collectionView, indexPath)
+        case .airQuality:
+            return configureAirQualityCell(collectionView, indexPath)
+        case .sunset:
+            return configureSunsetCell(collectionView, indexPath)
+        case .rainFall:
+            return configureRainFallCell(collectionView, indexPath)
         }
     }
 }
@@ -147,7 +111,7 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         let width = collectionView.frame.width
         
         // 행별로 존재하는 아이템 수
-      
+        
         switch indexPath.section {
         case 0:
             // 시간별 날씨 셀
@@ -176,7 +140,7 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
             // 행별로 존재하는 아이템 수
             let itemsPerRow: CGFloat = 2
             let itemsPerColumn: CGFloat = 1
-
+            
             let widthPadding = sectionInsets.left * (itemsPerRow + 1)
             let heightPadding = sectionInsets.top * (itemsPerColumn + 1)
             
@@ -193,7 +157,7 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 10
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 10)
     }
@@ -206,12 +170,12 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
         
         guard kind == UICollectionView.elementKindSectionHeader,
               let firstHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                           withReuseIdentifier: CollectionHeader.identifier,
-                                                                           for: indexPath)  as? CollectionHeader
-
+                                                                                withReuseIdentifier: CollectionHeader.identifier,
+                                                                                for: indexPath)  as? CollectionHeader
+                
         else { return UICollectionReusableView()}
         firstHeader.section = indexPath.section
-
+        
         return firstHeader
     }
 }
@@ -245,7 +209,7 @@ extension DetailVC {
     
     private func configureTopView() {
         guard let weathers = self.myViewModel.getWeathers(),
-        let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
+              let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
         
         let weather = weathers[selectedIndex]
         let currentTemp = String(round(weather.currentWeather.temperature.value)) +  "°"
@@ -269,5 +233,56 @@ extension DetailVC {
         self.navigationItem.leftBarButtonItem = cancelButton
         self.navigationItem.rightBarButtonItem = addButton
     }
+    
+    // 각 섹션에 대한 셀 구성 메서드
+    private func configureHourCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
+        cell.myViewModel = self.myViewModel
+        return cell
+    }
+    
+    private func configureWeekCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
+        cell.myViewModel = self.myViewModel
+        cell.tenDaysTempView.rowHeight = self.detailCollectionView.frame.height / 14.5
+        return cell
+    }
+    
+    private func configureAirQualityCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.row == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
+            cell.myViewModel = self.myViewModel
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
+            cell.myViewModel = self.myViewModel
+            return cell
+        }
+    }
+    
+    private func configureSunsetCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.row == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
+            cell.myViewModel = self.myViewModel
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
+            cell.myViewModel = self.myViewModel
+            return cell
+        }
+    }
+    
+    private func configureRainFallCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.row == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RainFallCell.identifier, for: indexPath) as! RainFallCell
+            cell.myViewModel = self.myViewModel
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HumidityCell.identifier, for: indexPath) as! HumidityCell
+            cell.myViewModel = self.myViewModel
+            return cell
+        }
+    }
+    
 }
 
