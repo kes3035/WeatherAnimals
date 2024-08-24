@@ -63,8 +63,16 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         DispatchQueue.main.async {
             self.navigationController?.pushViewController(detailVC, animated: true)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
-        
+        if editingStyle == .delete {
+            
+            self.myViewModel.removeData(index: indexPath.row) {
+                tableView.deleteRows(at: [indexPath], with: .fade)
+            }
+        }
     }
 }
 

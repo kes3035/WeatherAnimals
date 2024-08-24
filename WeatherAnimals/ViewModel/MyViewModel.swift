@@ -20,7 +20,7 @@ final class MyViewModel {
     
     private var weathers: [MyWeather]?
     
-    private var myDatas: [MyData]?
+    //private var myDatas: [MyData]?
     
     private var userLocation: CLLocation? 
     
@@ -107,6 +107,32 @@ final class MyViewModel {
             } catch {
                 print(error.localizedDescription)
             }
+        }
+    }
+    
+    func removeData(index: Int, completionHandler: @escaping(()->())) {
+        self.locationByTitle?.remove(at: index)
+        self.deleteData(index: index)
+        completionHandler()
+    }
+    
+    func deleteData(index: Int) {
+        guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+        let managedContext = sceneDelegate.persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "MyData")
+        fetchRequest.predicate = NSPredicate(format: "index = %@", NSNumber(value: index))
+        
+        do {
+            let test = try managedContext.fetch(fetchRequest)
+            let objectToDelete = test[0] as! NSManagedObject
+            managedContext.delete(objectToDelete)
+            do {
+                try managedContext.save()
+            } catch {
+                print(error)
+            }
+        } catch {
+            print(error)
         }
     }
     
@@ -278,9 +304,9 @@ final class MyViewModel {
         self.locationByTitle = locationByTitle
     }
     
-    func setCoreDatas(with myDatas: [MyData]) {
-        self.myDatas = myDatas
-    }
+//    func setCoreDatas(with myDatas: [MyData]) {
+//        self.myDatas = myDatas
+//    }
     
     func setMyDatas(with myDatas: [[String:CLLocation]]?) {
         self.locationByTitle = myDatas
