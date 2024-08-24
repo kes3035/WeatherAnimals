@@ -68,10 +68,10 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
-            
-            self.myViewModel.removeData(index: indexPath.row) {
-                tableView.deleteRows(at: [indexPath], with: .fade)
-            }
+            showPopUp(title: "삭제", message: "삭제하시겠습니까?")
+//            self.myViewModel.removeData(index: indexPath.row) {
+//                tableView.deleteRows(at: [indexPath], with: .fade)
+//            }
         }
     }
 }

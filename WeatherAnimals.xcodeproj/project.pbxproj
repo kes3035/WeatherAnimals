@@ -167,8 +167,8 @@
 				219937CE2AF10ECE00EC8518 /* WeatherCell.swift */,
 				21DDD86A2B4E77430074ABAB /* AddVC.swift */,
 				2152D3FD2B4E7D5000FF8811 /* AddCell.swift */,
-				216D32222B68F7B400B1229C /* Detail */,
 				214249B12C79B6FC005F9976 /* PopupVC.swift */,
+				216D32222B68F7B400B1229C /* Detail */,
 			);
 			path = Main;
 			sourceTree = "<group>";
