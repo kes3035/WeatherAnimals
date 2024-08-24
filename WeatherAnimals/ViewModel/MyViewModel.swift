@@ -355,11 +355,11 @@ final class MyViewModel {
             do {
                 let airQualityResponse = try JSONDecoder().decode(AirQualityResponse.self, from: responseData)
                 let aqi = airQualityResponse.data
-                // 여기서 필요한 정보를 사용하여 AirQuality 구조체를 생성하거나 다른 작업을 수행할 수 있습니다.
-                let airQuality = AirQuality(aqi: aqi.aqi) // 여기서 최대, 최소 AQI 값은 API 응답에서 가져와야 합니다.
+
+                let airQuality = AirQuality(aqi: aqi.aqi)
                 
                 self.airQuality = airQuality
-                // 이후에 필요한 처리를 진행합니다.
+                
             } catch {
                 print("Error decoding JSON: \(error.localizedDescription)")
             }
