@@ -18,7 +18,7 @@ final class PopupVC: UIViewController {
     
     private lazy var containerView = UIView().then {
         $0.backgroundColor = .white
-        $0.layer.cornerRadius = 8
+//        $0.layer.cornerRadius = 8
         
         /// 팝업이 등장할 때(viewWillAppear)에서 containerView.transform = .identity로 하여 애니메이션 효과 주는 용도
         $0.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
@@ -38,7 +38,7 @@ final class PopupVC: UIViewController {
     private lazy var titleLabel = UILabel().then {
         $0.text = titleText
         $0.textAlignment = .center
-        $0.font = .systemFont(ofSize: 18.0, weight: .bold)
+        $0.font = UIFont.neoDeungeul(size: 18)
         $0.numberOfLines = 0
         $0.textColor = .black
     }
@@ -48,7 +48,7 @@ final class PopupVC: UIViewController {
         
         $0.text = messageText
         $0.textAlignment = .center
-        $0.font = .systemFont(ofSize: 16.0)
+        $0.font = UIFont.neoDeungeul(size: 16)
         $0.textColor = .gray
         $0.numberOfLines = 0
         
@@ -109,10 +109,10 @@ final class PopupVC: UIViewController {
     //MARK: - Helpers
     public func addActionToButton(title: String? = nil,
                                   titleColor: UIColor = .white,
-                                  backgroundColor: UIColor = .blue,
+                                  backgroundColor: UIColor = UIColor(named: "myGreen") ?? UIColor.myGreen,
                                   completion: (() -> Void)? = nil) {
         let button = UIButton()
-        button.titleLabel?.font = .systemFont(ofSize: 16.0, weight: .bold)
+        button.titleLabel?.font = UIFont.neoDeungeul(size: 18)
         
         // enable
         button.setTitle(title, for: .normal)

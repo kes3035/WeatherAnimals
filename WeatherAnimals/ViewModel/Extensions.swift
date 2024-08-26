@@ -183,7 +183,7 @@ extension UIViewController {
 
         popUpViewController.addActionToButton(title: rightActionTitle,
                                               titleColor: .white,
-                                              backgroundColor: .blue) {
+                                              backgroundColor: UIColor(named: "myGreen") ?? .green) {
             popUpViewController.dismiss(animated: false, completion: rightActionCompletion)
         }
         present(popUpViewController, animated: false, completion: nil)
