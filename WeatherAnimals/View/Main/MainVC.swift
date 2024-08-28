@@ -65,14 +65,38 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         }
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
-        if editingStyle == .delete {
-            showPopUp(title: "❗️삭제❗️", message: "삭제하시겠습니까?")
-//            self.myViewModel.removeData(index: indexPath.row) {
-//                tableView.deleteRows(at: [indexPath], with: .fade)
-//            }
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+//            showPopUp(title: "❗️삭제❗️", message: "삭제하시겠습니까?", rightActionCompletion:  { [weak self] in
+//                self?.myViewModel.removeData(index: indexPath.row) {
+//                    tableView.deleteRows(at: [indexPath], with: .fade)
+//                }
+//            })
+//        }
+//    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .normal, title: nil) {  action, view, isSuccess in
+            isSuccess(true)
         }
+        
+        
+        let color = UIColor(named: "myRed") ?? .systemRed
+        let tintedImage = UIImage(systemName: "x.square.fill")?.withTintColor(color, renderingMode: .alwaysOriginal)
+        
+        let image = tintedImage?.resizeImage(targetSize: CGSize(width: 40, height: 50))
+        
+        
+        
+        action.backgroundColor = .white
+        action.image = image
+        
+        
+        
+        let configuration = UISwipeActionsConfiguration(actions: [action])
+        configuration.performsFirstActionWithFullSwipe = false
+        
+        return configuration
     }
 }
 
