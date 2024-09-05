@@ -16,12 +16,14 @@ final class MyViewModel {
 
     private var myData: LocationByTitle?
     
-    private var locationByTitle: [LocationByTitle]? 
+    private var temporaryDataForDetailVC: LocationByTitle?
+    
+    private var temporaryWeatherDataForDetailVC: MyWeather?
+    
+    private var locationByTitle: [LocationByTitle]?
     
     private var weathers: [MyWeather]?
-    
-    //private var myDatas: [MyData]?
-    
+        
     private var userLocation: CLLocation? 
     
     private var timeZone: TimeZone?
@@ -38,9 +40,7 @@ final class MyViewModel {
     private var airQuality: AirQuality?
     
     var didFetchWeather: (()->())?
-    
-    var didFetchUserData: (()->())?
-    
+        
     var locationAuthState: Bool?
     
     //MARK: - Logics
@@ -291,6 +291,14 @@ final class MyViewModel {
         return self.timeZone
     }
     
+    func getTemporaryWeatherForDetailVC() -> MyWeather? {
+        return self.temporaryWeatherDataForDetailVC
+    }
+    
+    func getTemporaryDataForDetailVC() -> LocationByTitle? {
+        return self.temporaryDataForDetailVC
+    }
+    
     //MARK: - Setter
     func setUserLocation(with userLocation: CLLocation?) {
         self.userLocation = userLocation
@@ -304,19 +312,21 @@ final class MyViewModel {
         self.locationByTitle = locationByTitle
     }
     
-//    func setCoreDatas(with myDatas: [MyData]) {
-//        self.myDatas = myDatas
-//    }
-    
     func setMyDatas(with myDatas: [[String:CLLocation]]?) {
         self.locationByTitle = myDatas
     }
+    
+    func setTemporaryDataForDetailVC(_ data: LocationByTitle) {
+        self.temporaryDataForDetailVC = data
+    }
 
+    func setTemporaryWeatherForDetailVC(_ weather: MyWeather) {
+        self.temporaryWeatherDataForDetailVC = weather
+    }
     
     func setWeathers(with weathers: [MyWeather]) {
         self.weathers = weathers
     }
-    
     
     func setSelectedCellIndex(cellForRowAt indexPath: IndexPath) {
         self.selectedIndex = indexPath.row

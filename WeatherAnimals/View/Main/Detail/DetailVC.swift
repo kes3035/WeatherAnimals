@@ -38,6 +38,8 @@ final class DetailVC: UIViewController {
     
     private let itemsInSection = [1, 1, 2, 2, 2]
 
+    
+    
     lazy var myViewModel = MyViewModel() {
         didSet {
             DispatchQueue.main.async {
@@ -45,6 +47,8 @@ final class DetailVC: UIViewController {
             }
         }
     }
+    
+    var isFromAddVC: Bool = false
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -199,6 +203,22 @@ extension DetailVC {
     }
     
     private func configureTopView() {
+        guard !isFromAddVC else {
+            guard let temporaryWeather = self.myViewModel.getTemporaryWeatherForDetailVC() else { return }
+            
+            let currentTemp = String(round(temporaryWeather.currentWeather.temperature.value)) +  "°"
+            let highTemp = "최고 : " + String(round(temporaryWeather.dailyWeathers[0].highTemperature.value)) +  "°"
+            let lowTemp = "최저 : " + String(round(temporaryWeather.dailyWeathers[0].lowTemperature.value)) +  "°"
+            
+            DispatchQueue.main.async {
+                self.detailVCTopView.tempLabel.text = currentTemp
+                self.detailVCTopView.highestTempLabel.text = highTemp
+                self.detailVCTopView.lowestTempLabel.text = lowTemp
+                
+            }
+            
+            return
+        }
         guard let weathers = self.myViewModel.getWeathers(),
               let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
         

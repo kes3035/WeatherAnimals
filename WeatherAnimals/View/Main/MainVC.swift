@@ -64,27 +64,26 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
             self.navigationController?.pushViewController(detailVC, animated: true)
         }
     }
-    
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete {
-//            showPopUp(title: "❗️삭제❗️", message: "삭제하시겠습니까?", rightActionCompletion:  { [weak self] in
-//                self?.myViewModel.removeData(index: indexPath.row) {
-//                    tableView.deleteRows(at: [indexPath], with: .fade)
-//                }
-//            })
-//        }
-//    }
+
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard indexPath.row != 0 else {
+            return nil
+        }
         let action = UIContextualAction(style: .normal, title: nil) {  action, view, isSuccess in
+            self.showPopUp(title: "❗️삭제❗️", message: "삭제하시겠습니까?", rightActionCompletion:  { [weak self] in
+                self?.myViewModel.removeData(index: indexPath.row) {
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                }
+            })
             isSuccess(true)
         }
         
-        
+            
         let color = UIColor(named: "myRed") ?? .systemRed
         let tintedImage = UIImage(systemName: "x.square.fill")?.withTintColor(color, renderingMode: .alwaysOriginal)
         
-        let image = tintedImage?.resizeImage(targetSize: CGSize(width: 40, height: 50))
+        let image = tintedImage?.resizeImage(targetSize: CGSize(width: 35, height: 35))
         
         
         

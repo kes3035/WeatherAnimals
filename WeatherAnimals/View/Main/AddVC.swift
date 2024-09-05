@@ -11,7 +11,7 @@ final class AddVC: UIViewController {
     private var searchResultsArr = [MKLocalSearchCompletion]()
     
     private var searchResultTableView = UITableView()
-        
+    
     private var searchController = UISearchController(searchResultsController: nil)
     
     private var searchedPlace: MKMapItem? { didSet { searchResultTableView.reloadData() } }
@@ -39,32 +39,47 @@ final class AddVC: UIViewController {
 
 //MARK: - UITableViewDelegate
 extension AddVC: UITableViewDelegate {
-    //tableView의 셀이 선택되었을 때 실행되는 메서드
+    
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        
         let selectedResult = searchResultsArr[indexPath.row]
         let searchRequest = MKLocalSearch.Request(completion: selectedResult)
         let search = MKLocalSearch(request: searchRequest)
         
         let detailVC = DetailVC()
+        detailVC.isFromAddVC = true
         detailVC.configureNavButton()
         DispatchQueue.global().async {
             search.start { response, error in
+                
+                
                 guard error == nil else { return }
                 guard let placemark = response?.mapItems[0].placemark,
                       let locationTitle = placemark.title else { return }
-                let location = CLLocation(latitude: placemark.coordinate.latitude, longitude: placemark.coordinate.longitude)
+                
+                
+                let latitude = placemark.coordinate.latitude
+                let longitude = placemark.coordinate.longitude
+                let location = CLLocation(latitude: latitude, longitude: longitude)
                 
                 let myData = [locationTitle: location]
-                
-                self.myViewModel.setMyData(with: myData)
-                
-                self.myViewModel.didFetchWeather = {
-                    detailVC.myViewModel = self.myViewModel
-                    DispatchQueue.main.async {
+                detailVC.myViewModel.setTemporaryDataForDetailVC(myData)
+                Task {
+                    do {
+                        let weather = try await  self.myViewModel.fetchWeather(for: location)
+                        print("Debug : Successfully Fetched Weather For DeatailVC")
+                        detailVC.myViewModel.setTemporaryWeatherForDetailVC(weather)
+                        
                         DispatchQueue.main.async {
+                            //아직까지 detailVC에서는 데이터를 통해 화면을 그리지 않음.
+                            //기존에는 mainVC에서 받아온 weatherData를 통해 그리기 때문
                             let nav = UINavigationController(rootViewController: detailVC)
                             self.present(nav, animated: true)
                         }
+                    } catch {
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -76,11 +91,11 @@ extension AddVC: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchResultsArr.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AddCell", for: indexPath) as! AddCell
         let searchResult = searchResultsArr[indexPath.row]
@@ -91,19 +106,19 @@ extension AddVC: UITableViewDataSource {
                 cell.titleLabel.setHighlighted(searchResult.title, with: highlightText)
             }
         }
-
+        
         return cell
     }
 }
 
 //MARK: - MKLocalSearchCompleterDelegate
 extension AddVC: MKLocalSearchCompleterDelegate {
-
+    
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         searchResultsArr = completer.results
         searchResultTableView.reloadData()
     }
-
+    
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
         if let error = error as NSError? {
             print("MKLocalSearchCompleter encountered an error: \(error.localizedDescription). The query fragment is: \"\(completer.queryFragment)\"")
@@ -114,11 +129,6 @@ extension AddVC: MKLocalSearchCompleterDelegate {
 extension AddVC: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let searchText = searchController.searchBar.text else { return }
-        // 검색어에 따라 검색을 수행하고 결과를 업데이트하는 로직을 작성합니다.
-        // 이 부분에서 검색 결과를 업데이트하고 테이블 뷰를 다시 로드해야 합니다.
-        // searchCompleter.queryFragment = searchText (위 코드에서 사용된 searchCompleter와 유사한 로직을 작성)
-        // searchResults = ... (검색 결과 업데이트)
-        // resultTableView.reloadData() (테이블 뷰 다시 로드)
         if searchText.isEmpty {
             searchResultsArr.removeAll()
             searchResultTableView.reloadData()
@@ -142,7 +152,7 @@ extension AddVC {
         self.searchController.obscuresBackgroundDuringPresentation = false
         self.searchController.searchBar.placeholder = "도시 검색"
         self.searchController.searchBar.searchTextField.font = UIFont.neoDeungeul(size: 15)
-    
+        
         navigationItem.searchController = self.searchController
         definesPresentationContext = true
     }
