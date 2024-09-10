@@ -430,4 +430,8 @@ extension MyViewModel {
         print("hourlyWeathers.last?.date = \(String(describing: hourlyWeathers.last?.date))")
         
     }
+    
+    func printData() -> String {
+        return "sdfsdf"
+    }
 }

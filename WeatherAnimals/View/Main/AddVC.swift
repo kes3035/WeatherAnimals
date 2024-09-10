@@ -23,7 +23,7 @@ final class AddVC: UIViewController {
         }
     }
     
-    lazy var myViewModel = MyViewModel()
+    private lazy var myViewModel = MyViewModel()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {

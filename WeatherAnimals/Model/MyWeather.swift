@@ -7,9 +7,12 @@
 
 import UIKit
 import WeatherKit
+import CoreLocation
 
 struct MyWeather {
-    let currentWeather: CurrentWeather
-    let dailyWeathers: [DayWeather]
-    let hourlyWeathers: [HourWeather]
+    var location: CLLocation?
+    var title: String?
+    var currentWeather: CurrentWeather?
+    var dailyWeathers: [DayWeather]?
+    var hourlyWeathers: [HourWeather]?
 }
