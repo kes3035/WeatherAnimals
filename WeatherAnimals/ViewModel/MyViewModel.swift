@@ -48,6 +48,21 @@ final class MyViewModel {
         self.locationByTitle?.append(myData)
     }
     
+    func getMyWeather(with location: CLLocation) async throws -> MyWeather {
+        let title = try await self.fetchLocationTitle(for: location)
+        let weather = try await self.fetchWeather(for: location)
+        let myWeather = MyWeather(location: location, title: title,
+                                  currentWeather: weather.currentWeather,
+                                  dailyWeathers: weather.dailyWeathers,
+                                  hourlyWeathers: weather.hourlyWeathers)
+        return myWeather
+    }
+    
+    func getLocationTitle() -> String {
+        var title = ""
+        return title
+    }
+    
     func fetchCoreDataLocationByTitle(_ myDatas: [MyData]) async throws -> [LocationByTitle] {
         guard !myDatas.isEmpty else { return [] }
         
@@ -67,6 +82,36 @@ final class MyViewModel {
         return temporaryArr
     }
 
+    
+    
+    func testFetchingCoreData(_ myDatas: [MyData]) async throws -> [MyWeather] {
+        let sortedMyDatas = myDatas.sorted { $0.index < $1.index }
+        var myWeathers: [MyWeather] = []
+        
+        for myData in sortedMyDatas {
+            let location = CLLocation(latitude: myData.latitude, longitude: myData.longitude)
+
+            do {
+                
+                let fetchedWeather = try await fetchWeather(for: location)
+                
+                
+                let myWeather = MyWeather(location: location,
+                                          title: myData.title ?? "",
+                                          currentWeather: fetchedWeather.currentWeather,
+                                          dailyWeathers: fetchedWeather.dailyWeathers,
+                                          hourlyWeathers: fetchedWeather.hourlyWeathers)
+                myWeathers.append(myWeather)
+            } catch {
+                print("Failed to fetch weather for \(myData.title ?? "Unknown location"): \(error.localizedDescription)")
+                throw error
+            }
+        }
+        
+        
+        return myWeathers
+    }
+    
     
     func convert2UTC(from date: Date) -> Date {
         guard let timeZone = self.getTimeZone() else { return Date() }
@@ -257,8 +302,9 @@ final class MyViewModel {
     }
     
     func getWeatherCellCount() -> Int {
-        guard let locationByTitle = self.locationByTitle else { return 0 }
-        return locationByTitle.count
+        //guard let locationByTitle = self.locationByTitle else { return 0 }
+        guard let myWeathers = self.weathers else { return 0 }
+        return myWeathers.count
     }
     
     func getHourlyWeathers() -> [HourWeather] {

@@ -40,6 +40,14 @@ final class WeatherCell: UITableViewCell {
     }
 
     
+    var myWeather: MyWeather? {
+        didSet {
+            guard let myWeather = self.myWeather else { return }
+            self.testConfiguringCell(myWeather)
+        }
+    }
+    
+    
     lazy var myViewModel = MyViewModel() {
         didSet {
             self.configureWeatherCellUIWithData()
@@ -66,6 +74,13 @@ final class WeatherCell: UITableViewCell {
         self.currentTempLabel.text = String(round(currentWeather.temperature.value))
         self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
         self.locationAddressLabel.text = locationAddress
+    }
+    private func testConfiguringCell(_ weather: MyWeather) {
+        guard let title = weather.title else { return }
+        let currentWeather = weather.currentWeather
+        self.currentTempLabel.text = String(round(currentWeather.temperature.value))
+        self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
+        self.locationAddressLabel.text = title
     }
 }
 

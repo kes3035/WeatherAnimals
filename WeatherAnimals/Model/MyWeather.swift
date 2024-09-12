@@ -12,7 +12,7 @@ import CoreLocation
 struct MyWeather {
     var location: CLLocation?
     var title: String?
-    var currentWeather: CurrentWeather?
-    var dailyWeathers: [DayWeather]?
-    var hourlyWeathers: [HourWeather]?
+    var currentWeather: CurrentWeather
+    var dailyWeathers: [DayWeather]
+    var hourlyWeathers: [HourWeather]
 }
