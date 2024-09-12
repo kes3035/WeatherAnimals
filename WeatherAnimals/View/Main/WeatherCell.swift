@@ -43,16 +43,10 @@ final class WeatherCell: UITableViewCell {
     var myWeather: MyWeather? {
         didSet {
             guard let myWeather = self.myWeather else { return }
-            self.testConfiguringCell(myWeather)
+            self.configureWeatherCellUIWithData(myWeather)
         }
     }
-    
-    
-    lazy var myViewModel = MyViewModel() {
-        didSet {
-            self.configureWeatherCellUIWithData()
-        }
-    }
+
 //MARK: - LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
@@ -63,19 +57,7 @@ final class WeatherCell: UITableViewCell {
     
     
 //MARK: - Helpers
-    private func configureWeatherCellUIWithData() {
-        guard let weathers = self.myViewModel.getWeathers(),
-              let locationByTitle = self.myViewModel.getLocationByTitle(),
-              let selectedIndex = self.myViewModel.getSelectedIndex(),
-              let locationAddress = locationByTitle[selectedIndex].keys.first else { return }
-        
-        let currentWeather = weathers[selectedIndex].currentWeather
-        
-        self.currentTempLabel.text = String(round(currentWeather.temperature.value))
-        self.weatherImageView.image = UIImage(named: currentWeather.symbolName)
-        self.locationAddressLabel.text = locationAddress
-    }
-    private func testConfiguringCell(_ weather: MyWeather) {
+    private func configureWeatherCellUIWithData(_ weather: MyWeather) {
         guard let title = weather.title else { return }
         let currentWeather = weather.currentWeather
         self.currentTempLabel.text = String(round(currentWeather.temperature.value))

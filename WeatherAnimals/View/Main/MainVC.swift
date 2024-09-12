@@ -47,9 +47,6 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherCell.identifier, for: indexPath) as! WeatherCell
         cell.selectionStyle = .none
-
-//        self.myViewModel.setSelectedCellIndex(cellForRowAt: indexPath)
-//        cell.myViewModel = self.myViewModel
         guard let weathers = self.myViewModel.getWeathers() else { return cell }
         cell.myWeather = weathers[indexPath.row]
         return cell
