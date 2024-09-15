@@ -25,6 +25,9 @@ final class HumidityCell: UICollectionViewCell {
             self.configureHumidityCellUIWithData()
         }
     }
+    
+    var myWeather: MyWeather?
+
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)

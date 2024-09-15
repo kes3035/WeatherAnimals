@@ -38,7 +38,11 @@ final class DetailVC: UIViewController {
     
     private let itemsInSection = [1, 1, 2, 2, 2]
 
-    
+    var myWeather: MyWeather? {
+        didSet {
+            DispatchQueue.main.async { self.detailCollectionView.reloadData() }
+        }
+    }
     
     lazy var myViewModel = MyViewModel() {
         didSet {
@@ -65,6 +69,7 @@ final class DetailVC: UIViewController {
         case "취소":
             self.dismiss(animated: true)
         case "추가":
+            // 수정할 것
             self.myViewModel.addWeatherModelIntoLocal()
             self.dismiss(animated: true)
         default:
@@ -83,21 +88,22 @@ extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let section = SectionType.section(for: indexPath.section) else {
+        guard let section = SectionType.section(for: indexPath.section),
+              let myWeather = self.myWeather else {
             return UICollectionViewCell()
         }
         
         switch section {
         case .hour:
-            return configureHourCell(collectionView, indexPath)
+            return configureHourCell(collectionView, indexPath, myWeather)
         case .week:
-            return configureWeekCell(collectionView, indexPath)
+            return configureWeekCell(collectionView, indexPath, myWeather)
         case .airQuality:
-            return configureAirQualityCell(collectionView, indexPath)
+            return configureAirQualityCell(collectionView, indexPath, myWeather)
         case .sunset:
-            return configureSunsetCell(collectionView, indexPath)
+            return configureSunsetCell(collectionView, indexPath, myWeather)
         case .rainFall:
-            return configureRainFallCell(collectionView, indexPath)
+            return configureRainFallCell(collectionView, indexPath, myWeather)
         }
     }
 }
@@ -246,51 +252,61 @@ extension DetailVC {
     }
     
     // 각 섹션에 대한 셀 구성 메서드
-    private func configureHourCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+    private func configureHourCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ myWeather: MyWeather) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
-        cell.myViewModel = self.myViewModel
+        //cell.myViewModel = self.myViewModel
+        cell.myWeather = myWeather
         return cell
     }
     
-    private func configureWeekCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+    private func configureWeekCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ myWeather: MyWeather) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
-        cell.myViewModel = self.myViewModel
+        //cell.myViewModel = self.myViewModel
+        cell.myWeather = myWeather
         cell.tenDaysTempView.rowHeight = self.detailCollectionView.frame.height / 14.5
         return cell
     }
     
-    private func configureAirQualityCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+    private func configureAirQualityCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ myWeather: MyWeather) -> UICollectionViewCell {
+        
+        
         if indexPath.row == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
-            cell.myViewModel = self.myViewModel
+            //cell.myViewModel = self.myViewModel
+            cell.myWeather = myWeather
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
-            cell.myViewModel = self.myViewModel
+            //cell.myViewModel = self.myViewModel
+            cell.myWeather = myWeather
             return cell
         }
     }
     
-    private func configureSunsetCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+    private func configureSunsetCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ myWeather: MyWeather) -> UICollectionViewCell {
         if indexPath.row == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
-            cell.myViewModel = self.myViewModel
+            //cell.myViewModel = self.myViewModel
+            cell.myWeather = myWeather
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
-            cell.myViewModel = self.myViewModel
+            //cell.myViewModel = self.myViewModel
+            cell.myWeather = myWeather
             return cell
         }
     }
     
-    private func configureRainFallCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
+    private func configureRainFallCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ myWeather: MyWeather) -> UICollectionViewCell {
         if indexPath.row == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RainFallCell.identifier, for: indexPath) as! RainFallCell
-            cell.myViewModel = self.myViewModel
+            //cell.myViewModel = self.myViewModel
+            cell.myWeather = myWeather
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HumidityCell.identifier, for: indexPath) as! HumidityCell
-            cell.myViewModel = self.myViewModel
+            //cell.myViewModel = self.myViewModel
+            cell.myWeather = myWeather
             return cell
         }
     }

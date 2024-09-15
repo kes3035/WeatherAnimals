@@ -25,6 +25,7 @@ final class WeekCell: UICollectionViewCell {
         }
     }
 
+    var myWeather: MyWeather?
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -77,13 +78,10 @@ extension WeekCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeekWeatherCell.identifier, for: indexPath) as! WeekWeatherCell
-        guard let weathers = self.myViewModel.getWeathers(),
-              let selectedIndex = self.myViewModel.getSelectedIndex(),
+        guard let myWeather = self.myWeather,
               let timeZone = self.myViewModel.getTimeZone() else { return cell }
         
-        let weather = weathers[selectedIndex]
-        let dailyWeather = weather.dailyWeathers
-        
+        let dailyWeather = myWeather.dailyWeathers
         
         cell.tempViewConstraints = self.getTempViewConstraints(dayWeathers: dailyWeather, index: indexPath.row)
         cell.timeZone = timeZone

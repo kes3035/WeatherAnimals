@@ -25,6 +25,13 @@ final class HourCell: UICollectionViewCell {
         }
     }
     
+    var myWeather: MyWeather? {
+        didSet {
+            guard let myWeather = self.myWeather else { return }
+            
+        }
+    }
+    
  
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -68,9 +75,10 @@ extension HourCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourWeatherCell.identifier, for: indexPath) as! HourWeatherCell
         
-        guard let timeZone = self.myViewModel.getTimeZone() else { return cell }
+        guard let timeZone = self.myViewModel.getTimeZone(),
+              let myWeather = self.myWeather else { return cell }
         
-        let hourlyWeathers = self.myViewModel.getHourlyWeathers()
+        let hourlyWeathers = myWeather.hourlyWeathers
         
         cell.timeZone = timeZone
        

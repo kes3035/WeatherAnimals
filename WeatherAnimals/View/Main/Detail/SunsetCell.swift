@@ -27,6 +27,9 @@ final class SunsetCell: UICollectionViewCell {
         }
     }
     
+    var myWeather: MyWeather?
+
+    
     //MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)

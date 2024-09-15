@@ -37,6 +37,8 @@ final class AirQualityCell: UICollectionViewCell {
         }
     }
     
+    var myWeather: MyWeather?
+    
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -47,9 +49,10 @@ final class AirQualityCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
     private func configureAirQualityCellUIWithData() {
-        guard let selectedLocation = self.myViewModel.getSelectedLocation() else { return }
+        guard let myWeather = self.myWeather,
+              let location = myWeather.location else { return }
         
-        self.myViewModel.setAirQualityCondition(location: selectedLocation)
+        self.myViewModel.setAirQualityCondition(location: location)
         
         guard let aqi = self.myViewModel.getAirQualityCondition() else { return }
         
