@@ -59,7 +59,8 @@ final class SunsetCell: UICollectionViewCell {
     }
     
     private func compareTime(sunrise: Date, sunset: Date) -> String {
-        guard let selectedLocation = self.myViewModel.getSelectedLocation(),
+        guard let myWeather = self.myWeather,
+              let selectedLocation = myWeather.location,
               let timeZone = self.myViewModel.getTimeZone() else { return "" }
         
         var calendar = Calendar.current

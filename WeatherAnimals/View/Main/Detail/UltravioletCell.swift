@@ -64,11 +64,10 @@ final class UltravioletCell: UICollectionViewCell {
     }
 
     private func configureUltravioletCellUIWithData() {
-        guard let weathers = self.myViewModel.getWeathers(),
-        let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
+        guard let myWeather = self.myWeather else { return }
+    
         
-        let weather = weathers[selectedIndex]
-        let currentWeather = weather.currentWeather
+        let currentWeather = myWeather.currentWeather
         
         let uvCategory = currentWeather.uvIndex.category
         

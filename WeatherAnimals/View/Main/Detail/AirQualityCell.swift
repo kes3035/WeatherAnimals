@@ -54,6 +54,7 @@ final class AirQualityCell: UICollectionViewCell {
         
         self.myViewModel.setAirQualityCondition(location: location)
         
+        // 수정할 것
         guard let aqi = self.myViewModel.getAirQualityCondition() else { return }
         
         let (text, color) = self.convertAQIIndex(value: aqi.aqi)

@@ -37,12 +37,9 @@ final class RainFallCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
     private func configureRainFallCellUIWithData() {
-        guard let weathers = self.myViewModel.getWeathers(),
-              let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
-        
-        let weather = weathers[selectedIndex]
-        
-        let currentWeather = weather.currentWeather
+        guard let myWeather = self.myWeather else { return }
+    
+        let currentWeather = myWeather.currentWeather
         let precipitationIntensity = String(round(currentWeather.precipitationIntensity.value))
         
         DispatchQueue.main.async {

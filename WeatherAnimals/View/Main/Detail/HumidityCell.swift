@@ -38,12 +38,10 @@ final class HumidityCell: UICollectionViewCell {
     
     //MARK: - Helpers
     private func configureHumidityCellUIWithData() {
-        guard let weathers = self.myViewModel.getWeathers(),
-              let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
+        guard let myWeather = self.myWeather else { return }
         
-        let weather = weathers[selectedIndex]
         
-        let currentWeather = weather.currentWeather
+        let currentWeather = myWeather.currentWeather
         let humidity = String(round(currentWeather.humidity))
         
         DispatchQueue.main.async {
