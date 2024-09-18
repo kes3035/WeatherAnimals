@@ -155,6 +155,34 @@ final class MyViewModel {
         }
     }
     
+    func addWeatherModelIntoLocal(_ myWeather: MyWeather, completion: @escaping(()->())) {
+        DispatchQueue.main.async {
+            guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+            let context = sceneDelegate.persistentContainer.viewContext
+            guard let entity = NSEntityDescription.entity(forEntityName: "MyData", in: context),
+                  let weathers = self.weathers,
+                  let location = myWeather.location else { return }
+           
+            let indexOfNewModel = weathers.endIndex
+            let coordinate = location.coordinate
+            let newMyWeather = NSManagedObject(entity: entity, insertInto: context)
+            
+
+            newMyWeather.setValue(coordinate.latitude, forKey: "latitude")
+            newMyWeather.setValue(coordinate.longitude, forKey: "longitude")
+            newMyWeather.setValue(myWeather.title, forKey: "title")
+            newMyWeather.setValue(Int16(indexOfNewModel), forKey: "index")
+
+            do {
+                try context.save()
+                completion()
+            } catch {
+                print(error.localizedDescription)
+                completion()
+            }
+        }
+    }
+    
     func removeData(index: Int, completionHandler: @escaping(()->())) {
         self.locationByTitle?.remove(at: index)
         self.deleteData(index: index)

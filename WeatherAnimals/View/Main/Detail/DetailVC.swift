@@ -70,8 +70,10 @@ final class DetailVC: UIViewController {
             self.dismiss(animated: true)
         case "추가":
             // 수정할 것
-            self.myViewModel.addWeatherModelIntoLocal()
-            self.dismiss(animated: true)
+            guard let myWeather = self.myWeather else { return }
+            self.myViewModel.addWeatherModelIntoLocal(myWeather) {
+                self.dismiss(animated: true)
+            }
         default:
             break
         }
@@ -182,13 +184,6 @@ extension DetailVC: UICollectionViewDelegateFlowLayout {
 }
 
 
-
-extension DetailVC: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard scrollView == self.detailCollectionView else { return }
-    }
-}
-
 extension DetailVC {
     private func configureDetailVCUI() {
         //최초UI 구성
@@ -254,14 +249,12 @@ extension DetailVC {
     // 각 섹션에 대한 셀 구성 메서드
     private func configureHourCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ myWeather: MyWeather) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourCell.identifier, for: indexPath) as! HourCell
-        //cell.myViewModel = self.myViewModel
         cell.myWeather = myWeather
         return cell
     }
     
     private func configureWeekCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ myWeather: MyWeather) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekCell.identifier, for: indexPath) as! WeekCell
-        //cell.myViewModel = self.myViewModel
         cell.myWeather = myWeather
         cell.tenDaysTempView.rowHeight = self.detailCollectionView.frame.height / 14.5
         return cell
@@ -272,12 +265,10 @@ extension DetailVC {
         
         if indexPath.row == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualityCell.identifier, for: indexPath) as! AirQualityCell
-            //cell.myViewModel = self.myViewModel
             cell.myWeather = myWeather
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UltravioletCell.identifier, for: indexPath) as! UltravioletCell
-            //cell.myViewModel = self.myViewModel
             cell.myWeather = myWeather
             return cell
         }
@@ -286,12 +277,10 @@ extension DetailVC {
     private func configureSunsetCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ myWeather: MyWeather) -> UICollectionViewCell {
         if indexPath.row == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SunsetCell.identifier, for: indexPath) as! SunsetCell
-            //cell.myViewModel = self.myViewModel
             cell.myWeather = myWeather
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApparentTempCell.identifier, for: indexPath) as! ApparentTempCell
-            //cell.myViewModel = self.myViewModel
             cell.myWeather = myWeather
             return cell
         }
@@ -300,12 +289,10 @@ extension DetailVC {
     private func configureRainFallCell(_ collectionView: UICollectionView, _ indexPath: IndexPath, _ myWeather: MyWeather) -> UICollectionViewCell {
         if indexPath.row == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RainFallCell.identifier, for: indexPath) as! RainFallCell
-            //cell.myViewModel = self.myViewModel
             cell.myWeather = myWeather
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HumidityCell.identifier, for: indexPath) as! HumidityCell
-            //cell.myViewModel = self.myViewModel
             cell.myWeather = myWeather
             return cell
         }

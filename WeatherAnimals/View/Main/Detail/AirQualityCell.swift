@@ -50,13 +50,9 @@ final class AirQualityCell: UICollectionViewCell {
     //MARK: - Helpers
     private func configureAirQualityCellUIWithData() {
         guard let myWeather = self.myWeather,
-              let location = myWeather.location else { return }
-        
-        self.myViewModel.setAirQualityCondition(location: location)
-        
-        // 수정할 것
-        guard let aqi = self.myViewModel.getAirQualityCondition() else { return }
-        
+              let aqi = myWeather.aqi else { return }
+                
+                
         let (text, color) = self.convertAQIIndex(value: aqi.aqi)
         DispatchQueue.main.async {
             self.airQualityValueLabel.text = String(aqi.aqi)
