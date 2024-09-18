@@ -191,6 +191,7 @@ final class MyViewModel {
             throw NSError(domain: "DateCalculationError", code: 0, userInfo: nil)
         }
         do {
+            let aqi = try await getAQI(location: location)
             let currentWeather = try await WeatherService.shared.weather(for: location, including: .current)
             let dailyWeathers = try await WeatherService.shared.weather(for: location, including: .daily).forecast
             let hourlyForecasts = try await WeatherService.shared.weather(for: location, including: .hourly(startDate: currentDate, endDate: tenHoursLater))
@@ -199,7 +200,7 @@ final class MyViewModel {
                 throw NSError(domain: "WeatherDataError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No weather data available"])
             }
             
-            let myWeather = MyWeather(currentWeather: currentWeather, dailyWeathers: dailyWeathers, hourlyWeathers: hourlyWeathers)
+            let myWeather = MyWeather(currentWeather: currentWeather, dailyWeathers: dailyWeathers, hourlyWeathers: hourlyWeathers, aqi: aqi)
             return myWeather
             
         } catch {
@@ -423,6 +424,36 @@ final class MyViewModel {
         }
         task.resume()
     }
+    
+    func getAQI(location: CLLocation) async throws -> AirQuality? {
+        let lat = location.coordinate.latitude.magnitude
+        let lng = location.coordinate.longitude.magnitude
+        
+        guard let url = URL(string: "https://api.waqi.info/feed/geo:\(lat);\(lng)/?token=\(APIKey.aqicn_key)") else {
+            throw URLError(.badURL)
+        }
+        
+        let request = URLRequest(url: url)
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                throw URLError(.badServerResponse)
+            }
+            
+            let airQualityResponse = try JSONDecoder().decode(AirQualityResponse.self, from: data)
+            let aqi = airQualityResponse.data
+            
+            let airQuality = AirQuality(aqi: aqi.aqi)
+            return airQuality
+            
+        } catch {
+            print("Error: \(error.localizedDescription)")
+            throw error
+        }
+    }
+
 
     
     

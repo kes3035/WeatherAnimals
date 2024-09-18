@@ -15,4 +15,5 @@ struct MyWeather {
     var currentWeather: CurrentWeather
     var dailyWeathers: [DayWeather]
     var hourlyWeathers: [HourWeather]
+    var aqi: AirQuality?
 }
