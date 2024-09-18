@@ -20,13 +20,13 @@ final class RainFallCell: UICollectionViewCell {
         $0.textColor = .black
     }
     
-    lazy var myViewModel = MyViewModel() {
+    lazy var myViewModel = MyViewModel()
+    
+    var myWeather: MyWeather? {
         didSet {
             self.configureRainFallCellUIWithData()
         }
     }
-    
-    var myWeather: MyWeather?
 
     //MARK: - LifeCycle
     override init(frame: CGRect) {

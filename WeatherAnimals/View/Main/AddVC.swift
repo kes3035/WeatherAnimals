@@ -43,13 +43,11 @@ extension AddVC: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        
         let selectedResult = searchResultsArr[indexPath.row]
         let searchRequest = MKLocalSearch.Request(completion: selectedResult)
         let search = MKLocalSearch(request: searchRequest)
         
         let detailVC = DetailVC()
-        detailVC.isFromAddVC = true
         detailVC.configureNavButton()
         DispatchQueue.global().async {
             search.start { response, error in

@@ -61,7 +61,6 @@ final class WeekWeatherCell: UITableViewCell {
         }
     }
     
-    var timeZone: TimeZone?
     
     
     

@@ -44,15 +44,8 @@ final class DetailVC: UIViewController {
         }
     }
     
-    lazy var myViewModel = MyViewModel() {
-        didSet {
-            DispatchQueue.main.async {
-                self.detailCollectionView.reloadData()
-            }
-        }
-    }
+    lazy var myViewModel = MyViewModel()
     
-    var isFromAddVC: Bool = false
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -69,7 +62,6 @@ final class DetailVC: UIViewController {
         case "취소":
             self.dismiss(animated: true)
         case "추가":
-            // 수정할 것
             guard let myWeather = self.myWeather else { return }
             self.myViewModel.addWeatherModelIntoLocal(myWeather) {
                 self.dismiss(animated: true)
@@ -204,29 +196,11 @@ extension DetailVC {
     }
     
     private func configureTopView() {
-        guard !isFromAddVC else {
-            guard let temporaryWeather = self.myViewModel.getTemporaryWeatherForDetailVC() else { return }
-            
-            let currentTemp = String(round(temporaryWeather.currentWeather.temperature.value)) +  "°"
-            let highTemp = "최고 : " + String(round(temporaryWeather.dailyWeathers[0].highTemperature.value)) +  "°"
-            let lowTemp = "최저 : " + String(round(temporaryWeather.dailyWeathers[0].lowTemperature.value)) +  "°"
-            
-            DispatchQueue.main.async {
-                self.detailVCTopView.tempLabel.text = currentTemp
-                self.detailVCTopView.highestTempLabel.text = highTemp
-                self.detailVCTopView.lowestTempLabel.text = lowTemp
-                
-            }
-            
-            return
-        }
-        guard let weathers = self.myViewModel.getWeathers(),
-              let selectedIndex = self.myViewModel.getSelectedIndex() else { return }
+        guard let myWeather = self.myWeather else { return }
         
-        let weather = weathers[selectedIndex]
-        let currentTemp = String(round(weather.currentWeather.temperature.value)) +  "°"
-        let highTemp = "최고 : " + String(round(weather.dailyWeathers[0].highTemperature.value)) +  "°"
-        let lowTemp = "최저 : " + String(round(weather.dailyWeathers[0].lowTemperature.value)) +  "°"
+        let currentTemp = String(round(myWeather.currentWeather.temperature.value)) +  "°"
+        let highTemp = "최고 : " + String(round(myWeather.dailyWeathers[0].highTemperature.value)) +  "°"
+        let lowTemp = "최저 : " + String(round(myWeather.dailyWeathers[0].lowTemperature.value)) +  "°"
         
         DispatchQueue.main.async {
             self.detailVCTopView.tempLabel.text = currentTemp

@@ -21,13 +21,14 @@ final class SunsetCell: UICollectionViewCell {
         $0.textColor = .black
     }
     
-    lazy var myViewModel = MyViewModel() {
+    lazy var myViewModel = MyViewModel() 
+    
+    var myWeather: MyWeather? {
         didSet {
             self.configureSunsetCellUIWithData()
         }
     }
     
-    var myWeather: MyWeather?
 
     
     //MARK: - LifeCycle

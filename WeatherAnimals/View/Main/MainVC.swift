@@ -57,16 +57,10 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let myWeathers = self.myViewModel.getWeathers() else { return }
         
-        
-        
-        //self.myViewModel.setSelectedCellIndex(cellForRowAt: indexPath)
-        //self.myViewModel.setSelectedLocation(cellForRowAt: indexPath)
-        
         let detailVC = DetailVC()
         
         detailVC.myWeather = myWeathers[indexPath.row]
         
-        //detailVC.myViewModel = self.myViewModel
         detailVC.hidesBottomBarWhenPushed = true
         DispatchQueue.main.async {
             self.navigationController?.pushViewController(detailVC, animated: true)

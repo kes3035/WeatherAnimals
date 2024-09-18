@@ -31,13 +31,13 @@ final class UltravioletCell: UICollectionViewCell {
     }
 
     
-    lazy var myViewModel = MyViewModel() {
+    lazy var myViewModel = MyViewModel()
+    
+    var myWeather: MyWeather? {
         didSet {
             configureUltravioletCellUIWithData()
         }
     }
-    
-    var myWeather: MyWeather?
     
     //MARK: - LifeCycle
     override init(frame: CGRect) {

@@ -41,12 +41,10 @@ final class HourWeatherCell: UICollectionViewCell {
     //MARK: - Helpers
 
     private func configureUIWithData() {
-        guard let hourWeather = self.hourWeather,
-        let timeZone = self.timeZone else { return }
+        guard let hourWeather = self.hourWeather else { return }
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "a h:mm"
-        dateFormatter.timeZone = timeZone
         dateFormatter.locale = Locale(identifier:"ko_KR")
 
         let dateString = dateFormatter.string(from: hourWeather.date)

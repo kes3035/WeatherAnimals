@@ -31,13 +31,13 @@ final class AirQualityCell: UICollectionViewCell {
     }
  
     
-    lazy var myViewModel = MyViewModel() {
+    lazy var myViewModel = MyViewModel()
+    
+    var myWeather: MyWeather? {
         didSet {
             self.configureAirQualityCellUIWithData()
         }
     }
-    
-    var myWeather: MyWeather?
     
     
     //MARK: - LifeCycle

@@ -20,13 +20,13 @@ final class HumidityCell: UICollectionViewCell {
         $0.textColor = UIColor(named: "myBlack")
     }
     
-    lazy var myViewModel = MyViewModel() {
+    lazy var myViewModel = MyViewModel()
+    
+    var myWeather: MyWeather? {
         didSet {
             self.configureHumidityCellUIWithData()
         }
     }
-    
-    var myWeather: MyWeather?
 
     //MARK: - LifeCycle
     override init(frame: CGRect) {

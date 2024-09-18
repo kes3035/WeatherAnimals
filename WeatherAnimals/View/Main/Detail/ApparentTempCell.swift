@@ -28,7 +28,11 @@ final class ApparentTempCell: UICollectionViewCell {
         }
     }
     
-    var myWeather: MyWeather?
+    var myWeather: MyWeather? {
+        didSet {
+            self.configureUIWithData()
+        }
+    }
 
     //MARK: - LifeCycle
     override init(frame: CGRect) {
