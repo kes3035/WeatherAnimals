@@ -29,18 +29,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let userLocation = try await tabBC.locationViewModel.fetchLocation()
                 let userLocationTitle = try await tabBC.myViewModel.fetchLocationTitle(for: userLocation)
                 let timeZone = try await tabBC.myViewModel.fetchTimeZone(for: userLocation)
-                
                 var userWeather = try await tabBC.myViewModel.fetchWeather(for: userLocation)
+                
                 userWeather.location = userLocation
                 userWeather.title = userLocationTitle
-                
                 
                 tabBC.myViewModel.setUserLocation(with: userLocation)
                 tabBC.myViewModel.setTimeZone(with: timeZone)
                 
                 let myDatas = try await self.fetchMyData()
-                let coreDataLocationByTitle = try await tabBC.myViewModel.testFetchingCoreData(myDatas)
-                let totalData = [userWeather] + coreDataLocationByTitle
+                let myWeathers = try await tabBC.myViewModel.getMyWeathers(myDatas)
+                let totalData = [userWeather] + myWeathers
     
                 tabBC.myViewModel.setWeathers(with: totalData)
                 

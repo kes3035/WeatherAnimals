@@ -63,12 +63,12 @@ extension AddVC: UITableViewDelegate {
                 let location = CLLocation(latitude: latitude, longitude: longitude)
                 
                 let myData = [locationTitle: location]
-                detailVC.myViewModel.setTemporaryDataForDetailVC(myData)
                 Task {
                     do {
-                        let weather = try await  self.myViewModel.fetchWeather(for: location)
-                        print("Debug : Successfully Fetched Weather For DeatailVC")
-                        detailVC.myViewModel.setTemporaryWeatherForDetailVC(weather)
+                        var weather = try await self.myViewModel.fetchWeather(for: location)
+                        let title = try await self.myViewModel.fetchLocationTitle(for: location)
+                        weather.title = title
+                        weather.location = location
                         
                         DispatchQueue.main.async {
                             //아직까지 detailVC에서는 데이터를 통해 화면을 그리지 않음.

@@ -10,18 +10,9 @@ import WeatherKit
 import CoreLocation
 import CoreData
 
-typealias LocationByTitle = [String:CLLocation]
 
 final class MyViewModel {
 
-    private var myData: LocationByTitle?
-    
-    private var temporaryDataForDetailVC: LocationByTitle?
-    
-    private var temporaryWeatherDataForDetailVC: MyWeather?
-    
-    private var locationByTitle: [LocationByTitle]?
-    
     private var weathers: [MyWeather]?
         
     private var userLocation: CLLocation? 
@@ -44,9 +35,6 @@ final class MyViewModel {
     var locationAuthState: Bool?
     
     //MARK: - Logics
-    func appendMyDatas(with myData: [String: CLLocation]) {
-        self.locationByTitle?.append(myData)
-    }
     
     func getMyWeather(with location: CLLocation) async throws -> MyWeather {
         let title = try await self.fetchLocationTitle(for: location)
@@ -58,33 +46,11 @@ final class MyViewModel {
         return myWeather
     }
     
-    func getLocationTitle() -> String {
-        var title = ""
-        return title
-    }
     
-    func fetchCoreDataLocationByTitle(_ myDatas: [MyData]) async throws -> [LocationByTitle] {
-        guard !myDatas.isEmpty else { return [] }
-        
-        let temporaryArr: [[String: CLLocation]] = myDatas.map { myData in
-            let longitude = myData.longitude
-            let latitude = myData.latitude
-            let location = CLLocation(latitude: latitude, longitude: longitude)
-            let title = myData.title ?? "로딩중"
-            
-            return [title: location]
-        }.sorted { (dict1, dict2) -> Bool in
-            let index1 = Int(myDatas.first(where: { $0.title ?? "로딩중" == dict1.keys.first })?.index ?? 0)
-            let index2 = Int(myDatas.first(where: { $0.title ?? "로딩중" == dict2.keys.first })?.index ?? 0)
-            return index1 < index2
-        }
-        
-        return temporaryArr
-    }
 
     
     
-    func testFetchingCoreData(_ myDatas: [MyData]) async throws -> [MyWeather] {
+    func getMyWeathers(_ myDatas: [MyData]) async throws -> [MyWeather] {
         let sortedMyDatas = myDatas.sorted { $0.index < $1.index }
         var myWeathers: [MyWeather] = []
         
@@ -126,35 +92,6 @@ final class MyViewModel {
         return utcCalendar.date(from: components) ?? Date()
     }
     
-    func addWeatherModelIntoLocal() {
-        DispatchQueue.main.async {
-            guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
-            let context = sceneDelegate.persistentContainer.viewContext
-            guard let entity = NSEntityDescription.entity(forEntityName: "MyData",
-                                                          in: context),
-                  let myNewData = self.myData,
-            let locationByTitle = self.getLocationByTitle() else { return }
-           
-            
-            let indexOfNewModel = locationByTitle.endIndex
-            
-
-            let myData = NSManagedObject(entity: entity, insertInto: context)
-            
-
-            myData.setValue(myNewData.values.first!.coordinate.latitude, forKey: "latitude")
-            myData.setValue(myNewData.values.first!.coordinate.longitude, forKey: "longitude")
-            myData.setValue(myNewData.keys.first!, forKey: "title")
-            myData.setValue(Int16(indexOfNewModel), forKey: "index")
-
-            do {
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
     func addWeatherModelIntoLocal(_ myWeather: MyWeather, completion: @escaping(()->())) {
         DispatchQueue.main.async {
             guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
@@ -184,7 +121,6 @@ final class MyViewModel {
     }
     
     func removeData(index: Int, completionHandler: @escaping(()->())) {
-        self.locationByTitle?.remove(at: index)
         self.deleteData(index: index)
         completionHandler()
     }
@@ -247,25 +183,6 @@ final class MyViewModel {
         return weathers
     }
     
-    func fetchMyLocationTitle(location: CLLocation, completion: @escaping((String) -> ())) {
-        let geocoder = CLGeocoder()
-        let locale = Locale(identifier: "Ko-kr")
-        DispatchQueue.global().async {
-            geocoder.reverseGeocodeLocation(location, preferredLocale: locale, completionHandler: {(placemarks, error) in
-                if let address: [CLPlacemark] = placemarks {
-                    var myAdd: String = ""
-                    if let area: String = address.last?.locality{
-                        myAdd += area
-                    }
-                    if let country: String = address.last?.country {
-                        myAdd += ", "
-                        myAdd += country
-                    }
-                    completion(myAdd)
-                }
-            })
-        }
-    }
     
     func fetchLocationTitle(for location: CLLocation) async throws -> String {
         let geocoder = CLGeocoder()
@@ -317,9 +234,6 @@ final class MyViewModel {
     
     
     //MARK: - Getter
-    func getLocationByTitle() -> [LocationByTitle]? {
-        return self.locationByTitle
-    }
     
     func getWeathers() -> [MyWeather]? {
         return self.weathers
@@ -331,27 +245,8 @@ final class MyViewModel {
     }
     
     func getWeatherCellCount() -> Int {
-        //guard let locationByTitle = self.locationByTitle else { return 0 }
         guard let myWeathers = self.weathers else { return 0 }
         return myWeathers.count
-    }
-    
-    func getHourlyWeathers() -> [HourWeather] {
-        guard let weathers = self.weathers,
-              let selectedIndex = self.selectedIndex else { return [] }
-        
-        return weathers[selectedIndex].hourlyWeathers
-    }
-    
-    func getDailyWeathers() -> [DayWeather] {
-        guard let weathers = self.weathers,
-              let selectedIndex = self.selectedIndex else { return [] }
-        
-        return weathers[selectedIndex].dailyWeathers
-    }
-    
-    func getAirQualityCondition() -> AirQuality? {
-        return self.airQuality
     }
     
     func getSelectedLocation() -> CLLocation? {
@@ -365,38 +260,11 @@ final class MyViewModel {
     func getTimeZone() -> TimeZone? {
         return self.timeZone
     }
-    
-    func getTemporaryWeatherForDetailVC() -> MyWeather? {
-        return self.temporaryWeatherDataForDetailVC
-    }
-    
-    func getTemporaryDataForDetailVC() -> LocationByTitle? {
-        return self.temporaryDataForDetailVC
-    }
+
     
     //MARK: - Setter
     func setUserLocation(with userLocation: CLLocation?) {
         self.userLocation = userLocation
-    }
-    
-    func setMyData(with myData: [String:CLLocation]?) {
-        self.myData = myData
-    }
-    
-    func setLocationByTitle(_ locationByTitle: [LocationByTitle]) {
-        self.locationByTitle = locationByTitle
-    }
-    
-    func setMyDatas(with myDatas: [[String:CLLocation]]?) {
-        self.locationByTitle = myDatas
-    }
-    
-    func setTemporaryDataForDetailVC(_ data: LocationByTitle) {
-        self.temporaryDataForDetailVC = data
-    }
-
-    func setTemporaryWeatherForDetailVC(_ weather: MyWeather) {
-        self.temporaryWeatherDataForDetailVC = weather
     }
     
     func setWeathers(with weathers: [MyWeather]) {
@@ -406,10 +274,7 @@ final class MyViewModel {
     func setSelectedCellIndex(cellForRowAt indexPath: IndexPath) {
         self.selectedIndex = indexPath.row
     }
-    
-    func setSelectedLocation(cellForRowAt indexPath: IndexPath) {
-        self.selectedLocation = self.locationByTitle?[indexPath.row].values.first!
-    }
+
 
     
     func setAirQualityCondition(location: CLLocation) {
