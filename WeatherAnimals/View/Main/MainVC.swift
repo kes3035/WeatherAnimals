@@ -31,7 +31,6 @@ final class MainVC: UIViewController {
     //MARK: - Actions
     @objc func plusButtonTapped(_ sender: UIButton) {
         let addVC = AddVC()
-        // addVC.myViewModel = self.myViewModel // 굳이,,? 랄까나
         addVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(addVC, animated: true)
     }

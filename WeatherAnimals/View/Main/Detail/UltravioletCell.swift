@@ -31,8 +31,6 @@ final class UltravioletCell: UICollectionViewCell {
     }
 
     
-    lazy var myViewModel = MyViewModel()
-    
     var myWeather: MyWeather? {
         didSet {
             configureUltravioletCellUIWithData()

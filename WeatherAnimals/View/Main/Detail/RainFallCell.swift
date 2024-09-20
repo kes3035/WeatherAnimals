@@ -15,13 +15,11 @@ final class RainFallCell: UICollectionViewCell {
     }
     
     private lazy var rainFallLabel = UILabel().then {
-        $0.text = "70mm"
+        $0.text = "loading.."
         $0.font = UIFont.neoDeungeul(size: 50)
         $0.textColor = .black
     }
-    
-    lazy var myViewModel = MyViewModel()
-    
+        
     var myWeather: MyWeather? {
         didSet {
             self.configureRainFallCellUIWithData()
@@ -37,6 +35,7 @@ final class RainFallCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     //MARK: - Helpers
     private func configureRainFallCellUIWithData() {
+        //수정할 것
         guard let myWeather = self.myWeather else { return }
     
         let currentWeather = myWeather.currentWeather

@@ -75,6 +75,7 @@ extension HourWeatherCell {
         self.tempLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(tempImageView.snp.bottom)
+            $0.height.equalTo(15)
         }
     }
 }

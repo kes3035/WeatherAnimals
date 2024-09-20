@@ -57,7 +57,6 @@ extension AddVC: UITableViewDelegate {
                 guard let placemark = response?.mapItems[0].placemark,
                       let locationTitle = placemark.title else { return }
                 
-                
                 let latitude = placemark.coordinate.latitude
                 let longitude = placemark.coordinate.longitude
                 let location = CLLocation(latitude: latitude, longitude: longitude)
@@ -65,14 +64,12 @@ extension AddVC: UITableViewDelegate {
                 let myData = [locationTitle: location]
                 Task {
                     do {
-                        var weather = try await self.myViewModel.fetchWeather(for: location)
+                        var myWeather = try await self.myViewModel.fetchWeather(for: location)
                         let title = try await self.myViewModel.fetchLocationTitle(for: location)
-                        weather.title = title
-                        weather.location = location
-                        
+                        myWeather.title = title
+                        myWeather.location = location
+                        detailVC.myWeather = myWeather
                         DispatchQueue.main.async {
-                            //아직까지 detailVC에서는 데이터를 통해 화면을 그리지 않음.
-                            //기존에는 mainVC에서 받아온 weatherData를 통해 그리기 때문
                             let nav = UINavigationController(rootViewController: detailVC)
                             self.present(nav, animated: true)
                         }

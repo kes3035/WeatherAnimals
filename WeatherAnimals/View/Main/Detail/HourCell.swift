@@ -15,16 +15,6 @@ final class HourCell: UICollectionViewCell {
         $0.register(HourWeatherCell.self, forCellWithReuseIdentifier: HourWeatherCell.identifier)
     }
  
-    
-    lazy var myViewModel = MyViewModel() {
-        didSet {
-            
-            DispatchQueue.main.async {
-                self.hourCellCV.reloadData()
-            }
-        }
-    }
-    
     var myWeather: MyWeather? {
         didSet {
             DispatchQueue.main.async {

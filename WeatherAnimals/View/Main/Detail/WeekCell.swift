@@ -16,14 +16,6 @@ final class WeekCell: UICollectionViewCell {
         $0.backgroundColor = UIColor(named: "myBackground")
         $0.separatorStyle = .none
     }
-    
-    lazy var myViewModel = MyViewModel() {
-        didSet {
-            DispatchQueue.main.async {
-                self.tenDaysTempView.reloadData()
-            }
-        }
-    }
 
     var myWeather: MyWeather?
     

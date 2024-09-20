@@ -31,8 +31,6 @@ final class AirQualityCell: UICollectionViewCell {
     }
  
     
-    lazy var myViewModel = MyViewModel()
-    
     var myWeather: MyWeather? {
         didSet {
             self.configureAirQualityCellUIWithData()

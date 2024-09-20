@@ -20,13 +20,6 @@ final class ApparentTempCell: UICollectionViewCell {
         $0.font = UIFont.neoDeungeul(size: 50)
         $0.textColor = .black
     }
-   
-    
-    lazy var myViewModel = MyViewModel() {
-        didSet {
-            self.configureUIWithData()
-        }
-    }
     
     var myWeather: MyWeather? {
         didSet {
